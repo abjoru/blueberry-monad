@@ -1,9 +1,9 @@
 name:                blueberry-monad
-version:             0.1.0.0
-github:              "githubuser/blueberry-monad"
+version:             0.1.0.1
+github:              "abjoru/blueberry-monad"
 license:             BSD3
 author:              "Andreas Bjoru"
-maintainer:          "example@example.com"
+maintainer:          "andreas@bjoru.com"
 copyright:           "2020 Andreas Bjoru"
 
 extra-source-files:

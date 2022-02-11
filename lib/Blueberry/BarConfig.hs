@@ -12,7 +12,7 @@ defaultHeight :: Int
 defaultHeight = 24
 
 (<|>) :: String -> String -> String
-(<|>) f s = f ++ (fcBg2 " | ") ++ s
+(<|>) f s = f ++ fcBg2 " | " ++ s
 
 baseConfig :: MobarPalette -> Config
 baseConfig p = defaultConfig 
@@ -57,40 +57,35 @@ selectMonitor p Nothing          = singleMonitor p
 
 singleMonitor :: MobarPalette -> IO Config
 singleMonitor p = do
-  ccp <- cmdCpunk
   cup <- cmdUpd
   ctr <- cmdTray
 
-  let cmds = [ccp, cup, ctr, cmdXmonad, cmdDate, cmdMem p, cmdNet p, cmdDisk p, cmdWeather p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %cpunk%" <|> "%KFXE%" <|> "%memory%" <|> "%disku%" <|> "%dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%trayer%"
+  let cmds = [cup, ctr, cmdXmonad, cmdDate, cmdMem p, cmdNet p, cmdDisk p, cmdWeather p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %KFXE%" <|> "%memory%" <|> "%disku%" <|> "%dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%trayer%"
 
   return $ mkConfig p cmds tmpl
 
 primaryMonitor :: MobarPalette -> IO Config
 primaryMonitor p = do
-  ccp <- cmdCpunk
   cup <- cmdUpd
   ctr <- cmdTray
 
-  let cmds = [ccp, cup, ctr, cmdXmonad, cmdDate, cmdNet p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %cpunk%" <|> "%dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%trayer%"
+  let cmds = [cup, ctr, cmdXmonad, cmdDate, cmdNet p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%trayer%"
 
   return $ mkConfig p cmds tmpl
 
 
 secondaryMonitor :: MobarPalette -> IO Config
 secondaryMonitor p = do
-  ccp <- cmdCpunk
-
-  let cmds = [ccp, cmdXmonad, cmdDate, cmdMem p, cmdDisk p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %cpunk%" <|> "%memory%" <|> "%disku%" <|> "%date% "
+  let cmds = [cmdXmonad, cmdDate, cmdMem p, cmdDisk p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %memory%" <|> "%disku%" <|> "%date% "
 
   return $ mkConfig p cmds tmpl
 
 otherMonitor :: MobarPalette -> IO Config
 otherMonitor p = do
-  ccp <- cmdCpunk
-  let cmds = [ccp, cmdXmonad, cmdDate, cmdWeather p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %cpunk%" <|> "%KFXE%" <|> "%date% "
+  let cmds = [cmdXmonad, cmdDate, cmdWeather p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %KFXE%" <|> "%date% "
 
   return $ mkConfig p cmds tmpl

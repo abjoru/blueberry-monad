@@ -42,7 +42,7 @@ tall     = renamed [Replace "tall"]
            $ mySpacing 6
            $ ResizableTall 1 (3/100) (1/2) []
 
-magnify  = renamed [Replace "magnify"]
+magnifyR  = renamed [Replace "magnify"]
            $ magnifier
            $ limitWindows 12
            $ mySpacing 6
@@ -104,4 +104,4 @@ myShowWNameTheme = def
 myLayoutHook = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats $
                 mkToggle (NBFULL ?? NOBORDERS ?? EOT) $ myDefaultLayout
         where
-          myDefaultLayout = tall ||| magnify ||| noBorders monocle ||| floats ||| noBorders tabs
+          myDefaultLayout = tall ||| magnifyR ||| noBorders monocle ||| floats ||| noBorders tabs

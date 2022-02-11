@@ -66,7 +66,8 @@ main :: IO ()
 main = do
   home   <- getHomeDirectory
   mobars <- countScreens >>= spawnBerrybars (home </> ".local" </> "bin" </> "blueberry-mobar")
-  launch $ ewmh $ def
+  --launch $ ewmh def
+  xmonad $ ewmh def
     { manageHook = (isFullscreen --> doFullFloat) <+> myManageHook <+> manageDocks
     , handleEventHook = serverModeEventHookCmd
       <+> serverModeEventHook

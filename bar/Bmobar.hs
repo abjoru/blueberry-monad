@@ -5,21 +5,17 @@ import Blueberry.BarConfig
 
 import Xmobar
 
+import Data.List (intersect)
+
 import System.Environment
 
+-- Get monitor specification from args
 monitorArgs :: [String] -> Maybe Monitor
-monitorArgs xs = case fx of
-  ("primary":_)   -> Just Primary
-  ("secondary":_) -> Just Secondary
-  ("other":_)     -> Just Other
-  _               -> Nothing
-  where fx = filter validArgs xs
-
-        validArgs :: String -> Bool
-        validArgs "primary"   = True
-        validArgs "secondary" = True
-        validArgs "other"     = True
-        validArgs _           = False
+monitorArgs xs = parse $ ["primary", "secondary", "other"] `intersect` xs
+  where parse ("primary": _)   = Just Primary
+        parse ("secondary": _) = Just Secondary
+        parse ("other": _)     = Just Other
+        parse _                = Nothing
 
 main :: IO ()
 main = do

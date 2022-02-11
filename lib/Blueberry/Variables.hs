@@ -1,33 +1,34 @@
 module Blueberry.Variables where
 
-import Blueberry.Palette
+import           Blueberry.Palette
 
-import Data.Monoid
+import           Data.Monoid
 
-import System.Directory (getHomeDirectory, getXdgDirectory, XdgDirectory(XdgConfig))
-import System.FilePath
+import           System.Directory           (XdgDirectory (XdgConfig),
+                                             getHomeDirectory, getXdgDirectory)
+import           System.FilePath
 
-import XMonad
+import           XMonad
 
-import XMonad.Hooks.ManageHelpers (isDialog, doCenterFloat)
-import XMonad.Hooks.SetWMName
-import XMonad.Hooks.FadeInactive
+import           XMonad.Hooks.FadeInactive
+import           XMonad.Hooks.ManageHelpers (doCenterFloat, isDialog)
+import           XMonad.Hooks.SetWMName
 
-import qualified XMonad.Actions.Search as S
-import qualified XMonad.StackSet as W
+import qualified XMonad.Actions.Search      as S
+import qualified XMonad.StackSet            as W
 
-import XMonad.Util.SpawnOnce
+import           XMonad.Util.SpawnOnce
 
 myFont :: [Char]
 myFont = "xft:Mononoki Nerd Font:bold:pixelsize=11"
 
 -- sets modkey to super/windows key
 myModMask :: KeyMask
-myModMask = mod4Mask 
+myModMask = mod4Mask
 
 -- sets default terminal
 myTerminal :: [Char]
-myTerminal = "alacritty" 
+myTerminal = "alacritty"
 
 -- sets default browser for tree select
 myBrowser :: String
@@ -119,6 +120,7 @@ myApplications = [ ("QuteBrowser", "qutebrowser", "Simple VIM-like web browser")
                  , ("Geary", "geary", "Geary Email Client")
                  , ("Gitter", "gitter", "Gitter Desktop Client")
                  , ("Plex", "plexmediaplayer", "Plex Media Player")
+                 , ("Unreal4", "/opt/unreal-engine-git/Engine/Binaries/Linux/UE4Editor", "Unreal Engine 4")
                  ]
 
 myConfigs :: [(String, String, String)]
@@ -148,8 +150,8 @@ myManageHook = composeAll . concat $
   , [title =? t --> doShift (head myWorkspaces) | t <- myT0Shifts]
   , [title =? t --> doShift (myWorkspaces !! 1) | t <- myT1Shifts]
   ]
-  where myCFloats  = ["Arandr", "Gimp", "Galculator", "feh", "mpv", "streamdeck"]
-        myTFloats  = ["Downloads", "Save As...", "Oracle VM VirtualBox Manager"]
+  where myCFloats  = ["Arandr", "Gimp", "Galculator", "feh", "mpv", "streamdeck", "megasync", "MEGAsync"]
+        myTFloats  = ["Downloads", "Save As...", "Oracle VM VirtualBox Manager", "MEGAsync"]
         myRFloats  = []
         myIFloats  = ["desktop_window"]
         myC0Shifts = ["Oracle VM VirtualBox Manager"]

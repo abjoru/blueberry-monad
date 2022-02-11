@@ -11,8 +11,8 @@ import qualified XMonad.StackSet as W
 ------------------------------------------------------------------------
 myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
-		, NS "cmus" spawnCmus findCmus manageCmus
-		]
+                , NS "cmus" spawnCmus findCmus manageCmus
+                ]
 	where
 	  spawnTerm  = myTerminal ++ " -n scratchpad"
 	  findTerm   = resource =? "scratchpad"
