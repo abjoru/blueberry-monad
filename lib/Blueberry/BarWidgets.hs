@@ -2,6 +2,8 @@ module Blueberry.BarWidgets where
 
 import Blueberry.Utils
 import Blueberry.Palette
+import Blueberry.Crypto.FearGreedIndex
+import Blueberry.Crypto.CoinPrice
 
 import Xmobar
 
@@ -18,6 +20,14 @@ cmdXmonad = Run UnsafeStdinReader
 -- Formatted date/time
 cmdDate :: Runnable
 cmdDate = Run $ Date (fcAqua1 "\xf133 %b %d %Y (%H:%M)") "date" 50
+
+cmdFGI :: Runnable
+cmdFGI = Run FNG
+
+cmdCoins :: Runnable
+cmdCoins = Run $ CoinConfig [ CoinDesc "bitcoin" pBlue0 "\xf15a"
+                            , CoinDesc "ethereum" pOrange0 "\xfcb9"
+                            ] 300 -- 300/10 = 30 seconds
 
 -- Network monitor
 cmdNet :: MobarPalette -> Runnable

@@ -28,19 +28,6 @@ nodeAccessories = Node (TS.TSNode "+ Accessories" "Accessory applications" (retu
   , Node (TS.TSNode "VirtualBox" "Oracle's virtualization program" (spawn "virtualbox")) []
   ]
 
--- TODO: Make this read from filesystem (i.e. games folder)
-nodeGames :: Tree (TS.TSNode (X ()))
-nodeGames = Node (TS.TSNode "+ Games" "fun and games" (return ()))
-  [ Node (TS.TSNode "Steam" "The Steam gaming platform" (spawn "steam")) []
-  , Node (TS.TSNode "Holiday Island" "RenPy Game" (spawn "~/Games/HolidayIsland-0.2.1.0-pc/HolidayIsland.sh")) []
-  , Node (TS.TSNode "Broken Dreamers" "RenPy Game" (spawn "~/Games/BrokenDreamers-0.7.0-pc/BrokenDreamers.sh")) []
-  , Node (TS.TSNode "Bad Memories" "RenPy Game" (spawn "~/Games/Bad-Memories-0.5.2-pc/Bad-Memories.sh")) []
-  , Node (TS.TSNode "Treasure of Nardia" "RenPy Game" (spawn "~/Games/Treasure-of-Nardia-v42072/launcher.sh")) []
-  , Node (TS.TSNode "False Hero" "RenPy Game" (spawn "~/Games/FalseHero-False_Hero_v0.25_RAW_BETA-pc/FalseHero.sh")) []
-  , Node (TS.TSNode "Time for You" "RenPy Game" (spawn "~/Games/TIME_FOR_YOU(0.10.0)-0.10.0-pc/TIME_FOR_YOU(0.10.0).sh")) []
-  , Node (TS.TSNode "What a Legend" "RenPy Game" (spawn "~/Games/What-a-Legend-0.2-pc/What-a-Legend.sh")) []
-  ]
-
 nodeGraphics :: Tree (TS.TSNode (X ()))
 nodeGraphics = Node (TS.TSNode "+ Graphics" "graphics programs" (return ()))
   [ Node (TS.TSNode "Gimp" "GNU image manipulation program" (spawn "gimp")) []
@@ -105,6 +92,7 @@ nodeSystem = Node (TS.TSNode "+ System" "system tools and utilities" (return ())
   , Node (TS.TSNode "Simple Terminal" "Suckless simple terminal" (spawn "st")) []
   , Node (TS.TSNode "Stress Terminal UI" "Stress your system" (spawn (myTerminal ++ " -e vifm"))) []
   , Node (TS.TSNode "Vifm" "Vim-like file manager" (spawn (myTerminal ++ " -e vifm"))) []
+  , Node (TS.TSNode "Printer" "Printer configuration" (spawn "system-config-printer")) []
   ]
 
 nodeBookmarks :: Tree (TS.TSNode (X ()))
@@ -193,14 +181,14 @@ nodeConfigs = Node (TS.TSNode "+ Config Files" "config files that edit often" (r
     ]
   , Node (TS.TSNode "+ xmonad configs" "My xmonad config files" (return ()))
     [ Node (TS.TSNode "xmonad.hs" "My XMonad Main" (spawn (myEditor ++ "~/.config/xmonad/xmonad.hs"))) []
-    , Node (TS.TSNode "GridSelect.hs" "My XMonad GridSelect menu" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/GridSelect.hs"))) []
-    , Node (TS.TSNode "KeyBindings.hs" "My XMonad keybindings" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/KeyBindings.hs"))) []
-    , Node (TS.TSNode "Layouts.hs" "My XMonad layouts" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/Layouts.hs"))) []
-    , Node (TS.TSNode "Prompts.hs" "My XMonad prompts" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/Prompts.hs"))) []
-    , Node (TS.TSNode "Scratchpads.hs" "My XMonad named scratchpads" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/Scratchpads.hs"))) []
-    , Node (TS.TSNode "TreeMenu.hs" "My XMonad TreeSelect menu" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/TreeMenu.hs"))) []
-    , Node (TS.TSNode "Variables.hs" "My XMonad variables" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/Variables.hs"))) []
-    , Node (TS.TSNode "Palette.hs" "My XMonad palette" (spawn (myEditor ++ "~/.config/xmonad/lib/Blueberry/Palette.hs"))) []
+    , Node (TS.TSNode "GridSelect.hs" "My XMonad GridSelect menu" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/GridSelect.hs"))) []
+    , Node (TS.TSNode "KeyBindings.hs" "My XMonad keybindings" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/KeyBindings.hs"))) []
+    , Node (TS.TSNode "Layouts.hs" "My XMonad layouts" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/Layouts.hs"))) []
+    , Node (TS.TSNode "Prompts.hs" "My XMonad prompts" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/Prompts.hs"))) []
+    , Node (TS.TSNode "Scratchpads.hs" "My XMonad named scratchpads" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/Scratchpads.hs"))) []
+    , Node (TS.TSNode "TreeMenu.hs" "My XMonad TreeSelect menu" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/TreeMenu.hs"))) []
+    , Node (TS.TSNode "Variables.hs" "My XMonad variables" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/Variables.hs"))) []
+    , Node (TS.TSNode "Palette.hs" "My XMonad palette" (spawn (myEditor ++ "~/.local/share/blueberry-monad/lib/Blueberry/Palette.hs"))) []
     ]
   , Node (TS.TSNode "+ zshrc" "Config for the z shell" (return ())) 
     [ Node (TS.TSNode "zshrc" "Main ZSH config" (spawn (myEditor ++ "~/.config/zsh/.zshrc"))) []

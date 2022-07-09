@@ -66,31 +66,34 @@ main :: IO ()
 main = do
   home   <- getHomeDirectory
   mobars <- countScreens >>= spawnBerrybars (home </> ".local" </> "bin" </> "blueberry-mobar")
-  --launch $ ewmh def
-  xmonad $ ewmh def
-    { manageHook = (isFullscreen --> doFullFloat) <+> myManageHook <+> manageDocks
-    , handleEventHook = serverModeEventHookCmd
-      <+> serverModeEventHook
-      <+> serverModeEventHookF "XMONAD_PRINT" (io . putStrLn)
-      <+> docksEventHook
-    , modMask = myModMask
-    , terminal = myTerminal
-    , startupHook = myStartupHook
-    , layoutHook = myLayoutHook
-    , workspaces = myWorkspaces
-    , borderWidth = myBorderWidth
-    , normalBorderColor = myNormColor
-    , focusedBorderColor = myFocusColor
-    , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
-                { ppOutput = xmobarOutput mobars
-                , ppCurrent = xmobarColor pGreen0 "" . wrap "[" "]"   -- current workspace in xmobar
-                , ppVisible = xmobarColor pGreen1 ""                  -- visible but not current workspace
-                , ppHidden = xmobarColor pBlue0 "" . wrap "*" ""      -- hidden workspaces in xmobar
-                , ppHiddenNoWindows = xmobarColor pYellow0 ""         -- Hidden workspaces (no window)
-                , ppTitle = xmobarColor pGray0 "" . shorten 60        -- Title of active window in xmobar
-                , ppSep = " | "
-                , ppUrgent = xmobarColor pOrange0 "" . wrap "!" "!"   -- Urgent windows
-                , ppExtras = [windowCount]                            -- # of windows in current workspace
-                , ppOrder = \(ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
-                }
-    } `additionalKeysP` myKeys
+  xdirs  <- getDirectories
+
+  let myConfig = ewmh def
+                  { manageHook = (isFullscreen --> doFullFloat) <+> myManageHook <+> manageDocks
+                  , handleEventHook = serverModeEventHookCmd
+                    <+> serverModeEventHook
+                    <+> serverModeEventHookF "XMONAD_PRINT" (io . putStrLn)
+                    <+> docksEventHook
+                  , modMask = myModMask
+                  , terminal = myTerminal
+                  , startupHook = myStartupHook
+                  , layoutHook = myLayoutHook
+                  , workspaces = myWorkspaces
+                  , borderWidth = myBorderWidth
+                  , normalBorderColor = myNormColor
+                  , focusedBorderColor = myFocusColor
+                  , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
+                              { ppOutput = xmobarOutput mobars
+                              , ppCurrent = xmobarColor pGreen0 "" . wrap "[" "]"   -- current workspace in xmobar
+                              , ppVisible = xmobarColor pGreen1 ""                  -- visible but not current workspace
+                              , ppHidden = xmobarColor pBlue0 "" . wrap "*" ""      -- hidden workspaces in xmobar
+                              , ppHiddenNoWindows = xmobarColor pYellow0 ""         -- Hidden workspaces (no window)
+                              , ppTitle = xmobarColor pGray0 "" . shorten 60        -- Title of active window in xmobar
+                              , ppSep = " | "
+                              , ppUrgent = xmobarColor pOrange0 "" . wrap "!" "!"   -- Urgent windows
+                              , ppExtras = [windowCount]                            -- # of windows in current workspace
+                              , ppOrder = \(ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
+                              }
+                  } `additionalKeysP` myKeys
+
+  launch myConfig xdirs

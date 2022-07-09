@@ -23,7 +23,9 @@ dependencies:
 - base >= 4.7 && < 5
 
 library:
-  source-dirs: lib
+  source-dirs: 
+    - lib
+    - plugins
   dependencies:
     - directory
     - filepath
@@ -36,6 +38,10 @@ library:
     - ini
     - regex-posix
     - text
+    - time
+    - aeson
+    - http-conduit
+    - unordered-containers
 
 executables:
   blueberry-monad:

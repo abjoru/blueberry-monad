@@ -78,8 +78,8 @@ primaryMonitor p = do
 
 secondaryMonitor :: MobarPalette -> IO Config
 secondaryMonitor p = do
-  let cmds = [cmdXmonad, cmdDate, cmdMem p, cmdDisk p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %memory%" <|> "%disku%" <|> "%date% "
+  let cmds = [cmdXmonad, cmdCoins, cmdFGI, cmdDate, cmdMem p, cmdDisk p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %coinprice%" <|> "%fg%" <|> "%memory%" <|> "%disku%" <|> "%date% "
 
   return $ mkConfig p cmds tmpl
 

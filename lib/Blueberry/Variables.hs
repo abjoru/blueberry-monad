@@ -110,7 +110,7 @@ searchList = [ ("a", searchArchwiki)
 -- two values in each list
 myApplications :: [(String, String, String)]
 myApplications = [ ("QuteBrowser", "qutebrowser", "Simple VIM-like web browser")
-                 , ("Brave", "brave", "The privacy centered brave web browser")
+                 , ("Crypto", "brave", "The privacy centered brave web browser")
                  , ("PCManFM", "pcmanfm", "Lightweight graphical file manager")
                  , ("ThinkOrSwim", "thinkorswim", "TD Ameritrade platform")
                  , ("Steam", "steam", "Proprietary gaming platform")
@@ -121,6 +121,10 @@ myApplications = [ ("QuteBrowser", "qutebrowser", "Simple VIM-like web browser")
                  , ("Gitter", "gitter", "Gitter Desktop Client")
                  , ("Plex", "plexmediaplayer", "Plex Media Player")
                  , ("Unreal4", "/opt/unreal-engine-git/Engine/Binaries/Linux/UE4Editor", "Unreal Engine 4")
+                 , ("LedgerLive", "ledger-live-desktop", "Ledger Live Desktop")
+                 , ("TradingView", "tradingview", "TradingView Desktop")
+                 , ("Chrome", "google-chrome-stable", "Google Chrome Browser")
+                 , ("Daedalus", "daedalus-mainnet", "Daedalus Wallet")
                  ]
 
 myConfigs :: [(String, String, String)]

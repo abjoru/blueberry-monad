@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0d4d556c904e4c6c4ed69da18c9de0534618f738b11a91804c4e811b927f08c6
+-- hash: 5c93cdc34dfff5e4d1070a7797e9001290bd59060b6e704b5d942f109638f4cc
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -38,20 +38,27 @@ library
       Blueberry.TreeMenu
       Blueberry.Utils
       Blueberry.Variables
+      Blueberry.Crypto.CoinPrice
+      Blueberry.Crypto.FearGreedIndex
   other-modules:
       Paths_blueberry_monad
   hs-source-dirs:
       lib
+      plugins
   build-depends:
       X11
+    , aeson
     , base >=4.7 && <5
     , containers
     , directory
     , filepath
+    , http-conduit
     , ini
     , regex-posix
     , text
+    , time
     , unix
+    , unordered-containers
     , xmobar
     , xmonad
     , xmonad-contrib
