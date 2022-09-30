@@ -19,6 +19,7 @@ import XMonad.Hooks.WorkspaceHistory
 -- Utilities
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run (spawnPipe, hPutStrLn)
+import XMonad.Util.Hacks (trayerPaddingXmobarEventHook)
 
 -- X11
 import Graphics.X11.Xinerama (getScreenInfo)
@@ -73,6 +74,7 @@ main = do
                   , handleEventHook = serverModeEventHookCmd
                     <+> serverModeEventHook
                     <+> serverModeEventHookF "XMONAD_PRINT" (io . putStrLn)
+                    <+> trayerPaddingXmobarEventHook
                     <+> docksEventHook
                   , modMask = myModMask
                   , terminal = myTerminal

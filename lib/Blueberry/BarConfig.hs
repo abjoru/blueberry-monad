@@ -58,20 +58,18 @@ selectMonitor p Nothing          = singleMonitor p
 singleMonitor :: MobarPalette -> IO Config
 singleMonitor p = do
   cup <- cmdUpd
-  ctr <- cmdTray
 
-  let cmds = [cup, ctr, cmdXmonad, cmdDate, cmdMem p, cmdNet p, cmdDisk p, cmdWeather p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %KFXE%" <|> "%memory%" <|> "%disku%" <|> "%dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%trayer%"
+  let cmds = [cup, cmdTrayerPadding, cmdXmonad, cmdDate, cmdMem p, cmdNet p, cmdDisk p, cmdWeather p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %KFXE%" <|> "%memory%" <|> "%disku%" <|> "%dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%_XMONAD_TRAYPAD%"
 
   return $ mkConfig p cmds tmpl
 
 primaryMonitor :: MobarPalette -> IO Config
 primaryMonitor p = do
   cup <- cmdUpd
-  ctr <- cmdTray
 
-  let cmds = [cup, ctr, cmdXmonad, cmdDate, cmdNet p]
-      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%trayer%"
+  let cmds = [cup, cmdTrayerPadding, cmdXmonad, cmdDate, cmdNet p]
+      tmpl = " <icon=haskell_20.xpm/>" <|> "%UnsafeStdinReader% }{ %dynnetwork%" <|> "%updates%" <|> "%date%" <|> "%_XMONAD_TRAYPAD%"
 
   return $ mkConfig p cmds tmpl
 

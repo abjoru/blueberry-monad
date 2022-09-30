@@ -24,6 +24,9 @@ cmdDate = Run $ Date (fcAqua1 "\xf133 %b %d %Y (%H:%M)") "date" 50
 cmdFGI :: Runnable
 cmdFGI = Run FNG
 
+cmdTrayerPadding :: Runnable
+cmdTrayerPadding = Run $ XPropertyLog "_XMONAD_TRAYPAD"
+
 cmdCoins :: Runnable
 cmdCoins = Run $ CoinConfig [ CoinDesc "bitcoin" pBlue0 "\xf15a"
                             , CoinDesc "ethereum" pOrange0 "\xfcb9"
@@ -103,9 +106,3 @@ cmdUpd :: IO Runnable
 cmdUpd = do
   script <- mkScript "check-all-updates.sh"
   return $ cmdScript script [pPurple1] "updates" 6000
-
--- System tray
-cmdTray :: IO Runnable
-cmdTray = do
-  script <- mkScript "trayer-padding-icon.sh"
-  return $ cmdScript script [] "trayer" 20
