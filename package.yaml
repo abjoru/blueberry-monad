@@ -26,6 +26,7 @@ library:
   source-dirs: 
     - lib
     - plugins
+    - BMonad
   dependencies:
     - directory
     - filepath
@@ -71,3 +72,16 @@ executables:
     dependencies:
       - blueberry-monad
       - xmobar
+
+tests:
+  test:
+    main: Main.hs
+    source-dirs: test
+    dependencies:
+      - blueberry-monad
+      - hspec >=2.0.0
+    ghc-options:
+      - -Wall
+      - -threaded
+      - -rtsopts
+      - '"-with-rtspots=-N -qg"'
