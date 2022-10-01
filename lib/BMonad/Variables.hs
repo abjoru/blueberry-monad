@@ -1,13 +1,21 @@
 module BMonad.Variables where
 
-import           System.Directory           (XdgDirectory (XdgConfig),
-                                             getHomeDirectory, getXdgDirectory)
+import qualified Data.Map                     as M
+import           System.Directory             (XdgDirectory (XdgConfig),
+                                               getHomeDirectory,
+                                               getXdgDirectory)
 import           System.FilePath
-import XMonad
-import qualified XMonad.StackSet as W
-import qualified Data.Map as M
+import           XMonad
+import           XMonad.Hooks.FadeInactive
+import           XMonad.Hooks.SetWMName
+import           XMonad.Layout.LayoutModifier
+import           XMonad.Layout.ShowWName
+import           XMonad.Layout.Spacing
+import           XMonad.Layout.Tabbed
+import qualified XMonad.StackSet              as W
+import           XMonad.Util.SpawnOnce
 
-import BMonad.Colors.GruvboxDark
+import           BMonad.Colors.GruvboxDark
 
 -- default configuration directories
 myXMonadDir, myXMobarDir :: IO FilePath
@@ -63,16 +71,16 @@ myWorkspaces = [" dev ", " www ", " sys ", " gfx "]
 myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..]
 
 --Makes setting the spacingRaw simpler to write. The spacingRaw module adds a configurable amount of space around windows.
-mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
+mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 -- Below is a variation of the above except no borders are applied
 -- if fewer than two windows. So a single window has no gaps.
-mySpacing' :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
+mySpacing' :: Integer -> l a -> ModifiedLayout Spacing l a
 mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 -- setting color for tabs layout and tabs sublayout
-myTabTheme = def 
+myTabTheme = def
   { fontName            = myFont
   , activeColor         = color15
   , inactiveColor       = color08
@@ -90,3 +98,11 @@ myShowWNameTheme = def
   , swn_bgcolor = "#1c1f24"
   , swn_color   = "#ffffff"
   }
+
+myLogHook :: X ()
+myLogHook = fadeInactiveLogHook 1
+
+myStartupHook :: X ()
+myStartupHook = do
+  spawnOnce "$HOME/.config/xmonad/scripts/autostart.sh"
+  setWMName "XBlueberry"

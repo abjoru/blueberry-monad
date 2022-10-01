@@ -26,7 +26,6 @@ library:
   source-dirs: 
     - lib
     - plugins
-    - BMonad
   dependencies:
     - directory
     - filepath
@@ -43,10 +42,13 @@ library:
     - aeson
     - http-conduit
     - unordered-containers
+    - yaml
+    - bytestring
+    - vector
 
 executables:
   blueberry-monad:
-    main:                Bmonad.hs
+    main:                Main.hs
     source-dirs:         wm
     ghc-options:
       - -Wall
@@ -75,13 +77,14 @@ executables:
 
 tests:
   test:
-    main: Main.hs
+    main: Spec.hs
     source-dirs: test
     dependencies:
       - blueberry-monad
-      - hspec >=2.0.0
+      - hspec
+      - bytestring
+      - containers
     ghc-options:
-      - -Wall
       - -threaded
       - -rtsopts
-      - '"-with-rtspots=-N -qg"'
+      - -with-rtsopts=-N

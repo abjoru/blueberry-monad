@@ -1,79 +1,118 @@
+{-# LANGUAGE OverloadedStrings #-}
 module BMonad.Applications (
   BApp(..),
   BCategory(..),
 
   loadApplications,
+  parseApplications,
   applicationList,
   applicationMap,
   findByCategory,
-  appLauncher
+  appLauncher,
+  gridSelect,
+  gridSelect'
   ) where
 
-import BMonad.Variables (myTerminal, myXMonadDir)
-import BMonad.Utils (capitalized)
+import           BMonad.Utils        (capitalized)
+import           BMonad.Variables    (myTerminal, myXMonadDir)
 
-import Data.YAML.Aeson (decodeValue)
-import Data.HashMap.Strict as HM
-import Data.Text as T
-import qualified Data.ByteString.Lazy as B
-import System.FilePath ((</>))
+import           Control.Monad       as MO
+
+import           Data.ByteString     as B hiding (find, foldr, map)
+import           Data.HashMap.Strict as HM hiding (foldr, map)
+import           Data.List           (find)
+import           Data.Map            as M hiding (foldr, map)
+import           Data.Text           as T hiding (find, foldr, map)
+import           Data.Vector         as V hiding (find, foldr, map, (++))
+import           Data.Yaml
+
+import           System.FilePath     ((</>))
 
 data BApp = BApp
   { bAppName     :: String
   , bAppDesc     :: String
   , bAppCommand  :: Maybe String
   , bAppTerminal :: Maybe String
-  } deriving Show, Eq
+  } deriving (Show, Eq)
 
 data BCategory = BCategory
   { bCategoryName :: String
   , bApplications :: [BApp]
-  } deriving Show, Eq
+  } deriving (Show, Eq)
 
-instance FromJSON BCategory where
-  parseJSON = withObject "BCategory" parseCategories
-
-loadApplications :: IO (Either (Pos, String) [BCategory])
+-- | Load applications from disk.
+-- Config file location is ~/.config/xmonad/applications.yaml.
+loadApplications :: IO [BCategory]
 loadApplications = do
-  cd <- myXMonadDir
-  bs <- B.readFile $ cd </> "applications.yaml"
-  return $ decode1 bs
+  xdir <- myXMonadDir
+  yaml <- B.readFile $ xdir </> "applications.yaml"
+  return $ case (parseApplications yaml) of
+             (Right v) -> v
+             (Left _)  -> []
 
-parseCategories :: HM.HashMap T.Text Value -> Parser [BCategory]
-parseCategories m = mapM parseCategory (HM.toList m)
+{--------------------------------------------------------------------
+  Data parsers
+--------------------------------------------------------------------}
 
+-- | Parses application config file contents.
+-- Returns either an error message or list of application categories.
+parseApplications :: ByteString -> Either String [BCategory]
+parseApplications s = case yaml of
+                        (Right a) -> parseEither parseCategories a
+                        (Left er) -> Left $ prettyPrintParseException er
+  where yaml = decodeEither' s :: Either ParseException Value
+
+-- | Application categories parser
+parseCategories :: Value -> Parser [BCategory]
+parseCategories (Object o) = MO.mapM parseCategory (HM.toList o)
+
+-- | Application category parser
 parseCategory :: (T.Text, Value) -> Parser BCategory
-parseCategory (key, Object o) =
+parseCategory (key, a) =
   let name = capitalized $ T.unpack key
-      apps = parseApps o
+      apps = parseApps a
    in BCategory name <$> apps
 
-parseApps :: HM.HashMap T.Text Value -> Parser [BApp]
-parseApps m = mapM parseApp (HM.toList m)
+-- | Applications parser
+parseApps :: Value -> Parser [BApp]
+parseApps (Array a) = MO.mapM parseApp (V.toList a)
 
-parseApp :: (T.Text, Value) -> Parser BApp
-parseApp (key, Object o) =
-  let name = parseJSON $ HM.findWithDefault (capitalized key) "name" o
-      desc = parseJSON $ HM.findWithDefault "Missing description!" "description" o
-      cmd  = parseJSON $ HM.lookup "command" o
-      term = parseJSON $ HM.lookup "terminal" o
-   in BApp name <$> desc
-                <*> cmd
-                <*> term
+-- | Application parser
+parseApp :: Value -> Parser BApp
+parseApp (Object o) = BApp
+  <$> o .:  "name"
+  <*> o .:  "description"
+  <*> o .:? "command"
+  <*> o .:? "terminal"
 
+{--------------------------------------------------------------------
+  Operations
+--------------------------------------------------------------------}
+
+-- | Flattens list of categories into list of applications.
 applicationList :: [BCategory] -> [BApp]
-applicationList = foldr (\c acc -> acc ++ (bApplications c))
+applicationList = foldr (\c acc -> acc ++ (bApplications c)) []
 
-applicationMap :: [BCategory] -> Map String BApp
-applicationMap = fromList $ map (\x -> (bAppName x, x)) $ applicationList
+-- | Flattens list of categories into application map.
+-- Map is keyed off of application name as defined in config file.
+applicationMap :: [BCategory] -> M.Map String BApp
+applicationMap xs = M.fromList $ map (\x -> (bAppName x, x)) (applicationList xs)
 
+-- | Find a category by name (case insensitive).
 findByCategory :: String -> [BCategory] -> [BApp]
-findByCategory c cs = case found of
-                        Just [] -> []
-                        Nothing -> []
-                        Just ca -> bApplications ca
-  where found = find (\a -> (bCategoryName a) eq (capitalized c)) cs
+findByCategory c cs = case e of
+                        Just (BCategory _ apps) -> apps
+                        _                       -> []
+  where e = find (\a -> (bCategoryName a) == (capitalized c)) cs
 
+-- | Generate application launcher.
 appLauncher :: BApp -> String
-appLauncher BApp _ _ (Just cmd) _ = cmd
-appLauncher BApp _ _ _ (Just cmd) = myTerminal ++ " -e " ++ cmd
+appLauncher (BApp _ _ (Just cmd) _) = cmd
+appLauncher (BApp _ _ _ (Just cmd)) = myTerminal ++ " -e " ++ cmd
+
+gridSelect :: BCategory -> [(String, String)]
+gridSelect (BCategory _ apps) = map (\a -> ((bAppName a), (appLauncher a))) apps
+
+gridSelect' :: String -> [BCategory] -> [(String, String)]
+gridSelect' s cs = map f $ findByCategory s cs
+  where f a = (bAppName a, appLauncher a)

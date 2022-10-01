@@ -1,25 +1,24 @@
 module Main where
 
 -- Blueberry modules
-import Blueberry.Palette
-import Blueberry.Variables
-import Blueberry.Layouts
-import Blueberry.KeyBindings
+import BMonad
+import BMonad.Colors.GruvboxDark
 
 -- Base
 import XMonad
 
 import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))
 import XMonad.Hooks.EwmhDesktops -- for some fullscreen events, also for xcomposite in obs.
-import XMonad.Hooks.ManageDocks (docksEventHook, manageDocks)
-import XMonad.Hooks.ServerMode
-import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
+import XMonad.Hooks.ManageDocks (docks, manageDocks)
 import XMonad.Hooks.WorkspaceHistory
+import XMonad.Hooks.WindowSwallowing
+
+import XMonad.Layout.ShowWName (showWName')
 
 -- Utilities
-import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run (spawnPipe, hPutStrLn)
 import XMonad.Util.Hacks (trayerPaddingXmobarEventHook)
+import XMonad.Util.NamedActions (addDescrKeys')
 
 -- X11
 import Graphics.X11.Xinerama (getScreenInfo)
@@ -60,6 +59,11 @@ mkBar b (i, m) = spawnPipe $ b ++ " -x " ++ show i ++ " " ++ m
 xmobarOutput :: [Handle] -> String -> IO ()
 xmobarOutput ha x = mapM_ (`hPutStrLn` x) ha
 
+-----------
+-- Mouse --
+-----------
+
+
 ----------
 -- MAIN --
 ----------
@@ -67,35 +71,33 @@ main :: IO ()
 main = do
   home   <- getHomeDirectory
   mobars <- countScreens >>= spawnBerrybars (home </> ".local" </> "bin" </> "blueberry-mobar")
+  apps   <- loadApplications
   xdirs  <- getDirectories
 
-  let myConfig = ewmh def
-                  { manageHook = (isFullscreen --> doFullFloat) <+> myManageHook <+> manageDocks
-                  , handleEventHook = serverModeEventHookCmd
-                    <+> serverModeEventHook
-                    <+> serverModeEventHookF "XMONAD_PRINT" (io . putStrLn)
-                    <+> trayerPaddingXmobarEventHook
-                    <+> docksEventHook
+  let myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys apps) $ ewmh $ docks $ def
+                  { manageHook = myManageHook <+> manageDocks
+                  , handleEventHook = swallowEventHook (className =? "Alacritty" <||> className =? "st-256color" <||> className =? "XTerm") (return True)
+                                      <+> trayerPaddingXmobarEventHook
                   , modMask = myModMask
                   , terminal = myTerminal
                   , startupHook = myStartupHook
-                  , layoutHook = myLayoutHook
+                  , layoutHook = showWName' myShowWNameTheme $ myLayoutHook
                   , workspaces = myWorkspaces
                   , borderWidth = myBorderWidth
                   , normalBorderColor = myNormColor
                   , focusedBorderColor = myFocusColor
                   , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
                               { ppOutput = xmobarOutput mobars
-                              , ppCurrent = xmobarColor pGreen0 "" . wrap "[" "]"   -- current workspace in xmobar
-                              , ppVisible = xmobarColor pGreen1 ""                  -- visible but not current workspace
-                              , ppHidden = xmobarColor pBlue0 "" . wrap "*" ""      -- hidden workspaces in xmobar
-                              , ppHiddenNoWindows = xmobarColor pYellow0 ""         -- Hidden workspaces (no window)
-                              , ppTitle = xmobarColor pGray0 "" . shorten 60        -- Title of active window in xmobar
-                              , ppSep = " | "
-                              , ppUrgent = xmobarColor pOrange0 "" . wrap "!" "!"   -- Urgent windows
-                              , ppExtras = [windowCount]                            -- # of windows in current workspace
+                              , ppCurrent = xmobarColor color06 "" . wrap ("<box type=Bottom width=2 mb=2 color=" ++ color06 ++ ">") "</box>"
+                              , ppVisible = xmobarColor color06 "" . clickable
+                              , ppHidden = xmobarColor color05 "" . wrap ("<box type=Top width=2 mt=2 color=" ++ color05 ++ ">") "</box>"
+                              , ppHiddenNoWindows = xmobarColor color05 "" . clickable
+                              , ppTitle = xmobarColor color16 "" . shorten 60
+                              , ppSep = "<fc=" ++ color09 ++ "> <fn=1>|</fn> </fc>"
+                              , ppUrgent = xmobarColor color02 "" . wrap "!" "!"
+                              , ppExtras = [windowCount]
                               , ppOrder = \(ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
                               }
-                  } `additionalKeysP` myKeys
+                  }
 
   launch myConfig xdirs

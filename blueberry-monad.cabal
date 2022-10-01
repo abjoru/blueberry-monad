@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5c93cdc34dfff5e4d1070a7797e9001290bd59060b6e704b5d942f109638f4cc
+-- hash: 9c154f6377a0b82226baee9f95e508e4291a69fcd9031d5f6e6d9a4e98f27178
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -38,6 +38,14 @@ library
       Blueberry.TreeMenu
       Blueberry.Utils
       Blueberry.Variables
+      BMonad
+      BMonad.Applications
+      BMonad.Colors.GruvboxDark
+      BMonad.KeyBindings
+      BMonad.Layouts
+      BMonad.ManageHooks
+      BMonad.Utils
+      BMonad.Variables
       Blueberry.Crypto.CoinPrice
       Blueberry.Crypto.FearGreedIndex
   other-modules:
@@ -49,6 +57,7 @@ library
       X11
     , aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , directory
     , filepath
@@ -59,9 +68,11 @@ library
     , time
     , unix
     , unordered-containers
+    , vector
     , xmobar
     , xmonad
     , xmonad-contrib
+    , yaml
   default-language: Haskell2010
 
 executable blueberry-mobar
@@ -78,7 +89,7 @@ executable blueberry-mobar
   default-language: Haskell2010
 
 executable blueberry-monad
-  main-is: Bmonad.hs
+  main-is: Main.hs
   other-modules:
       Paths_blueberry_monad
   hs-source-dirs:
@@ -92,4 +103,21 @@ executable blueberry-monad
     , filepath
     , xmonad
     , xmonad-contrib
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      ApplicationsSpec
+      Paths_blueberry_monad
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , blueberry-monad
+    , bytestring
+    , containers
+    , hspec
   default-language: Haskell2010
