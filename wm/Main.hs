@@ -1,34 +1,35 @@
 module Main where
 
 -- Blueberry modules
-import BMonad
-import BMonad.Colors.GruvboxDark
+import           BMonad
 
 -- Base
-import XMonad
+import           XMonad
 
-import XMonad.Hooks.DynamicLog (dynamicLogWithPP, wrap, xmobarPP, xmobarColor, shorten, PP(..))
-import XMonad.Hooks.EwmhDesktops -- for some fullscreen events, also for xcomposite in obs.
-import XMonad.Hooks.ManageDocks (docks, manageDocks)
-import XMonad.Hooks.WorkspaceHistory
-import XMonad.Hooks.WindowSwallowing
+import           XMonad.Hooks.DynamicLog       (PP (..), dynamicLogWithPP,
+                                                shorten, wrap, xmobarColor,
+                                                xmobarPP)
+import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.ManageDocks      (docks,
+                                                manageDocks)
+import           XMonad.Hooks.WindowSwallowing
 
-import XMonad.Layout.ShowWName (showWName')
+import           XMonad.Layout.ShowWName
 
 -- Utilities
-import XMonad.Util.Run (spawnPipe, hPutStrLn)
-import XMonad.Util.Hacks (trayerPaddingXmobarEventHook)
-import XMonad.Util.NamedActions (addDescrKeys')
+import           XMonad.Util.Hacks             (trayerPaddingXmobarEventHook)
+import           XMonad.Util.NamedActions      (addDescrKeys')
+import           XMonad.Util.Run               (hPutStrLn, spawnPipe)
 
 -- X11
-import Graphics.X11.Xinerama (getScreenInfo)
+import           Graphics.X11.Xinerama         (getScreenInfo)
 
 -- GHC
-import GHC.IO.Handle
+import           GHC.IO.Handle
 
 -- System
-import System.Directory
-import System.FilePath ((</>))
+import           System.Directory
+import           System.FilePath               ((</>))
 
 --------------
 -- Monitors --
@@ -59,11 +60,6 @@ mkBar b (i, m) = spawnPipe $ b ++ " -x " ++ show i ++ " " ++ m
 xmobarOutput :: [Handle] -> String -> IO ()
 xmobarOutput ha x = mapM_ (`hPutStrLn` x) ha
 
------------
--- Mouse --
------------
-
-
 ----------
 -- MAIN --
 ----------
@@ -74,10 +70,15 @@ main = do
   apps   <- loadApplications
   xdirs  <- getDirectories
 
-  let myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys apps) $ ewmh $ docks $ def
+  let c02 = color02 colors
+      c05 = color05 colors
+      c06 = color06 colors
+      c09 = color09 colors
+      c16 = color16 colors
+      myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys apps) $ ewmh $ docks $ def
                   { manageHook = myManageHook <+> manageDocks
-                  , handleEventHook = swallowEventHook (className =? "Alacritty" <||> className =? "st-256color" <||> className =? "XTerm") (return True)
-                                      <+> trayerPaddingXmobarEventHook
+                  , handleEventHook = trayerPaddingXmobarEventHook
+                                      <+> swallowEventHook (className =? "Alacritty" <||> className =? "st-256color" <||> className =? "XTerm") (return True)
                   , modMask = myModMask
                   , terminal = myTerminal
                   , startupHook = myStartupHook
@@ -86,15 +87,15 @@ main = do
                   , borderWidth = myBorderWidth
                   , normalBorderColor = myNormColor
                   , focusedBorderColor = myFocusColor
-                  , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
+                  , logHook = dynamicLogWithPP xmobarPP
                               { ppOutput = xmobarOutput mobars
-                              , ppCurrent = xmobarColor color06 "" . wrap ("<box type=Bottom width=2 mb=2 color=" ++ color06 ++ ">") "</box>"
-                              , ppVisible = xmobarColor color06 "" . clickable
-                              , ppHidden = xmobarColor color05 "" . wrap ("<box type=Top width=2 mt=2 color=" ++ color05 ++ ">") "</box>"
-                              , ppHiddenNoWindows = xmobarColor color05 "" . clickable
-                              , ppTitle = xmobarColor color16 "" . shorten 60
-                              , ppSep = "<fc=" ++ color09 ++ "> <fn=1>|</fn> </fc>"
-                              , ppUrgent = xmobarColor color02 "" . wrap "!" "!"
+                              , ppCurrent = xmobarColor c06 "" . wrap ("<box type=Bottom width=2 mb=2 color=" ++ c06 ++ ">") "</box>"
+                              , ppVisible = xmobarColor c06 "" . clickable
+                              , ppHidden = xmobarColor c05 "" . wrap ("<box type=Top width=2 mt=2 color=" ++ c05 ++ ">") "</box>"
+                              , ppHiddenNoWindows = xmobarColor c05 "" . clickable
+                              , ppTitle = xmobarColor c16 "" . shorten 60
+                              , ppSep = "<fc=" ++ c09 ++ "> <fn=1>|</fn> </fc>"
+                              , ppUrgent = xmobarColor c02 "" . wrap "!" "!"
                               , ppExtras = [windowCount]
                               , ppOrder = \(ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
                               }

@@ -18,13 +18,37 @@ module BMonad (
   myStartupHook,
   myManageHook,
   myLayoutHook,
+  myXmobarTheme,
   loadApplications,
-  clickable
+  clickable,
+  colors,
+  selectMonitor,
+  Colors(..),
+  XMobarTheme(..),
+  Monitor(..)
   ) where
 
-import BMonad.KeyBindings
-import BMonad.Variables
-import BMonad.ManageHooks
-import BMonad.Layouts
-import BMonad.Applications
-import BMonad.Utils
+import           BMonad.Applications
+import           BMonad.Bar.Config
+import           BMonad.Colors
+import           BMonad.KeyBindings
+import           BMonad.Layouts
+import           BMonad.ManageHooks
+import           BMonad.Utils
+import           BMonad.Variables
+
+import           System.FilePath     ((</>))
+
+colors :: Colors
+colors = gruvboxDark
+
+myNormColor = normColor colors
+
+myFocusColor = focusColor colors
+
+myLayoutHook = bLayoutHook colors
+
+myXmobarTheme :: IO XMobarTheme
+myXmobarTheme = do
+  fp <- myXMonadDir
+  return $ xmobarTheme colors myFont fp

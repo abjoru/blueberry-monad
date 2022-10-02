@@ -15,7 +15,7 @@ import           XMonad.Layout.Tabbed
 import qualified XMonad.StackSet              as W
 import           XMonad.Util.SpawnOnce
 
-import           BMonad.Colors.GruvboxDark
+import           BMonad.Colors
 
 -- default configuration directories
 myXMonadDir, myXMobarDir :: IO FilePath
@@ -52,12 +52,12 @@ myBorderWidth :: Dimension
 myBorderWidth = 2
 
 -- border color of normal windows
-myNormColor :: String
-myNormColor = colorBack
+normColor :: Colors -> String
+normColor = colorBack
 
 -- border color of focused windows
-myFocusColor :: String
-myFocusColor = color15
+focusColor :: Colors -> String
+focusColor = color15
 
 -- setting this for use in xprompts
 altMask :: KeyMask
@@ -80,14 +80,15 @@ mySpacing' :: Integer -> l a -> ModifiedLayout Spacing l a
 mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 -- setting color for tabs layout and tabs sublayout
-myTabTheme = def
+tabTheme :: Colors -> Theme
+tabTheme c = def
   { fontName            = myFont
-  , activeColor         = color15
-  , inactiveColor       = color08
-  , activeBorderColor   = color15
-  , inactiveBorderColor = colorBack
-  , activeTextColor     = colorBack
-  , inactiveTextColor   = color16
+  , activeColor         = color15 c
+  , inactiveColor       = color08 c
+  , activeBorderColor   = color15 c
+  , inactiveBorderColor = colorBack c
+  , activeTextColor     = colorBack c
+  , inactiveTextColor   = color16 c
   }
 
 -- theme for showWName which prints current workspace when you change

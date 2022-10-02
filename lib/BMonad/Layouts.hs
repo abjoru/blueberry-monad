@@ -1,4 +1,6 @@
-module BMonad.Layouts (myLayoutHook) where
+{-# LANGUAGE PartialTypeSignatures #-}
+{-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
+module BMonad.Layouts (bLayoutHook) where
 
 import           XMonad
 import           XMonad.Actions.MouseResize
@@ -30,21 +32,24 @@ import           XMonad.Layout.WindowNavigation
 
 import           BMonad.Variables                    (myBorderWidth, myFont,
                                                       mySpacing, mySpacing',
-                                                      myTabTheme)
+                                                      tabTheme)
+import BMonad.Colors
 
-tall = renamed [Replace "tall"]
+tall :: Colors -> _ 
+tall c = renamed [Replace "tall"]
        $ limitWindows 5
        $ smartBorders
        $ windowNavigation
-       $ addTabs shrinkText myTabTheme
+       $ addTabs shrinkText (tabTheme c)
        $ subLayout [] (smartBorders Simplest)
        $ mySpacing 8
        $ ResizableTall 1 (3/100) (1/2) []
 
-monocle = renamed [Replace "monocle"]
+monocle :: Colors -> _
+monocle c = renamed [Replace "monocle"]
           $ smartBorders
           $ windowNavigation
-          $ addTabs shrinkText myTabTheme
+          $ addTabs shrinkText (tabTheme c)
           $ subLayout [] (smartBorders Simplest)
           $ Full
 
@@ -52,44 +57,49 @@ floats = renamed [Replace "floats"]
          $ smartBorders
          $ simplestFloat
 
-grid = renamed [Replace "grid"]
+grid :: Colors -> _
+grid c = renamed [Replace "grid"]
        $ limitWindows 9
        $ smartBorders
        $ windowNavigation
-       $ addTabs shrinkText myTabTheme
+       $ addTabs shrinkText (tabTheme c)
        $ subLayout [] (smartBorders Simplest)
        $ mySpacing 8
        $ mkToggle (single MIRROR)
        $ Grid (16/10)
 
-spirals = renamed [Replace "spirals"]
+spirals :: Colors -> _
+spirals c = renamed [Replace "spirals"]
           $ limitWindows 9
           $ smartBorders
           $ windowNavigation
-          $ addTabs shrinkText myTabTheme
+          $ addTabs shrinkText (tabTheme c)
           $ subLayout [] (smartBorders Simplest)
           $ mySpacing' 8
           $ spiral (6/7)
 
-threeCol = renamed [Replace "threeCol"]
+threeCol :: Colors -> _
+threeCol c = renamed [Replace "threeCol"]
            $ limitWindows 7
            $ smartBorders
            $ windowNavigation
-           $ addTabs shrinkText myTabTheme
+           $ addTabs shrinkText (tabTheme c)
            $ subLayout [] (smartBorders Simplest)
            $ ThreeCol 1 (3/100) (1/2)
 
-threeRow = renamed [Replace "threeRow"]
+threeRow :: Colors -> _
+threeRow c = renamed [Replace "threeRow"]
            $ limitWindows 7
            $ smartBorders
            $ windowNavigation
-           $ addTabs shrinkText myTabTheme
+           $ addTabs shrinkText (tabTheme c)
            $ subLayout [] (smartBorders Simplest)
            $ Mirror
            $ ThreeCol 1 (3/100) (1/2)
 
-tabs = renamed [Replace "tabs"]
-       $ tabbed shrinkText myTabTheme
+tabs :: Colors -> _
+tabs c = renamed [Replace "tabs"]
+       $ tabbed shrinkText (tabTheme c)
 
 tallAccordion = renamed [Replace "tallAccordion"]
                 $ Accordion
@@ -97,18 +107,19 @@ tallAccordion = renamed [Replace "tallAccordion"]
 wideAccordion = renamed [Replace "wideAccordion"]
                 $ Mirror Accordion
 
-myLayoutHook = avoidStruts
-               $ mouseResize
-               $ windowArrange
-               $ T.toggleLayouts floats
-               $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
-  where myDefaultLayout = withBorder myBorderWidth tall
-                            ||| noBorders monocle
+bLayoutHook :: Colors -> _
+bLayoutHook c = avoidStruts
+             $ mouseResize
+             $ windowArrange
+             $ T.toggleLayouts floats
+             $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
+  where myDefaultLayout = withBorder myBorderWidth (tall c)
+                            ||| noBorders (monocle c)
                             ||| floats
-                            ||| noBorders tabs
-                            ||| grid
-                            ||| spirals
-                            ||| threeCol
-                            ||| threeRow
+                            ||| noBorders (tabs c)
+                            ||| grid c
+                            ||| spirals c
+                            ||| threeCol c
+                            ||| threeRow c
                             ||| tallAccordion
                             ||| wideAccordion
