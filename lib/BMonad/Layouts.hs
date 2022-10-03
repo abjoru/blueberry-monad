@@ -30,12 +30,18 @@ import           XMonad.Layout.WindowArranger        (WindowArrangerMsg (..),
                                                       windowArrange)
 import           XMonad.Layout.WindowNavigation
 
-import           BMonad.Variables                    (myBorderWidth, myFont,
-                                                      mySpacing, mySpacing',
-                                                      tabTheme)
-import BMonad.Colors
+import           BMonad.Theme
 
-tall :: Colors -> _ 
+--Makes setting the spacingRaw simpler to write. The spacingRaw module adds a configurable amount of space around windows.
+mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
+mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
+
+-- Below is a variation of the above except no borders are applied
+-- if fewer than two windows. So a single window has no gaps.
+mySpacing' :: Integer -> l a -> ModifiedLayout Spacing l a
+mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
+
+tall :: BMonadTheme -> _
 tall c = renamed [Replace "tall"]
        $ limitWindows 5
        $ smartBorders
@@ -45,7 +51,7 @@ tall c = renamed [Replace "tall"]
        $ mySpacing 8
        $ ResizableTall 1 (3/100) (1/2) []
 
-monocle :: Colors -> _
+monocle :: BMonadTheme -> _
 monocle c = renamed [Replace "monocle"]
           $ smartBorders
           $ windowNavigation
@@ -57,7 +63,7 @@ floats = renamed [Replace "floats"]
          $ smartBorders
          $ simplestFloat
 
-grid :: Colors -> _
+grid :: BMonadTheme -> _
 grid c = renamed [Replace "grid"]
        $ limitWindows 9
        $ smartBorders
@@ -68,7 +74,7 @@ grid c = renamed [Replace "grid"]
        $ mkToggle (single MIRROR)
        $ Grid (16/10)
 
-spirals :: Colors -> _
+spirals :: BMonadTheme -> _
 spirals c = renamed [Replace "spirals"]
           $ limitWindows 9
           $ smartBorders
@@ -78,7 +84,7 @@ spirals c = renamed [Replace "spirals"]
           $ mySpacing' 8
           $ spiral (6/7)
 
-threeCol :: Colors -> _
+threeCol :: BMonadTheme -> _
 threeCol c = renamed [Replace "threeCol"]
            $ limitWindows 7
            $ smartBorders
@@ -87,7 +93,7 @@ threeCol c = renamed [Replace "threeCol"]
            $ subLayout [] (smartBorders Simplest)
            $ ThreeCol 1 (3/100) (1/2)
 
-threeRow :: Colors -> _
+threeRow :: BMonadTheme -> _
 threeRow c = renamed [Replace "threeRow"]
            $ limitWindows 7
            $ smartBorders
@@ -97,7 +103,7 @@ threeRow c = renamed [Replace "threeRow"]
            $ Mirror
            $ ThreeCol 1 (3/100) (1/2)
 
-tabs :: Colors -> _
+tabs :: BMonadTheme -> _
 tabs c = renamed [Replace "tabs"]
        $ tabbed shrinkText (tabTheme c)
 
@@ -107,13 +113,13 @@ tallAccordion = renamed [Replace "tallAccordion"]
 wideAccordion = renamed [Replace "wideAccordion"]
                 $ Mirror Accordion
 
-bLayoutHook :: Colors -> _
+bLayoutHook :: BMonadTheme -> _
 bLayoutHook c = avoidStruts
              $ mouseResize
              $ windowArrange
              $ T.toggleLayouts floats
              $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
-  where myDefaultLayout = withBorder myBorderWidth (tall c)
+  where myDefaultLayout = withBorder (themeBorderWidth c) (tall c)
                             ||| noBorders (monocle c)
                             ||| floats
                             ||| noBorders (tabs c)

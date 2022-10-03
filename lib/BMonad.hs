@@ -1,15 +1,12 @@
+{-# LANGUAGE PartialTypeSignatures #-}
+{-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
 module BMonad (
   myKeys,
   showKeybindings,
-  myXMonadDir,
-  myXMobarDir,
-  myFont,
   myModMask,
   myTerminal,
   myBrowser,
   myEditor,
-  myNormColor,
-  myFocusColor,
   myBorderWidth,
   myWorkspaces,
   myShowWNameTheme,
@@ -18,37 +15,35 @@ module BMonad (
   myStartupHook,
   myManageHook,
   myLayoutHook,
-  myXmobarTheme,
+  myTheme,
   loadApplications,
-  clickable,
-  colors,
   selectMonitor,
-  Colors(..),
-  XMobarTheme(..),
+  BMonadTheme(..),
   Monitor(..)
   ) where
 
 import           BMonad.Applications
 import           BMonad.Bar.Config
-import           BMonad.Colors
 import           BMonad.KeyBindings
 import           BMonad.Layouts
 import           BMonad.ManageHooks
+import           BMonad.Theme
 import           BMonad.Utils
 import           BMonad.Variables
 
+import           System.Directory    (XdgDirectory (XdgConfig), getXdgDirectory)
 import           System.FilePath     ((</>))
 
-colors :: Colors
-colors = gruvboxDark
+myTheme :: IO BMonadTheme
+myTheme = fmap f (getXdgDirectory XdgConfig "xmonad")
+  where f d = BMonadTheme 
+                { themeColors      = gruvboxDark 
+                , themeFont        = "xft:SauceCodePro Nerd Font Mono:regular:size=11;antialias=true:hinting=true"
+                , themeIconFolder  = (d </> "xpm")
+                , themeBarAlpha    = 255
+                , themeBorderWidth = 2
+                }
 
-myNormColor = normColor colors
-
-myFocusColor = focusColor colors
-
-myLayoutHook = bLayoutHook colors
-
-myXmobarTheme :: IO XMobarTheme
-myXmobarTheme = do
-  fp <- myXMonadDir
-  return $ xmobarTheme colors myFont fp
+-- IO layout hook
+myLayoutHook :: IO _
+myLayoutHook = fmap bLayoutHook myTheme

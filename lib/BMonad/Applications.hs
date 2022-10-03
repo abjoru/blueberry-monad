@@ -18,12 +18,12 @@ import           BMonad.Variables    (myTerminal, myXMonadDir)
 
 import           Control.Monad       as MO
 
-import           Data.ByteString     as B hiding (find, foldr, map)
-import           Data.HashMap.Strict as HM hiding (foldr, map)
+import qualified Data.ByteString     as B
+import qualified Data.HashMap.Strict as HM
 import           Data.List           (find)
-import           Data.Map            as M hiding (foldr, map)
-import           Data.Text           as T hiding (find, foldr, map)
-import           Data.Vector         as V hiding (find, foldr, map, (++))
+import qualified Data.Map            as M
+import qualified Data.Text           as T
+import qualified Data.Vector         as V
 import           Data.Yaml
 
 import           System.FilePath     ((</>))
@@ -56,7 +56,7 @@ loadApplications = do
 
 -- | Parses application config file contents.
 -- Returns either an error message or list of application categories.
-parseApplications :: ByteString -> Either String [BCategory]
+parseApplications :: B.ByteString -> Either String [BCategory]
 parseApplications s = case yaml of
                         (Right a) -> parseEither parseCategories a
                         (Left er) -> Left $ prettyPrintParseException er

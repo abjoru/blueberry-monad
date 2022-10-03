@@ -1,17 +1,15 @@
 module Main where
 
--- Blueberry modules
 import           BMonad
+import           BMonad.Bar
+import           BMonad.Theme
 
 -- Base
 import           XMonad
 
-import           XMonad.Hooks.DynamicLog       (PP (..), dynamicLogWithPP,
-                                                shorten, wrap, xmobarColor,
-                                                xmobarPP)
+import           XMonad.Hooks.DynamicLog       (dynamicLogWithPP)
 import           XMonad.Hooks.EwmhDesktops
-import           XMonad.Hooks.ManageDocks      (docks,
-                                                manageDocks)
+import           XMonad.Hooks.ManageDocks      (docks, manageDocks)
 import           XMonad.Hooks.WindowSwallowing
 
 import           XMonad.Layout.ShowWName
@@ -65,40 +63,26 @@ xmobarOutput ha x = mapM_ (`hPutStrLn` x) ha
 ----------
 main :: IO ()
 main = do
-  home   <- getHomeDirectory
-  mobars <- countScreens >>= spawnBerrybars (home </> ".local" </> "bin" </> "blueberry-mobar")
-  apps   <- loadApplications
-  xdirs  <- getDirectories
+  home    <- getHomeDirectory
+  mobars  <- countScreens >>= spawnBerrybars (home </> ".local" </> "bin" </> "blueberry-mobar")
+  apps    <- loadApplications
+  theme   <- myTheme
+  layouts <- myLayoutHook
+  xdirs   <- getDirectories
 
-  let c02 = color02 colors
-      c05 = color05 colors
-      c06 = color06 colors
-      c09 = color09 colors
-      c16 = color16 colors
-      myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys apps) $ ewmh $ docks $ def
+  let myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys apps) $ ewmh $ docks $ def
                   { manageHook = myManageHook <+> manageDocks
                   , handleEventHook = trayerPaddingXmobarEventHook
                                       <+> swallowEventHook (className =? "Alacritty" <||> className =? "st-256color" <||> className =? "XTerm") (return True)
                   , modMask = myModMask
                   , terminal = myTerminal
                   , startupHook = myStartupHook
-                  , layoutHook = showWName' myShowWNameTheme $ myLayoutHook
+                  , layoutHook = showWName' myShowWNameTheme $ layouts
                   , workspaces = myWorkspaces
                   , borderWidth = myBorderWidth
-                  , normalBorderColor = myNormColor
-                  , focusedBorderColor = myFocusColor
-                  , logHook = dynamicLogWithPP xmobarPP
-                              { ppOutput = xmobarOutput mobars
-                              , ppCurrent = xmobarColor c06 "" . wrap ("<box type=Bottom width=2 mb=2 color=" ++ c06 ++ ">") "</box>"
-                              , ppVisible = xmobarColor c06 "" . clickable
-                              , ppHidden = xmobarColor c05 "" . wrap ("<box type=Top width=2 mt=2 color=" ++ c05 ++ ">") "</box>"
-                              , ppHiddenNoWindows = xmobarColor c05 "" . clickable
-                              , ppTitle = xmobarColor c16 "" . shorten 60
-                              , ppSep = "<fc=" ++ c09 ++ "> <fn=1>|</fn> </fc>"
-                              , ppUrgent = xmobarColor c02 "" . wrap "!" "!"
-                              , ppExtras = [windowCount]
-                              , ppOrder = \(ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
-                              }
+                  , normalBorderColor = normColor theme
+                  , focusedBorderColor = focusColor theme
+                  , logHook = dynamicLogWithPP (bmobarPP theme windowCount (xmobarOutput mobars))
                   }
 
   launch myConfig xdirs

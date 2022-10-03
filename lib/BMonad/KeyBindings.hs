@@ -54,31 +54,31 @@ keysDMenu c = subKeys c "DMenu scripts"
 
 keysWorkspaces :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
 keysWorkspaces c = subKeys c "Workspaces"
-                   [ ("M-1", addName "Switch to workspace 1" $ (windows $ W.greedyView $ myWorkspaces !! 0))
-                   , ("M-2", addName "Switch to workspace 2" $ (windows $ W.greedyView $ myWorkspaces !! 1))
-                   , ("M-3", addName "Switch to workspace 3" $ (windows $ W.greedyView $ myWorkspaces !! 2))
-                   , ("M-4", addName "Switch to workspace 4" $ (windows $ W.greedyView $ myWorkspaces !! 3))
-                   , ("M-S-1", addName "Send to workspace 1" $ (windows $ W.shift      $ myWorkspaces !! 0))
-                   , ("M-S-2", addName "Send to workspace 2" $ (windows $ W.shift      $ myWorkspaces !! 1))
-                   , ("M-S-3", addName "Send to workspace 3" $ (windows $ W.shift      $ myWorkspaces !! 2))
-                   , ("M-S-4", addName "Send to workspace 4" $ (windows $ W.shift      $ myWorkspaces !! 3))
-                   , ("M-S-<Page_Up>", addName "Move window to next WS and follow"     $ shiftTo Next nonNSP >> moveTo Next nonNSP)
-                   , ("M-S-<Page_Down>", addName "Move window to prev WS and follow"   $ shiftTo Prev nonNSP >> moveTo Prev nonNSP)
+                   [ ("M-1",             addName "Switch to workspace 1"             $ (windows $ W.greedyView $ myWorkspaces !! 0))
+                   , ("M-2",             addName "Switch to workspace 2"             $ (windows $ W.greedyView $ myWorkspaces !! 1))
+                   , ("M-3",             addName "Switch to workspace 3"             $ (windows $ W.greedyView $ myWorkspaces !! 2))
+                   , ("M-4",             addName "Switch to workspace 4"             $ (windows $ W.greedyView $ myWorkspaces !! 3))
+                   , ("M-S-1",           addName "Send to workspace 1"               $ (windows $ W.shift      $ myWorkspaces !! 0))
+                   , ("M-S-2",           addName "Send to workspace 2"               $ (windows $ W.shift      $ myWorkspaces !! 1))
+                   , ("M-S-3",           addName "Send to workspace 3"               $ (windows $ W.shift      $ myWorkspaces !! 2))
+                   , ("M-S-4",           addName "Send to workspace 4"               $ (windows $ W.shift      $ myWorkspaces !! 3))
+                   , ("M-S-<Page_Up>",   addName "Move window to next WS and follow" $ shiftTo Next nonNSP >> moveTo Next nonNSP)
+                   , ("M-S-<Page_Down>", addName "Move window to prev WS and follow" $ shiftTo Prev nonNSP >> moveTo Prev nonNSP)
                    ]
   where nonNSP = WSIs (return (\ws -> W.tag ws /= "NSP"))
 
 keysWindows :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
 keysWindows c = subKeys c "Windows"
-                [ ("M-<Up>", addName "Move focused window up"                  $ sendMessage (MoveUp 10))
-                , ("M-<Down>", addName "Move focused window down"              $ sendMessage (MoveDown 10))
-                , ("M-<Left>", addName "Move focused window left"              $ sendMessage (MoveLeft 10))
-                , ("M-<Right>", addName "Move focused window right"            $ sendMessage (MoveRight 10))
-                , ("M-m", addName "Move focus to master window"                $ windows W.focusMaster)
-                , ("M-j", addName "Move focus to next window"                  $ windows W.focusDown)
-                , ("M-k", addName "Move focus to prev window"                  $ windows W.focusUp)
-                , ("M-S-j", addName "Swap the focused window with next window" $ windows W.swapDown)
-                , ("M-S-k", addName "Swap the focused window with prev window" $ windows W.swapUp)
-                , ("M-<Backspace", addName "Move focused window to master"     $ promote)
+                [ ("M-<Up>",       addName "Move focused window up"                   $ sendMessage (MoveUp 10))
+                , ("M-<Down>",     addName "Move focused window down"                 $ sendMessage (MoveDown 10))
+                , ("M-<Left>",     addName "Move focused window left"                 $ sendMessage (MoveLeft 10))
+                , ("M-<Right>",    addName "Move focused window right"                $ sendMessage (MoveRight 10))
+                , ("M-m",          addName "Move focus to master window"              $ windows W.focusMaster)
+                , ("M-j",          addName "Move focus to next window"                $ windows W.focusDown)
+                , ("M-k",          addName "Move focus to prev window"                $ windows W.focusUp)
+                , ("M-S-j",        addName "Swap the focused window with next window" $ windows W.swapDown)
+                , ("M-S-k",        addName "Swap the focused window with prev window" $ windows W.swapUp)
+                , ("M-<Backspace", addName "Move focused window to master"            $ promote)
                 ]
 
 keysMonitors :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
@@ -114,7 +114,15 @@ subtitle' x = ((0, 0), NamedAction $ map toUpper $ sep ++ "\n-- " ++ x ++ " --\n
 
 showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction
 showKeybindings x = addName "Show Keybindings" $ io $ do
-  h <- spawnPipe $ "yad --text-info --fontname=\"SauceCodePro Nerd Font Mono 12\" --fore=#46d9ff back=#282c36 --center --geometry=1200x800 --title \"XMonad keybindings\""
+  h <- spawnPipe $ unwords [ "yad"
+                           , "--text-info"
+                           , "--fontname=\"SauceCodePro Nerd Font Mono 12\""
+                           , "--fore=#d79921"
+                           , "back=#282828"
+                           , "--center"
+                           , "--geometry=1200x800"
+                           , "--title \"XMonad keybindings\""
+                           ]
   hPutStr h (unlines $ showKmSimple x)
   hClose h
   return ()

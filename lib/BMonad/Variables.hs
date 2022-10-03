@@ -22,11 +22,6 @@ myXMonadDir, myXMobarDir :: IO FilePath
 myXMonadDir = getXdgDirectory XdgConfig "xmonad"
 myXMobarDir = getXdgDirectory XdgConfig "xmobar"
 
--- sets the desktop font
-myFont :: String
-myFont = "xft:SauceCodePro Nerd Font Mono:regular:size=11;antialias=true:hinting=true"
---myFont = "xft:Mononoki Nerd Font:bold:pixelsize=11"
-
 -- sets modkey to super/windows key
 myModMask :: KeyMask
 myModMask = mod4Mask
@@ -47,18 +42,6 @@ myEditor = myTerminal ++ " -e nvim "
 mySoundPlayer :: String
 mySoundPlayer = "ffplay -nodisp -autoexit"
 
--- sets border width for windows
-myBorderWidth :: Dimension
-myBorderWidth = 2
-
--- border color of normal windows
-normColor :: Colors -> String
-normColor = colorBack
-
--- border color of focused windows
-focusColor :: Colors -> String
-focusColor = color15
-
 -- setting this for use in xprompts
 altMask :: KeyMask
 altMask = mod1Mask
@@ -69,27 +52,6 @@ windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace
 -- workspace naming and indices
 myWorkspaces = [" dev ", " www ", " sys ", " gfx "]
 myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..]
-
---Makes setting the spacingRaw simpler to write. The spacingRaw module adds a configurable amount of space around windows.
-mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
-mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
-
--- Below is a variation of the above except no borders are applied
--- if fewer than two windows. So a single window has no gaps.
-mySpacing' :: Integer -> l a -> ModifiedLayout Spacing l a
-mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
-
--- setting color for tabs layout and tabs sublayout
-tabTheme :: Colors -> Theme
-tabTheme c = def
-  { fontName            = myFont
-  , activeColor         = color15 c
-  , inactiveColor       = color08 c
-  , activeBorderColor   = color15 c
-  , inactiveBorderColor = colorBack c
-  , activeTextColor     = colorBack c
-  , inactiveTextColor   = color16 c
-  }
 
 -- theme for showWName which prints current workspace when you change
 myShowWNameTheme :: SWNConfig

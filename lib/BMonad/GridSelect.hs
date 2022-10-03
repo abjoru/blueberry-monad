@@ -1,6 +1,6 @@
 module BMonad.GridSelect where
 
-import BMonad.Variables
+import BMonad.Theme
 
 import XMonad
 import XMonad.Actions.GridSelect
@@ -17,14 +17,14 @@ myColorizer = colorRangeFromClassName
   (0xfb,0xf1,0xc7) -- gruvFG0
 
 -- gridSelect menu layout
-myGridConfig :: p -> GSConfig Window
-myGridConfig colorizer = (buildDefaultGSConfig myColorizer)
+myGridConfig :: BMonadTheme -> p -> GSConfig Window
+myGridConfig t colorizer = (buildDefaultGSConfig myColorizer)
   { gs_cellheight = 40
   , gs_cellwidth = 250
   , gs_cellpadding = 6
   , gs_originFractX = 0.5
   , gs_originFractY = 0.5
-  , gs_font = myFont
+  , gs_font = themeFont t
   }
 
 spawnSelected' :: [(String, String)] -> X ()
