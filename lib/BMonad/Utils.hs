@@ -12,3 +12,13 @@ capitalized (head:tail) = Char.toUpper head : map Char.toLower tail
 
 clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>"
   where i = fromJust $ M.lookup ws myWorkspaceIndices
+
+-- Get X screen counts (i.e. # monitors)
+countScreens :: IO Int
+countScreens = do 
+  screens <- do
+    dpy   <- openDisplay ""
+    rects <- getScreenInfo dpy
+    closeDisplay dpy
+    return rects
+  pure $ length screens

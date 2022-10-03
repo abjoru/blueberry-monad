@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module BMonad.Bar.FearGreedPlugin where
+module BMonad.Bar.Plugin.FearGreed where
 
 import           Xmobar
 

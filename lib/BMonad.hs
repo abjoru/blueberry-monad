@@ -14,7 +14,7 @@ module BMonad (
   myLogHook,
   myStartupHook,
   myManageHook,
-  myLayoutHook,
+  myLayouts,
   myTheme,
   loadApplications,
   selectMonitor,
@@ -30,20 +30,3 @@ import           BMonad.ManageHooks
 import           BMonad.Theme
 import           BMonad.Utils
 import           BMonad.Variables
-
-import           System.Directory    (XdgDirectory (XdgConfig), getXdgDirectory)
-import           System.FilePath     ((</>))
-
-myTheme :: IO BMonadTheme
-myTheme = fmap f (getXdgDirectory XdgConfig "xmonad")
-  where f d = BMonadTheme 
-                { themeColors      = gruvboxDark 
-                , themeFont        = "xft:SauceCodePro Nerd Font Mono:regular:size=11;antialias=true:hinting=true"
-                , themeIconFolder  = (d </> "xpm")
-                , themeBarAlpha    = 255
-                , themeBorderWidth = 2
-                }
-
--- IO layout hook
-myLayoutHook :: IO _
-myLayoutHook = fmap bLayoutHook myTheme

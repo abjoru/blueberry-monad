@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module BMonad.Bar.CoinPricePlugin where
+module BMonad.Bar.Plugin.CoinPrice where
 
 import Xmobar
 
@@ -20,15 +20,16 @@ data Coin = Coin
 
 data CoinConfig = CoinConfig
   { cfgCoins       :: [Coin]
+  , cfgSepColor    :: String
   , cfgRefreshRage :: Int
   } deriving (Read, Show)
 
 instance Exec CoinConfig where
   alias _               = "coinprice"
-  rate (CoinConfig _ r) = r
-  run  (CoinConfig c _) = do
+  rate (CoinConfig _ _ r) = r
+  run  (CoinConfig c s _) = do
     symbols <- fetchData c
-    return $ intercalate "<fc=#504945> | </fc>" $ mkWidget c symbols
+    return $ intercalate "<fc=" ++ s ++ "> | </fc>" $ mkWidget c symbols
 
 data Symbol = Symbol
   { symbolId    :: String

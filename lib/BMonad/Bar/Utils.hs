@@ -1,9 +1,15 @@
 module BMonad.Bar.Utils where
 
-import BMonad.Colors
+import BMonad.Theme
 
-(<~>) :: Colors -> [String] -> [String]
-(<~>) c args = args ++ ["--low", color04 c, "--normal", color08 c, "--high", color02 c]
+(<~>) :: BMonadTheme -> [String] -> [String]
+(<~>) c args = args ++ [ "--low", color04 $ themeColors c
+                       , "--normal", color08 $ themeColors c
+                       , "--high", color02 $ themeColors c
+                       ]
+
+mkArgs :: BMonadTheme -> [String] -> [String] -> [String]
+mkArgs c args extras = concat [c <~> args, ["--"], extra]
 
 fc :: String -> String -> String
 fc color thing = "<fc=" ++ color ++ ">" ++ thing ++ "</fc>"
@@ -14,26 +20,67 @@ fn n thing = "<fn=" ++ show n ++ ">" ++ thing ++ "</fn>"
 fni :: String -> String
 fni = fn 6
 
-fcAqua :: Colors -> String -> String
-fcAqua c args = fc (color15 c) args
+-----------------------------------------------------
+-- Xmobar color helpers
+-----------------------------------------------------
 
-fcRed :: Colors -> String -> String
-fcRed c args = fc (color10 c) args
+fcColor01 :: BMonadTheme -> String -> String
+fcColor01 c args = fc (color01 $ themeColors c) args
 
-fcGreen :: Colors -> String -> String
-fcGreen c args = fc (color11 c) args
+fcColor02 :: BMonadTheme -> String -> String
+fcColor02 c args = fc (color02 $ themeColors c) args
 
-fcYellow :: Colors -> String -> String
-fcYellow c args = fc (color12 c) args
+fcColor03 :: BMonadTheme -> String -> String
+fcColor03 c args = fc (color03 $ themeColors c) args
 
-fcOrange :: Colors -> String -> String
-fcOrange c args = fc (color04 c) args
+--fcOrange :: BMonadTheme -> String -> String
+fcColor04 :: BMonadTheme -> String -> String
+fcColor04 c args = fc (color04 $ themeColors c) args
 
-fcBlue :: Colors -> String -> String
-fcBlue c args = fc (color13 c) args
+fcColor05 :: BMonadTheme -> String -> String
+fcColor05 c args = fc (color05 $ themeColors c) args
 
-fcGray :: Colors -> String -> String
-fcGray c args = fc (color09 c) args
+fcColor06 :: BMonadTheme -> String -> String
+fcColor06 c args = fc (color06 $ themeColors c) args
 
-fcBg :: Colors -> String -> String
-fcBg c args = fc (colorBack c) args
+fcColor07 :: BMonadTheme -> String -> String
+fcColor07 c args = fc (color07 $ themeColors c) args
+
+fcColor08 :: BMonadTheme -> String -> String
+fcColor08 c args = fc (color08 $ themeColors c) args
+
+--fcGray :: BMonadTheme -> String -> String
+fcColor09 :: BMonadTheme -> String -> String
+fcColor09 c args = fc (color09 $ themeColors c) args
+
+--fcRed :: BMonadTheme -> String -> String
+fcColor10 :: BMonadTheme -> String -> String
+fcColor10 c args = fc (color10 $ themeColors c) args
+
+--fcGreen :: BMonadTheme -> String -> String
+fcColor11 :: BMonadTheme -> String -> String
+fcColor11 c args = fc (color11 $ themeColors c) args
+
+--fcYellow :: BMonadTheme -> String -> String
+fcColor12 :: BMonadTheme -> String -> String
+fcColor12 c args = fc (color12 $ themeColors c) args
+
+--fcBlue :: BMonadTheme -> String -> String
+fcColor13 :: BMonadTheme -> String -> String
+fcColor13 c args = fc (color13 $ themeColors c) args
+
+fcColor14 :: BMonadTheme -> String -> String
+fcColor14 c args = fc (color14 $ themeColors c) args
+
+--fcAqua :: BMonadTheme -> String -> String
+fcColor15 :: BMonadTheme -> String -> String
+fcColor15 c args = fc (color15 $ themeColors c) args
+
+fcColor16 :: BMonadTheme -> String -> String
+fcColor16 c args = fc (color16 $ themeColors c) args
+
+fcBg :: BMonadTheme -> String -> String
+fcBg c args = fc (colorBack $ themeColors c) args
+
+fcFg :: BMonadTheme -> String -> String
+fcFg c args = fc (colorFore $ themeColors c) args
