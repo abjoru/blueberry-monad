@@ -1,10 +1,14 @@
 module BMonad.Utils where
 
-import           BMonad.Variables (myWorkspaceIndices)
+import           XMonad
 
-import           Data.Char        as Char
-import qualified Data.Map         as M
-import           Data.Maybe       (fromJust)
+import           BMonad.Variables      (myWorkspaceIndices)
+
+import           Data.Char             as Char
+import qualified Data.Map              as M
+import           Data.Maybe            (fromJust)
+
+import           Graphics.X11.Xinerama (getScreenInfo)
 
 capitalized :: String -> String
 capitalized []          = []
@@ -15,7 +19,7 @@ clickable ws = "<action=xdotool key super+" ++ show i ++ ">" ++ ws ++ "</action>
 
 -- Get X screen counts (i.e. # monitors)
 countScreens :: IO Int
-countScreens = do 
+countScreens = do
   screens <- do
     dpy   <- openDisplay ""
     rects <- getScreenInfo dpy

@@ -9,7 +9,7 @@ import BMonad.Theme
                        ]
 
 mkArgs :: BMonadTheme -> [String] -> [String] -> [String]
-mkArgs c args extras = concat [c <~> args, ["--"], extra]
+mkArgs c args extras = concat [c <~> args, ["--"], extras]
 
 fc :: String -> String -> String
 fc color thing = "<fc=" ++ color ++ ">" ++ thing ++ "</fc>"

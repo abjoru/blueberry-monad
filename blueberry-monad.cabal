@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 214bc3d09bd57fd9c50d053486294e4b98f0401366cf0542294187871cdd4114
+-- hash: 4c8a36e85e3a061e867c67d28cc54cba19772334f6672ea0f0ae75a79f4f6a9a
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -27,26 +27,14 @@ source-repository head
 
 library
   exposed-modules:
-      Blueberry.BarConfig
-      Blueberry.BarWidgets
-      Blueberry.GridSelect
-      Blueberry.KeyBindings
-      Blueberry.Layouts
-      Blueberry.Palette
-      Blueberry.Prompts
-      Blueberry.Scratchpads
-      Blueberry.TreeMenu
-      Blueberry.Utils
-      Blueberry.Variables
       BMonad
       BMonad.Applications
       BMonad.Bar
-      BMonad.Bar.CoinPricePlugin
       BMonad.Bar.Config
-      BMonad.Bar.FearGreedPlugin
+      BMonad.Bar.Plugin.CoinPrice
+      BMonad.Bar.Plugin.FearGreed
       BMonad.Bar.Utils
       BMonad.Bar.Widgets
-      BMonad.Colors
       BMonad.GridSelect
       BMonad.KeyBindings
       BMonad.Layouts
@@ -54,13 +42,10 @@ library
       BMonad.Theme
       BMonad.Utils
       BMonad.Variables
-      Blueberry.Crypto.CoinPrice
-      Blueberry.Crypto.FearGreedIndex
   other-modules:
       Paths_blueberry_monad
   hs-source-dirs:
       lib
-      plugins
   build-depends:
       X11
     , aeson

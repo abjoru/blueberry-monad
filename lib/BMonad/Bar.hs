@@ -1,18 +1,18 @@
 module BMonad.Bar (bmobarPP, mkMobars) where
 
-import XMonad
-import XMonad.Hooks.DynamicLog (xmobarPP, PP(..), xmobarColor, shorten, wrap)
-import XMonad.Util.Run (spawnPipe, hPutStrLn)
+import           XMonad
+import           XMonad.Hooks.DynamicLog (PP (..), shorten, wrap, xmobarColor,
+                                          xmobarPP)
+import           XMonad.Util.Run         (hPutStrLn, spawnPipe)
 
-import BMonad.Theme
-import BMonad.Utils (countScreens)
+import           BMonad.Theme
+import           BMonad.Utils            (countScreens)
 
-import GHC.IO.Handle
+import           GHC.IO.Handle
 
-import Graphics.X11.Xinerama (getScreenInfo)
 
-import System.Directory (getHomeDirectory)
-import System.FilePath (FilePath(..), (</>))
+import           System.Directory        (getHomeDirectory)
+import           System.FilePath         (FilePath (..), (</>))
 
 -- Spawn n blueberry-mobars
 spawnBars :: FilePath -> Int -> IO [Handle]
@@ -22,7 +22,9 @@ spawnBars b 2 = mapM (mkBar b) [(0, "primary"), (1, "secondary")]
 spawnBars b 3 = mapM (mkBar b) [(0, "primary"), (1, "secondary"), (2, "other")]
 spawnBars b 4 = mapM (mkBar b) [(0, "primary"), (1, "secondary"), (2, "other"), (3, "secondary")]
 spawnBars b n = mapM (mkBar b) $ zip (take n [0..]) (["primary", "secondary"] ++ replicate (n - 2) "other")
-  where mkBar b (i, m) = spawnPipe $ b ++ " -x " ++ show i ++ " " ++ m
+  
+mkBar :: FilePath -> (Int, String) -> IO Handle
+mkBar b (i, m) = spawnPipe $ b ++ " -x " ++ show i ++ " " ++ m
 
 mkMobars :: IO [Handle]
 mkMobars = do
@@ -31,7 +33,7 @@ mkMobars = do
   return bars
 
 bmobarPP :: BMonadTheme -> X (Maybe String) -> [Handle] -> PP
-bmobarPP t wCount bars = 
+bmobarPP t wCount bars =
   let cCur   = currentColor t
       cVis   = visibleColor t
       cHid   = hiddenColor t

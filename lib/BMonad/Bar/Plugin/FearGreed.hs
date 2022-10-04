@@ -3,8 +3,6 @@ module BMonad.Bar.Plugin.FearGreed where
 
 import           Xmobar
 
-import           BMonad.Colors
-
 import           Data.Aeson                  (FromJSON, parseJSON, (.:))
 import           Data.Aeson.Types            (withObject)
 

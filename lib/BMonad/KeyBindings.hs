@@ -53,6 +53,7 @@ keysDMenu c =
     , ("M-p m", addName "View manpages"          $ spawn "dm-man")
     , ("M-p r", addName "Listen to online radio" $ spawn "dm-radio")
     , ("M-p s", addName "Search various engines" $ spawn "dm-websearch")
+    , ("M-p x", addName "Open project"           $ spawn "bb-projects")
     ]
 
 keysWorkspaces :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
@@ -61,14 +62,14 @@ keysWorkspaces c =
     [ ("M-S-<Page_Up>",   addName "Move window to next WS and follow" $ shiftTo Next nonNSP >> moveTo Next nonNSP)
     , ("M-S-<Page_Down>", addName "Move window to prev WS and follow" $ shiftTo Prev nonNSP >> moveTo Prev nonNSP)
     -- TODO: These weren't mapped in old config yet worked perfectly fine. Assume default behavior and no need to map!
-    --, ("M-1",             addName "Switch to workspace 1"             $ (windows $ W.greedyView $ myWorkspaces !! 0))
-    --, ("M-2",             addName "Switch to workspace 2"             $ (windows $ W.greedyView $ myWorkspaces !! 1))
-    --, ("M-3",             addName "Switch to workspace 3"             $ (windows $ W.greedyView $ myWorkspaces !! 2))
-    --, ("M-4",             addName "Switch to workspace 4"             $ (windows $ W.greedyView $ myWorkspaces !! 3))
-    --, ("M-S-1",           addName "Send to workspace 1"               $ (windows $ W.shift      $ myWorkspaces !! 0))
-    --, ("M-S-2",           addName "Send to workspace 2"               $ (windows $ W.shift      $ myWorkspaces !! 1))
-    --, ("M-S-3",           addName "Send to workspace 3"               $ (windows $ W.shift      $ myWorkspaces !! 2))
-    --, ("M-S-4",           addName "Send to workspace 4"               $ (windows $ W.shift      $ myWorkspaces !! 3))
+    , ("M-1",             addName "Switch to workspace 1"             $ (windows $ W.greedyView $ myWorkspaces !! 0))
+    , ("M-2",             addName "Switch to workspace 2"             $ (windows $ W.greedyView $ myWorkspaces !! 1))
+    , ("M-3",             addName "Switch to workspace 3"             $ (windows $ W.greedyView $ myWorkspaces !! 2))
+    , ("M-4",             addName "Switch to workspace 4"             $ (windows $ W.greedyView $ myWorkspaces !! 3))
+    , ("M-S-1",           addName "Send to workspace 1"               $ (windows $ W.shift      $ myWorkspaces !! 0))
+    , ("M-S-2",           addName "Send to workspace 2"               $ (windows $ W.shift      $ myWorkspaces !! 1))
+    , ("M-S-3",           addName "Send to workspace 3"               $ (windows $ W.shift      $ myWorkspaces !! 2))
+    , ("M-S-4",           addName "Send to workspace 4"               $ (windows $ W.shift      $ myWorkspaces !! 3))
     ]
   where nonNSP = WSIs (return (\ws -> W.tag ws /= "NSP"))
 

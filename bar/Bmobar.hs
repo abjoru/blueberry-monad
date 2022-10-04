@@ -1,7 +1,9 @@
 module Main where
 
-import Blueberry.Palette
-import Blueberry.BarConfig
+--import Blueberry.Palette
+--import Blueberry.BarConfig
+import BMonad
+import BMonad.Bar.Config
 
 import Xmobar
 
@@ -20,8 +22,10 @@ monitorArgs xs = parse $ ["primary", "secondary", "other"] `intersect` xs
 main :: IO ()
 main = do
   args <- getArgs
-  p    <- gruvboxMobarPalette
+  --p    <- gruvboxMobarPalette
+  p    <- myTheme
   mon  <- selectMonitor p $ monitorArgs args
   cfg  <- configFromArgs mon
+  _    <- putStrLn $ show cfg
 
   xmobar cfg

@@ -15,8 +15,6 @@ import           XMonad.Layout.Tabbed
 import qualified XMonad.StackSet              as W
 import           XMonad.Util.SpawnOnce
 
-import           BMonad.Colors
-
 -- default configuration directories
 myXMonadDir, myXMobarDir :: IO FilePath
 myXMonadDir = getXdgDirectory XdgConfig "xmonad"
@@ -52,15 +50,6 @@ windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace
 -- workspace naming and indices
 myWorkspaces = [" dev ", " www ", " sys ", " gfx "]
 myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..]
-
--- theme for showWName which prints current workspace when you change
-myShowWNameTheme :: SWNConfig
-myShowWNameTheme = def
-  { swn_font    = "xft:Ubuntu:bold:size=60"
-  , swn_fade    = 1.0
-  , swn_bgcolor = "#1c1f24"
-  , swn_color   = "#ffffff"
-  }
 
 myLogHook :: X ()
 myLogHook = fadeInactiveLogHook 1

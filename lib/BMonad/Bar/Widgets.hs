@@ -14,13 +14,13 @@ module BMonad.Bar.Widgets (
 
 import           Xmobar
 
-import           BMonad.Bar.CoinPricePlugin (Coin (..), CoinConfig (..))
-import           BMonad.Bar.FearGreedPlugin (FearGreed (..))
+import           BMonad.Bar.Plugin.CoinPrice (Coin (..), CoinConfig (..))
+import           BMonad.Bar.Plugin.FearGreed (FearGreed (..))
 import           BMonad.Bar.Utils
-import           BMonad.Colors
-import           BMonad.Variables           (myXMonadDir)
+import           BMonad.Theme
+import           BMonad.Variables            (myXMonadDir)
 
-import           System.FilePath            ((</>))
+import           System.FilePath             ((</>))
 
 -- XMonad output
 widgetXmonad :: Runnable
@@ -40,8 +40,8 @@ widgetFearGreed c = Run $ FearGreed (color11 $ themeColors c) (color12 $ themeCo
 
 -- Crypto coin price widget
 widgetCoins :: BMonadTheme -> Runnable
-widgetCoins c = Run $ CoinConfig [ Coin "bitcoin" (color05 $ themeColor c) "\xf15a"
-                                 , Coin "ethereum" (color03 $ themeColor c) "\xfcb9"
+widgetCoins c = Run $ CoinConfig [ Coin "bitcoin" (color05 $ themeColors c) "\xf15a"
+                                 , Coin "ethereum" (color03 $ themeColors c) "\xfcb9"
                                  ] (sepColor c) 300 -- 300/10 = 30 seconds
 
 -- Network load widget

@@ -29,7 +29,7 @@ instance Exec CoinConfig where
   rate (CoinConfig _ _ r) = r
   run  (CoinConfig c s _) = do
     symbols <- fetchData c
-    return $ intercalate "<fc=" ++ s ++ "> | </fc>" $ mkWidget c symbols
+    return $ intercalate ("<fc=" ++ s ++ "> | </fc>") $ mkWidget c symbols
 
 data Symbol = Symbol
   { symbolId    :: String
