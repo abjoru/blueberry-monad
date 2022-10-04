@@ -14,7 +14,7 @@ import           GHC.IO.Handle
 import           System.Directory        (getHomeDirectory)
 import           System.FilePath         (FilePath (..), (</>))
 
--- Spawn n blueberry-mobars
+-- |Spawns <n> blueberry-mobars
 spawnBars :: FilePath -> Int -> IO [Handle]
 spawnBars b 0 = (: []) <$> spawnPipe (b ++ " single") -- blueberry-mobar single
 spawnBars b 1 = (: []) <$> spawnPipe (b ++ " single") -- blueberry-mobar single
@@ -22,16 +22,19 @@ spawnBars b 2 = mapM (mkBar b) [(0, "primary"), (1, "secondary")]
 spawnBars b 3 = mapM (mkBar b) [(0, "primary"), (1, "secondary"), (2, "other")]
 spawnBars b 4 = mapM (mkBar b) [(0, "primary"), (1, "secondary"), (2, "other"), (3, "secondary")]
 spawnBars b n = mapM (mkBar b) $ zip (take n [0..]) (["primary", "secondary"] ++ replicate (n - 2) "other")
-  
+
+-- |Creates a new xmobar instance for a specific monitor
 mkBar :: FilePath -> (Int, String) -> IO Handle
 mkBar b (i, m) = spawnPipe $ b ++ " -x " ++ show i ++ " " ++ m
 
+-- |Creates xmobars for the current monitor layout
 mkMobars :: IO [Handle]
 mkMobars = do
   home <- getHomeDirectory
   bars <- countScreens >>= spawnBars (home </> ".local" </> "bin" </> "blueberry-mobar")
   return bars
 
+-- |Creates default xmobar layout configuration
 bmobarPP :: BMonadTheme -> X (Maybe String) -> [Handle] -> PP
 bmobarPP t wCount bars =
   let cCur   = currentColor t

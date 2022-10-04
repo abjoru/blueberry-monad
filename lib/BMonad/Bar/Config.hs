@@ -11,6 +11,7 @@ import           System.FilePath    ((</>))
 
 data Monitor = Primary | Secondary | Other
 
+icon :: String
 icon = " <icon=haskell_20.xpm/>"
 
 defaultHeight :: Int

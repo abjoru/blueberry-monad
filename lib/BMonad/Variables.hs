@@ -16,9 +16,8 @@ import qualified XMonad.StackSet              as W
 import           XMonad.Util.SpawnOnce
 
 -- default configuration directories
-myXMonadDir, myXMobarDir :: IO FilePath
+myXMonadDir :: IO FilePath
 myXMonadDir = getXdgDirectory XdgConfig "xmonad"
-myXMobarDir = getXdgDirectory XdgConfig "xmobar"
 
 -- sets modkey to super/windows key
 myModMask :: KeyMask

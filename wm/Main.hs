@@ -19,10 +19,11 @@ main :: IO ()
 main = do
   mobars  <- mkMobars
   apps    <- loadApplications
+  games   <- myGames
   theme   <- myTheme
   xdirs   <- getDirectories
 
-  let myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys apps) $ ewmh $ docks $ def
+  let myConfig = addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) (myKeys theme apps games) $ ewmh $ docks $ def
                   { manageHook = myManageHook <+> manageDocks
                   , handleEventHook = trayerPaddingXmobarEventHook
                   , modMask = myModMask
@@ -31,7 +32,7 @@ main = do
                   , layoutHook = myLayouts theme
                   , workspaces = myWorkspaces
                   , borderWidth = themeBorderWidth theme
-                  , normalBorderColor = normColor theme
+                  , normalBorderColor = unfocusColor theme
                   , focusedBorderColor = focusColor theme
                   , logHook = dynamicLogWithPP (bmobarPP theme windowCount mobars)
                   }

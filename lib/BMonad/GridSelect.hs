@@ -27,9 +27,9 @@ myGridConfig t colorizer = (buildDefaultGSConfig myColorizer)
   , gs_font = themeFont t
   }
 
-spawnSelected' :: [(String, String)] -> X ()
-spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
-  where conf = def
+spawnSelected' :: BMonadTheme -> [(String, String)] -> X ()
+spawnSelected' theme lst = gridselect conf lst >>= flip whenJust spawn
+  where conf = mkGridConfig theme myColorizer
 
 spawnSelectedIO :: IO [(String, String)] -> X ()
 spawnSelectedIO lst = io lst >>= spawnSelected'

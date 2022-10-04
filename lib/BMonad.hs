@@ -1,23 +1,24 @@
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
 module BMonad (
+  BMonadTheme(..),
+  Monitor(..),
+
   myKeys,
-  showKeybindings,
   myModMask,
   myTerminal,
   myBrowser,
   myEditor,
   myWorkspaces,
-  windowCount,
   myLogHook,
   myStartupHook,
   myManageHook,
   myLayouts,
   myTheme,
+  myGames,
+
   loadApplications,
   selectMonitor,
-  BMonadTheme(..),
-  Monitor(..)
+  showKeybindings,
+  windowCount
   ) where
 
 import           BMonad.Applications
@@ -28,16 +29,23 @@ import           BMonad.ManageHooks
 import           BMonad.Theme
 import           BMonad.Utils
 import           BMonad.Variables
+import           BMonad.Games
 
-import           System.Directory    (XdgDirectory (XdgConfig), getXdgDirectory)
+import           System.Directory    (XdgDirectory (XdgConfig), getXdgDirectory, getHomeDirectory)
 import           System.FilePath     ((</>))
 
 myTheme :: IO BMonadTheme
 myTheme = fmap f (getXdgDirectory XdgConfig "xmonad")
   where f d = BMonadTheme
                 { themeColors      = gruvboxDark
-                , themeFont        = "xft:Mononoki Nerd Font:pixelsize=12:antialias=true:hinting=true"
+                , themeFont        = "xft:Mononoki Nerd Font:pixelsize=11:antialias=true:hinting=true"
                 , themeIconFolder  = (d </> "xpm")
                 , themeBarAlpha    = 255
                 , themeBorderWidth = 2
                 }
+
+myGames :: IO [(String, FilePath)]
+myGames = do
+  home <- getHomeDirectory
+  games <- listTitles $ home </> "Games"
+  return games

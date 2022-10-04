@@ -61,6 +61,7 @@ widgetCpu c = Run $ MultiCpu (c <~> [ "-t", "\xf108 <total0>%/<total1>%"
                                     , "-H", "70"
                                     ]) 10
 
+-- Memory load widget
 widgetMem :: BMonadTheme -> Runnable
 widgetMem c = Run $ Memory (c <~> [ "-t", fcColor13 c "\xf233 " ++ " <used>" ++ fcColor13 c "mb (" ++ "<usedratio>" ++ fcColor13 c "%)"
                                   , "-L", "20"

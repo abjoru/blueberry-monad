@@ -1,6 +1,6 @@
 module BMonad.KeyBindings (myKeys, showKeybindings) where
 
-import           BMonad.Applications          (BCategory, gridSelect')
+import           BMonad.Applications          (BCategory, gridSelect', gridSelectMerge)
 import           BMonad.GridSelect            (spawnSelected')
 import           BMonad.Variables
 
@@ -33,11 +33,11 @@ keysEssentials c =
     , ("M-S-<Return>", addName "Run prompt"          $ spawn "~/.local/bin/dm-run")
     ]
 
-keysGridSelect :: [BCategory] -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysGridSelect apps c = 
+keysGridSelect :: BMonadTheme -> [BCategory] -> [(String, FilePath)]-> XConfig l -> [((KeyMask, KeySym), NamedAction)]
+keysGridSelect theme apps games c = 
   subKeys c "GridSelect"
     [ ("C-g f", addName "Select favorite apps" $ spawnSelected' $ gridSelect' "favorites" apps)
-    , ("C-g g", addName "Select games"         $ spawnSelected' $ gridSelect' "games" apps)
+    , ("C-g g", addName "Select games"         $ spawnSelected' $ gridSelectMerge "games" apps games)
     , ("C-g i", addName "Select internet apps" $ spawnSelected' $ gridSelect' "internet" apps)
     , ("C-g o", addName "Select office apps"   $ spawnSelected' $ gridSelect' "office" apps)
     , ("C-g u", addName "Select settings apps" $ spawnSelected' $ gridSelect' "settings" apps)
@@ -61,7 +61,6 @@ keysWorkspaces c =
   subKeys c "Workspaces"
     [ ("M-S-<Page_Up>",   addName "Move window to next WS and follow" $ shiftTo Next nonNSP >> moveTo Next nonNSP)
     , ("M-S-<Page_Down>", addName "Move window to prev WS and follow" $ shiftTo Prev nonNSP >> moveTo Prev nonNSP)
-    -- TODO: These weren't mapped in old config yet worked perfectly fine. Assume default behavior and no need to map!
     , ("M-1",             addName "Switch to workspace 1"             $ (windows $ W.greedyView $ myWorkspaces !! 0))
     , ("M-2",             addName "Switch to workspace 2"             $ (windows $ W.greedyView $ myWorkspaces !! 1))
     , ("M-3",             addName "Switch to workspace 3"             $ (windows $ W.greedyView $ myWorkspaces !! 2))
@@ -106,13 +105,13 @@ keysMultimedia c =
     , ("<XF86AudioRaiseVolume>", addName "Raise vol" $ spawn "amixer set Master 5%+ unmute")
     ]
 
-myKeys :: [BCategory] -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
-myKeys apps c = keysEssentials c
-                ^++^ keysGridSelect apps c
-                ^++^ keysWorkspaces c
-                ^++^ keysWindows c
-                ^++^ keysMultimedia c
-                ^++^ keysDMenu c
+myKeys :: BMonadTheme -> [BCategory] -> [(String, FilePath)] -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
+myKeys theme apps games c = keysEssentials c
+                          ^++^ keysGridSelect theme apps games c
+                          ^++^ keysWorkspaces c
+                          ^++^ keysWindows c
+                          ^++^ keysMultimedia c
+                          ^++^ keysDMenu c
 
 subKeys :: XConfig l -> String -> [(String, NamedAction)] -> [((KeyMask, KeySym), NamedAction)]
 subKeys c str ks = subtitle' str : mkNamedKeymap c ks

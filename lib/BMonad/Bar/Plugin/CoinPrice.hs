@@ -25,7 +25,7 @@ data CoinConfig = CoinConfig
   } deriving (Read, Show)
 
 instance Exec CoinConfig where
-  alias _               = "coinprice"
+  alias _                 = "coinprice"
   rate (CoinConfig _ _ r) = r
   run  (CoinConfig c s _) = do
     symbols <- fetchData c

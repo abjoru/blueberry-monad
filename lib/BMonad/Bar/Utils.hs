@@ -33,7 +33,6 @@ fcColor02 c args = fc (color02 $ themeColors c) args
 fcColor03 :: BMonadTheme -> String -> String
 fcColor03 c args = fc (color03 $ themeColors c) args
 
---fcOrange :: BMonadTheme -> String -> String
 fcColor04 :: BMonadTheme -> String -> String
 fcColor04 c args = fc (color04 $ themeColors c) args
 
@@ -49,30 +48,24 @@ fcColor07 c args = fc (color07 $ themeColors c) args
 fcColor08 :: BMonadTheme -> String -> String
 fcColor08 c args = fc (color08 $ themeColors c) args
 
---fcGray :: BMonadTheme -> String -> String
 fcColor09 :: BMonadTheme -> String -> String
 fcColor09 c args = fc (color09 $ themeColors c) args
 
---fcRed :: BMonadTheme -> String -> String
 fcColor10 :: BMonadTheme -> String -> String
 fcColor10 c args = fc (color10 $ themeColors c) args
 
---fcGreen :: BMonadTheme -> String -> String
 fcColor11 :: BMonadTheme -> String -> String
 fcColor11 c args = fc (color11 $ themeColors c) args
 
---fcYellow :: BMonadTheme -> String -> String
 fcColor12 :: BMonadTheme -> String -> String
 fcColor12 c args = fc (color12 $ themeColors c) args
 
---fcBlue :: BMonadTheme -> String -> String
 fcColor13 :: BMonadTheme -> String -> String
 fcColor13 c args = fc (color13 $ themeColors c) args
 
 fcColor14 :: BMonadTheme -> String -> String
 fcColor14 c args = fc (color14 $ themeColors c) args
 
---fcAqua :: BMonadTheme -> String -> String
 fcColor15 :: BMonadTheme -> String -> String
 fcColor15 c args = fc (color15 $ themeColors c) args
 

@@ -10,7 +10,8 @@ module BMonad.Applications (
   findByCategory,
   appLauncher,
   gridSelect,
-  gridSelect'
+  gridSelect',
+  gridSelectMerge
   ) where
 
 import           BMonad.Utils        (capitalized)
@@ -116,3 +117,6 @@ gridSelect (BCategory _ apps) = map (\a -> ((bAppName a), (appLauncher a))) apps
 gridSelect' :: String -> [BCategory] -> [(String, String)]
 gridSelect' s cs = map f $ findByCategory s cs
   where f a = (bAppName a, appLauncher a)
+
+gridSelectMerge :: String -> [BCategory] -> [(String, FilePath)] -> [(String, String)]
+gridSelectMerge s cs ex = (gridSelect' s cs) ++ map (\(a, b) -> (a, show b)) ex
