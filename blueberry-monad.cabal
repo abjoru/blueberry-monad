@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4c8a36e85e3a061e867c67d28cc54cba19772334f6672ea0f0ae75a79f4f6a9a
+-- hash: d708e3bad9697a5bef27b69d477f4c80df977da3ba0bbb9a2f078c84b21e63bf
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -35,6 +35,7 @@ library
       BMonad.Bar.Plugin.FearGreed
       BMonad.Bar.Utils
       BMonad.Bar.Widgets
+      BMonad.Games
       BMonad.GridSelect
       BMonad.KeyBindings
       BMonad.Layouts

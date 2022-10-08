@@ -6,7 +6,6 @@ import           XMonad
 import           XMonad.Actions.MouseResize
 import           XMonad.Hooks.ManageDocks            (avoidStruts)
 
-import           XMonad.Layout.Accordion
 import           XMonad.Layout.GridVariants          (Grid (Grid))
 import           XMonad.Layout.LayoutModifier
 import           XMonad.Layout.LimitWindows          (limitWindows)
@@ -16,14 +15,11 @@ import           XMonad.Layout.MultiToggle.Instances (StdTransformers (MIRROR, N
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.Renamed               (Rename (Replace), renamed)
 import           XMonad.Layout.ResizableTile
-import           XMonad.Layout.ShowWName
 import           XMonad.Layout.Simplest
 import           XMonad.Layout.SimplestFloat
 import           XMonad.Layout.Spacing
-import           XMonad.Layout.Spiral
 import           XMonad.Layout.SubLayouts
 import           XMonad.Layout.Tabbed
-import           XMonad.Layout.ThreeColumns
 import qualified XMonad.Layout.ToggleLayouts         as T (ToggleLayout (Toggle),
                                                            toggleLayouts)
 import           XMonad.Layout.WindowArranger        (WindowArrangerMsg (..),
@@ -32,7 +28,7 @@ import           XMonad.Layout.WindowNavigation
 
 import           BMonad.Theme
 
--- Makes setting the spacingRaw simpler to write. The spacingRaw 
+-- Makes setting the spacingRaw simpler to write. The spacingRaw
 -- module adds a configurable amount of space around windows.
 mySpacing :: Integer -> l a -> ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True

@@ -93,11 +93,11 @@ secondaryMonitor :: BMonadTheme -> IO Config
 secondaryMonitor t = do
   let (<|>) a b = a ++ fc (sepColor t) " | " ++ b
       cmds      = [widgetXmonad, widgetCoins t, widgetFearGreed t, widgetDate t, widgetMem t, widgetDisk t]
-      tmpl      = icon 
-                  <|> "%UnsafeStdinReader% }{ %coinprice%" 
-                  <|> "%fg%" 
-                  <|> "%memory%" 
-                  <|> "%disku%" 
+      tmpl      = icon
+                  <|> "%UnsafeStdinReader% }{ %coinprice%"
+                  <|> "%fg%"
+                  <|> "%memory%"
+                  <|> "%disku%"
                   <|> "%date% "
 
   return $ mkConfig t cmds tmpl

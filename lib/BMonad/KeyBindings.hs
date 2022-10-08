@@ -1,7 +1,9 @@
 module BMonad.KeyBindings (myKeys, showKeybindings) where
 
-import           BMonad.Applications          (BCategory, gridSelect', gridSelectMerge)
+import           BMonad.Applications          (BCategory, gridSelect',
+                                               gridSelectMerge)
 import           BMonad.GridSelect            (spawnSelected')
+import           BMonad.Theme
 import           BMonad.Variables
 
 import           Data.Char                    (toUpper)
@@ -24,7 +26,7 @@ import           System.Exit                  (exitSuccess)
 import           System.IO                    (hClose, hPutStr, hPutStrLn)
 
 keysEssentials :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysEssentials c = 
+keysEssentials c =
   subKeys c "XMonad Essentials"
     [ ("M-S-q",        addName "Quit XMonad"         $ io exitSuccess)
     , ("M-S-c",        addName "Kill focused window" $ kill1)
@@ -34,21 +36,21 @@ keysEssentials c =
     ]
 
 keysGridSelect :: BMonadTheme -> [BCategory] -> [(String, FilePath)]-> XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysGridSelect theme apps games c = 
+keysGridSelect t apps games c =
   subKeys c "GridSelect"
-    [ ("C-g f", addName "Select favorite apps" $ spawnSelected' $ gridSelect' "favorites" apps)
-    , ("C-g g", addName "Select games"         $ spawnSelected' $ gridSelectMerge "games" apps games)
-    , ("C-g i", addName "Select internet apps" $ spawnSelected' $ gridSelect' "internet" apps)
-    , ("C-g o", addName "Select office apps"   $ spawnSelected' $ gridSelect' "office" apps)
-    , ("C-g u", addName "Select settings apps" $ spawnSelected' $ gridSelect' "settings" apps)
-    , ("C-g s", addName "Select system apps"   $ spawnSelected' $ gridSelect' "system" apps)
+    [ ("C-g f", addName "Select favorite apps" $ spawnSelected' t $ gridSelect' "favorites" apps)
+    , ("C-g g", addName "Select games"         $ spawnSelected' t $ gridSelectMerge "games" apps games)
+    , ("C-g i", addName "Select internet apps" $ spawnSelected' t $ gridSelect' "internet" apps)
+    , ("C-g o", addName "Select office apps"   $ spawnSelected' t $ gridSelect' "office" apps)
+    , ("C-g u", addName "Select settings apps" $ spawnSelected' t $ gridSelect' "settings" apps)
+    , ("C-g s", addName "Select system apps"   $ spawnSelected' t $ gridSelect' "system" apps)
     ]
 
 keysDMenu :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysDMenu c = 
+keysDMenu c =
   subKeys c "DMenu scripts"
     [ ("M-p p", addName "Passmenu"               $ spawn "passmenu -p \"Pass: \"")
-    , ("M-p e", addName "Edit config file"       $ spawn "dm-configedit")
+    , ("M-p e", addName "Edit config file"       $ spawn "dm-confedit")
     , ("M-p k", addName "Kill processes"         $ spawn "dm-kill")
     , ("M-p m", addName "View manpages"          $ spawn "dm-man")
     , ("M-p r", addName "Listen to online radio" $ spawn "dm-radio")
@@ -57,7 +59,7 @@ keysDMenu c =
     ]
 
 keysWorkspaces :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysWorkspaces c = 
+keysWorkspaces c =
   subKeys c "Workspaces"
     [ ("M-S-<Page_Up>",   addName "Move window to next WS and follow" $ shiftTo Next nonNSP >> moveTo Next nonNSP)
     , ("M-S-<Page_Down>", addName "Move window to prev WS and follow" $ shiftTo Prev nonNSP >> moveTo Prev nonNSP)
@@ -73,7 +75,7 @@ keysWorkspaces c =
   where nonNSP = WSIs (return (\ws -> W.tag ws /= "NSP"))
 
 keysWindows :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysWindows c = 
+keysWindows c =
   subKeys c "Windows"
     [ ("M-<Up>",       addName "Move focused window up"                   $ sendMessage (MoveUp 10))
     , ("M-<Down>",     addName "Move focused window down"                 $ sendMessage (MoveDown 10))
@@ -88,14 +90,14 @@ keysWindows c =
     ]
 
 keysMonitors :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysMonitors c = 
+keysMonitors c =
   subKeys c "Monitors"
     [ ("M-.", addName "Switch focus to next monitor" $ nextScreen)
     , ("M-,", addName "Switch focus to prev monitor" $ prevScreen)
     ]
 
 keysMultimedia :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysMultimedia c = 
+keysMultimedia c =
   subKeys c "Multimedia keys"
     [ ("<XF86AudioPlay>", addName "mocp play" $ spawn "mocp --play")
     , ("<XF86AudioPrev>", addName "mocp prev" $ spawn "mocp --previous")

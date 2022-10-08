@@ -1,13 +1,13 @@
 module Main (main) where
 
-import BMonad
-import BMonad.Bar.Config
+import           BMonad
+import           BMonad.Bar.Config
 
-import Xmobar
+import           Xmobar
 
-import Data.List (intersect)
+import           Data.List          (intersect)
 
-import System.Environment
+import           System.Environment
 
 -- Get monitor specification from args
 monitorArgs :: [String] -> Maybe Monitor

@@ -1,19 +1,19 @@
 module BMonad.Games (listTitles) where
 
-import Control.Applicative
-import Control.Monad
+import           Control.Applicative
+import           Control.Monad
 
-import System.Directory
-import System.FilePath
+import           System.Directory
+import           System.FilePath
 
-import Data.Tree
-import Data.List (find)
-import Data.Maybe (catMaybes)
-import Data.Ini
+import           Data.Ini
+import           Data.List           (find)
+import           Data.Maybe          (catMaybes)
+import           Data.Tree
 
-import Text.Regex.Posix
+import           Text.Regex.Posix
 
-import XMonad
+import           XMonad
 
 -- |RegEx Context
 type NameMatch = (String, String, String, [String])
@@ -31,7 +31,7 @@ maybeLauncher = find (\a -> ".sh" == takeExtension a)
 
 -- |Combine game dir with launcher script from contents
 mkEntry :: FilePath -> Maybe FilePath -> Maybe (String, FilePath)
-mkEntry a (Just b) = Just (gameName $ takeBaseName a, b)
+mkEntry a (Just b) = Just (gameTitle $ takeBaseName a, b)
 mkEntry a Nothing  = Nothing
 
 -- |Convert game folder into a pair (name, launcher)

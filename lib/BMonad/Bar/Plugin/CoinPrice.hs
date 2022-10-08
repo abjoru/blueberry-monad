@@ -1,16 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module BMonad.Bar.Plugin.CoinPrice where
 
-import Xmobar
+import           Xmobar
 
-import Data.List
-import Data.Aeson
-import Data.Aeson.Types
+import           Data.Aeson
+import           Data.Aeson.Types
+import           Data.List
 
-import Text.Printf
+import           Text.Printf
 
-import Network.HTTP.Client.Conduit
-import Network.HTTP.Simple (getResponseBody, httpJSON)
+import           Network.HTTP.Client.Conduit
+import           Network.HTTP.Simple         (getResponseBody, httpJSON)
 
 data Coin = Coin
   { coinId            :: String

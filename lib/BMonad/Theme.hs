@@ -1,31 +1,31 @@
 module BMonad.Theme where
 
-import XMonad (Dimension)
-import XMonad.Layout.Tabbed (Theme(..), def)
+import           XMonad               (Dimension)
+import           XMonad.Layout.Tabbed (Theme (..), def)
 
 type Font = String
 
 type Color = String
 
 data Colors = Colors
-  { colorBack   :: Color
-  , colorFore   :: Color
-  , color01     :: Color
-  , color02     :: Color
-  , color03     :: Color
-  , color04     :: Color
-  , color05     :: Color
-  , color06     :: Color
-  , color07     :: Color
-  , color08     :: Color
-  , color09     :: Color
-  , color10     :: Color
-  , color11     :: Color
-  , color12     :: Color
-  , color13     :: Color
-  , color14     :: Color
-  , color15     :: Color
-  , color16     :: Color
+  { colorBack :: Color
+  , colorFore :: Color
+  , color01   :: Color
+  , color02   :: Color
+  , color03   :: Color
+  , color04   :: Color
+  , color05   :: Color
+  , color06   :: Color
+  , color07   :: Color
+  , color08   :: Color
+  , color09   :: Color
+  , color10   :: Color
+  , color11   :: Color
+  , color12   :: Color
+  , color13   :: Color
+  , color14   :: Color
+  , color15   :: Color
+  , color16   :: Color
   }
 
 data BMonadTheme = BMonadTheme
@@ -58,7 +58,7 @@ dimColor t = color09 $ themeColors t
 
 -- |XMonad focused window boarder color
 focusColor :: BMonadTheme -> Color
-focusColor t = color04 $ themeColors t 
+focusColor t = color04 $ themeColors t
 
 -- |XMonad unfocused (normal) window border color
 unfocusColor :: BMonadTheme -> Color
@@ -117,7 +117,7 @@ tabTheme t = def
 -----------------------------------------------------
 
 gruvboxDark :: Colors
-gruvboxDark = Colors 
+gruvboxDark = Colors
   { colorBack = "#282828"
   , colorFore = "#ebdbb2"
   , color01   = "#282828"

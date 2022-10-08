@@ -46,7 +46,7 @@ widgetCoins c = Run $ CoinConfig [ Coin "bitcoin" (color05 $ themeColors c) "\xf
 
 -- Network load widget
 widgetNet :: BMonadTheme -> Runnable
-widgetNet c = Run $ DynNetwork (c <~> [ "-t", fcColor13 c "\xf0aa " ++ "<tx>" ++ fcColor13 c "kb" ++ fcBg c " | " ++ fcColor15 c "\xf0ab" ++ "<rx>" ++ fcColor15 c "kb"
+widgetNet c = Run $ DynNetwork (c <~> [ "-t", fcColor13 c "\xf0aa " ++ "<tx>" ++ fcColor13 c "kb" ++ fcBg c " | " ++ fcColor15 c "\xf0ab " ++ "<rx>" ++ fcColor15 c "kb"
                                       , "-L", "20"
                                       , "-H", "1024000"
                                       , "-m", "5"

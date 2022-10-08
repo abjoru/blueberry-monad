@@ -1,6 +1,6 @@
 module BMonad.Bar.Utils where
 
-import BMonad.Theme
+import           BMonad.Theme
 
 (<~>) :: BMonadTheme -> [String] -> [String]
 (<~>) c args = args ++ [ "--low", color04 $ themeColors c

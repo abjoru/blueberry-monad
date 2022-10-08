@@ -5,8 +5,8 @@ import           BMonad.Variables           (myWorkspaces)
 import           Data.Monoid
 
 import           XMonad
-import           XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat, isDialog,
-                                             isFullscreen)
+import           XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat,
+                                             isDialog, isFullscreen)
 
 myManageHook :: XMonad.Query (Endo WindowSet)
 myManageHook = composeAll . concat $

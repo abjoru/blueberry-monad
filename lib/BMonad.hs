@@ -23,15 +23,16 @@ module BMonad (
 
 import           BMonad.Applications
 import           BMonad.Bar.Config
+import           BMonad.Games
 import           BMonad.KeyBindings
 import           BMonad.Layouts
 import           BMonad.ManageHooks
 import           BMonad.Theme
 import           BMonad.Utils
 import           BMonad.Variables
-import           BMonad.Games
 
-import           System.Directory    (XdgDirectory (XdgConfig), getXdgDirectory, getHomeDirectory)
+import           System.Directory    (XdgDirectory (XdgConfig),
+                                      getHomeDirectory, getXdgDirectory)
 import           System.FilePath     ((</>))
 
 myTheme :: IO BMonadTheme
