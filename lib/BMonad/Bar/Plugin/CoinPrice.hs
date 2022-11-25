@@ -21,7 +21,7 @@ data Coin = Coin
 data CoinConfig = CoinConfig
   { cfgCoins       :: [Coin]
   , cfgSepColor    :: String
-  , cfgRefreshRage :: Int
+  , cfgRefreshRate :: Int
   } deriving (Read, Show)
 
 instance Exec CoinConfig where

@@ -47,7 +47,7 @@ windowCount :: X (Maybe String)
 windowCount = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current . windowset
 
 -- workspace naming and indices
-myWorkspaces = [" dev ", " www ", " sys ", " gfx "]
+myWorkspaces = [" alpha ", " bravo ", " charlie ", " delta ", " dev ", " www ", " sys ", " gfx "]
 myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..]
 
 myLogHook :: X ()
