@@ -63,9 +63,10 @@ singleMonitor t = do
   wup <- widgetUpdates t
 
   let (<|>) a b = a ++ fc (sepColor t) " | " ++ b
-      cmds      = [wup, widgetTrayerPadding, widgetXmonad, widgetDate t, widgetMem t, widgetNet t, widgetDisk t, widgetWeather t]
+      cmds      = [wup, widgetTrayerPadding, widgetXmonad, widgetCoins t, widgetFearGreed t, widgetDate t, widgetMem t, widgetNet t, widgetDisk t]
       tmpl      = icon
-                  <|> "%UnsafeStdinReader% }{ %KFXE%"
+                  <|> "%UnsafeStdinReader% }{ %coinprice%"
+                  <|> "%fg%"
                   <|> "%memory%"
                   <|> "%disku%"
                   <|> "%dynnetwork%"
