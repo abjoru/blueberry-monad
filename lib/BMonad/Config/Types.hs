@@ -60,14 +60,14 @@ data Scheme = Scheme
   , color14   :: Color
   , color15   :: Color
   , color16   :: Color
-  }
+  } deriving (Show, Eq)
 
 data Theme = Theme
   { themeColorScheme :: Scheme
   , themeFont        :: Font
   , themeBarAlpha    :: Int
   , themeBorderWidth :: Dimension
-  }
+  } deriving (Show, Eq)
 
 data GridSettings = GridSettings
   { gsCellHeight   :: Integer
@@ -75,7 +75,7 @@ data GridSettings = GridSettings
   , gsCellPadding  :: Integer
   , gsOriginFractX :: Double
   , gsOriginFractY :: Double
-  }
+  } deriving (Show, Eq)
 
 data MobarSettings = MobarSettings
   { msFont             :: Maybe Font
@@ -90,7 +90,7 @@ data MobarSettings = MobarSettings
   , msAllDesktops      :: Bool
   , msPersistent       :: Bool
   , msAdditionalFonts  :: [Font]
-  }
+  } deriving (Show, Eq)
 
 data Config = Config
   { cfgTheme         :: Theme
@@ -106,19 +106,19 @@ data Config = Config
   , cfgLogLevel      :: Priority
   , cfgGridSelect    :: GridSettings
   , cfgMobarSettings :: MobarSettings
-  }
+  } deriving (Show, Eq)
 
 data App = App
   { appName     :: String
   , appDesc     :: String
   , appLauncher :: Maybe String
   , appCommand  :: Maybe String
-  }
+  } deriving (Show, Eq)
 
 data Category = Category
   { categoryName :: String
   , categoryApps :: [App]
-  }
+  } deriving (Show, Eq)
 
 {-------------------------------------------
   Reader types
@@ -349,7 +349,13 @@ defaultMobarSettings = MobarSettings
   , msHideOnStartup    = False
   , msAllDesktops      = False
   , msPersistent       = True
-  , msAdditionalFonts  = []
+  , msAdditionalFonts  = [ "xft:Symbola-9"
+                         , "xft:Symbola-10"
+                         , "xft:Symbola-11"
+                         , "xft:Symbola-12"
+                         , "xft:Hack-7"
+                         , "xft:FontAwesome-9"
+                         ]
   }
 
 {-------------------------------------------

@@ -45,7 +45,7 @@ widgetCoins s = M.Run $ WidgetConfig
 -- |Network load widget.
 widgetNet :: Scheme -> M.Runnable
 widgetNet s = M.Run $ M.DynNetwork
-  (s <~> [ "-t", fcColor13 s "\xf0aa <tx>" ++ fcColor13 s "kb" ++ fcBg s " | " ++ fcColor15 s "\xf0ab <rx>" ++ fcColor15 s "kb"
+  (s <~> [ "-t", fcColor13 s "\xf0aa " ++ "<tx>" ++ fcColor13 s "kb" ++ fcBg s " | " ++ fcColor15 s "\xf0ab " ++ "<rx>" ++ fcColor15 s "kb"
          , "-L", "20"
          , "-H", "1024000"
          , "-m", "5"
@@ -56,7 +56,7 @@ widgetNet s = M.Run $ M.DynNetwork
 -- |CPU load widget.
 widgetCpu :: Scheme -> M.Runnable
 widgetCpu s = M.Run $ M.MultiCpu
-  (s <~> [ "-t", "\xf108 <total0>%/<total1>%"
+  (s <~> [ "-t", "\xf108 " ++ "<total0>%/<total1>%"
          , "-L", "30"
          , "-H", "70"
          ]) 10
@@ -64,7 +64,7 @@ widgetCpu s = M.Run $ M.MultiCpu
 -- |Memory load widget.
 widgetMem :: Scheme -> M.Runnable
 widgetMem s = M.Run $ M.Memory
-  (s <~> [ "-t", fcColor13 s "\xf233 <used>" ++ fcColor13 s "mb (<usedratio>" ++ fcColor13 s "%)"
+  (s <~> [ "-t", fcColor13 s "\xf233 " ++ "<used>" ++ fcColor13 s "mb (<usedratio>" ++ fcColor13 s "%)"
          , "-L", "20"
          , "-H", "80"
          ]) 10
@@ -72,6 +72,6 @@ widgetMem s = M.Run $ M.Memory
 -- |HD load widget.
 widgetDisk :: Scheme -> M.Runnable
 widgetDisk s = M.Run $ M.DiskU
-  [("/", fcColor04 s "\xf0c7 hdd: <free> " ++ fcColor04 s "free")]
+  [("/", fcColor04 s "\xf0c7 " ++ "hdd: <free> " ++ fcColor04 s "free")]
   (s <~> ["-L", "20", "-H", "70", "-m", "1", "-p", "3"])
   20

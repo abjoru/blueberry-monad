@@ -1,12 +1,6 @@
 module Main (main) where
 
-import           BMonad                    (Config (cfgModMask, cfgTerminal, cfgTheme, cfgWorkspaces),
-                                            Scheme (color04, color09),
-                                            Theme (themeBorderWidth, themeColorScheme),
-                                            bmobarPP, bmonadBars, bmonadConfig,
-                                            bmonadKeys, bmonadLayout,
-                                            bmonadManageHook, bmonadStartupHook,
-                                            showKeys)
+import           BMonad                    
 import           BMonad.Utils              (countWindows)
 
 import           XMonad                    (Default (def),
@@ -21,9 +15,10 @@ import           XMonad.Util.NamedActions  (addDescrKeys')
 
 main :: IO ()
 main = do
-  bars  <- bmonadBars
   cfg   <- bmonadConfig
+  bars  <- bmonadBars
   xdirs <- getDirectories
+  _     <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
 
   let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
              $ ewmh
