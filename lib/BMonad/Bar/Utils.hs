@@ -1,15 +1,40 @@
-module BMonad.Bar.Utils where
+module BMonad.Bar.Utils (
+  (<~>),
+  mkArgs,
+  fc,
+  fn,
+  fni,
 
-import           BMonad.Theme
+  fcColor01,
+  fcColor02,
+  fcColor03,
+  fcColor04,
+  fcColor05,
+  fcColor06,
+  fcColor07,
+  fcColor08,
+  fcColor09,
+  fcColor10,
+  fcColor11,
+  fcColor12,
+  fcColor13,
+  fcColor14,
+  fcColor15,
+  fcColor16,
+  fcBg,
+  fcFg
+) where
 
-(<~>) :: BMonadTheme -> [String] -> [String]
-(<~>) c args = args ++ [ "--low", color04 $ themeColors c
-                       , "--normal", color08 $ themeColors c
-                       , "--high", color02 $ themeColors c
+import           BMonad.Config
+
+(<~>) :: Scheme -> [String] -> [String]
+(<~>) s args = args ++ [ "--low", color04 s
+                       , "--normal", color08 s
+                       , "--high", color02 s
                        ]
 
-mkArgs :: BMonadTheme -> [String] -> [String] -> [String]
-mkArgs c args extras = concat [c <~> args, ["--"], extras]
+mkArgs :: Scheme -> [String] -> [String] -> [String]
+mkArgs s args extras = concat [s <~> args, ["--"], extras]
 
 fc :: String -> String -> String
 fc color thing = "<fc=" ++ color ++ ">" ++ thing ++ "</fc>"
@@ -20,60 +45,60 @@ fn n thing = "<fn=" ++ show n ++ ">" ++ thing ++ "</fn>"
 fni :: String -> String
 fni = fn 6
 
------------------------------------------------------
--- Xmobar color helpers
------------------------------------------------------
+{-----------------------------------------------------
+  Color Helpers
+-----------------------------------------------------}
 
-fcColor01 :: BMonadTheme -> String -> String
-fcColor01 c args = fc (color01 $ themeColors c) args
+fcColor01 :: Scheme -> String -> String
+fcColor01 s = fc $ color01 s
 
-fcColor02 :: BMonadTheme -> String -> String
-fcColor02 c args = fc (color02 $ themeColors c) args
+fcColor02 :: Scheme -> String -> String
+fcColor02 s = fc $ color02 s
 
-fcColor03 :: BMonadTheme -> String -> String
-fcColor03 c args = fc (color03 $ themeColors c) args
+fcColor03 :: Scheme -> String -> String
+fcColor03 s = fc $ color03 s
 
-fcColor04 :: BMonadTheme -> String -> String
-fcColor04 c args = fc (color04 $ themeColors c) args
+fcColor04 :: Scheme -> String -> String
+fcColor04 s = fc $ color04 s
 
-fcColor05 :: BMonadTheme -> String -> String
-fcColor05 c args = fc (color05 $ themeColors c) args
+fcColor05 :: Scheme -> String -> String
+fcColor05 s = fc $ color05 s
 
-fcColor06 :: BMonadTheme -> String -> String
-fcColor06 c args = fc (color06 $ themeColors c) args
+fcColor06 :: Scheme -> String -> String
+fcColor06 s = fc $ color06 s
 
-fcColor07 :: BMonadTheme -> String -> String
-fcColor07 c args = fc (color07 $ themeColors c) args
+fcColor07 :: Scheme -> String -> String
+fcColor07 s = fc $ color07 s
 
-fcColor08 :: BMonadTheme -> String -> String
-fcColor08 c args = fc (color08 $ themeColors c) args
+fcColor08 :: Scheme -> String -> String
+fcColor08 s = fc $ color08 s
 
-fcColor09 :: BMonadTheme -> String -> String
-fcColor09 c args = fc (color09 $ themeColors c) args
+fcColor09 :: Scheme -> String -> String
+fcColor09 s = fc $ color09 s
 
-fcColor10 :: BMonadTheme -> String -> String
-fcColor10 c args = fc (color10 $ themeColors c) args
+fcColor10 :: Scheme -> String -> String
+fcColor10 s = fc $ color10 s
 
-fcColor11 :: BMonadTheme -> String -> String
-fcColor11 c args = fc (color11 $ themeColors c) args
+fcColor11 :: Scheme -> String -> String
+fcColor11 s = fc $ color11 s
 
-fcColor12 :: BMonadTheme -> String -> String
-fcColor12 c args = fc (color12 $ themeColors c) args
+fcColor12 :: Scheme -> String -> String
+fcColor12 s = fc $ color12 s
 
-fcColor13 :: BMonadTheme -> String -> String
-fcColor13 c args = fc (color13 $ themeColors c) args
+fcColor13 :: Scheme -> String -> String
+fcColor13 s = fc $ color13 s
 
-fcColor14 :: BMonadTheme -> String -> String
-fcColor14 c args = fc (color14 $ themeColors c) args
+fcColor14 :: Scheme -> String -> String
+fcColor14 s = fc $ color14 s
 
-fcColor15 :: BMonadTheme -> String -> String
-fcColor15 c args = fc (color15 $ themeColors c) args
+fcColor15 :: Scheme -> String -> String
+fcColor15 s = fc $ color15 s
 
-fcColor16 :: BMonadTheme -> String -> String
-fcColor16 c args = fc (color16 $ themeColors c) args
+fcColor16 :: Scheme -> String -> String
+fcColor16 s = fc $ color16 s
 
-fcBg :: BMonadTheme -> String -> String
-fcBg c args = fc (colorBack $ themeColors c) args
+fcBg :: Scheme -> String -> String
+fcBg s = fc $ colorBack s
 
-fcFg :: BMonadTheme -> String -> String
-fcFg c args = fc (colorFore $ themeColors c) args
+fcFg :: Scheme -> String -> String
+fcFg s = fc $ colorFore s

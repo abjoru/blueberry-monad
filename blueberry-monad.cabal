@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.0.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d708e3bad9697a5bef27b69d477f4c80df977da3ba0bbb9a2f078c84b21e63bf
+-- hash: fe1adab0e6ff71a66d6aa788d1d09b9737a289febd238502fb1200c22848c469
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -28,39 +28,39 @@ source-repository head
 library
   exposed-modules:
       BMonad
-      BMonad.Applications
       BMonad.Bar
-      BMonad.Bar.Config
-      BMonad.Bar.Plugin.CoinPrice
-      BMonad.Bar.Plugin.FearGreed
+      BMonad.Bar.Plugin.CoinPriceWidget
+      BMonad.Bar.Plugin.FGIWidget
       BMonad.Bar.Utils
       BMonad.Bar.Widgets
-      BMonad.Games
-      BMonad.GridSelect
+      BMonad.Config
+      BMonad.Config.Parsers
+      BMonad.Config.Types
+      BMonad.Crypto
+      BMonad.Crypto.CoinPrice
+      BMonad.Crypto.FearGreed
       BMonad.KeyBindings
-      BMonad.Layouts
-      BMonad.ManageHooks
-      BMonad.Theme
+      BMonad.Log
       BMonad.Utils
-      BMonad.Variables
   other-modules:
       Paths_blueberry_monad
   hs-source-dirs:
       lib
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       X11
     , aeson
     , base >=4.7 && <5
     , bytestring
+    , colour
     , containers
     , directory
     , filepath
+    , hslogger
     , http-conduit
-    , ini
-    , regex-posix
+    , mtl
     , text
-    , time
-    , unix
+    , unliftio
     , unordered-containers
     , vector
     , xmobar
@@ -70,12 +70,12 @@ library
   default-language: Haskell2010
 
 executable blueberry-mobar
-  main-is: Bmobar.hs
+  main-is: BMobar.hs
   other-modules:
       Paths_blueberry_monad
   hs-source-dirs:
       bar
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , blueberry-monad
@@ -87,14 +87,11 @@ executable blueberry-monad
   other-modules:
       Paths_blueberry_monad
   hs-source-dirs:
-      wm
-  ghc-options: -Wall -fwarn-tabs -threaded -O2 -with-rtsopts=-N4
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      X11
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , blueberry-monad
-    , directory
-    , filepath
     , xmonad
     , xmonad-contrib
   default-language: Haskell2010
@@ -107,7 +104,7 @@ test-suite test
       Paths_blueberry_monad
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , blueberry-monad

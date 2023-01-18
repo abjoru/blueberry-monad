@@ -1,110 +1,77 @@
 module BMonad.Bar.Widgets (
-  widgetXmonad,
+  widgetXMonad,
   widgetTrayerPadding,
+  widgetFGI,
   widgetDate,
-  widgetFearGreed,
   widgetCoins,
   widgetNet,
   widgetCpu,
   widgetMem,
-  widgetDisk,
-  widgetWeather,
-  widgetUpdates
+  widgetDisk
 ) where
 
-import           Xmobar
+import           BMonad.Bar.Plugin.CoinPriceWidget (CoinSettings (CoinSettings),
+                                                    WidgetConfig (WidgetConfig))
+import           BMonad.Bar.Plugin.FGIWidget       (FGISettings (FGISettings))
+import           BMonad.Bar.Utils                  (fcBg, fcColor04, fcColor13,
+                                                    fcColor15, (<~>))
+import           BMonad.Config                     (Scheme (color03, color05, color09, color10, color11, color12))
 
-import           BMonad.Bar.Plugin.CoinPrice (Coin (..), CoinConfig (..))
-import           BMonad.Bar.Plugin.FearGreed (FearGreed (..))
-import           BMonad.Bar.Utils
-import           BMonad.Theme
-import           BMonad.Variables            (myXMonadDir)
+import qualified Xmobar                            as M
 
-import           System.FilePath             ((</>))
+-- |XMonad output
+widgetXMonad :: M.Runnable
+widgetXMonad = M.Run M.UnsafeStdinReader
 
--- XMonad output
-widgetXmonad :: Runnable
-widgetXmonad = Run UnsafeStdinReader
+-- |Autopadding for Trayer
+widgetTrayerPadding :: M.Runnable
+widgetTrayerPadding = M.Run $ M.XPropertyLog "_XMONAD_TRAYPAD"
 
--- Autopadding for trayer
-widgetTrayerPadding :: Runnable
-widgetTrayerPadding = Run $ XPropertyLog "_XMONAD_TRAYPAD"
+-- |Fear/Greed Index widget
+widgetFGI :: Scheme -> M.Runnable
+widgetFGI s = M.Run $ FGISettings (color11 s) (color12 s) (color10 s)
 
--- Formatted date/time
-widgetDate :: BMonadTheme -> Runnable
-widgetDate c = Run $ Date (fcColor15 c "\xf133 %b %d %Y (%H:%M)") "date" 50
+-- |Date/Time widget
+widgetDate :: Scheme -> M.Runnable
+widgetDate s = M.Run $ M.Date (fcColor15 s "\xf133 %b %d %Y (%H:%M)") "date" 50
 
--- Crypto fear and greed index widget
-widgetFearGreed :: BMonadTheme -> Runnable
-widgetFearGreed c = Run $ FearGreed (color11 $ themeColors c) (color12 $ themeColors c) (color10 $ themeColors c)
+-- |Coin prices widget.
+widgetCoins :: Scheme -> M.Runnable
+widgetCoins s = M.Run $ WidgetConfig
+  [ CoinSettings "bitcoin" (color05 s) "\xf15a"
+  , CoinSettings "ethereum" (color03 s) "\xfcb9"
+  ] (color09 s) 300 -- 300/10 = 30 seconds
 
--- Crypto coin price widget
-widgetCoins :: BMonadTheme -> Runnable
-widgetCoins c = Run $ CoinConfig [ Coin "bitcoin" (color05 $ themeColors c) "\xf15a"
-                                 , Coin "ethereum" (color03 $ themeColors c) "\xfcb9"
-                                 ] (sepColor c) 300 -- 300/10 = 30 seconds
+-- |Network load widget.
+widgetNet :: Scheme -> M.Runnable
+widgetNet s = M.Run $ M.DynNetwork
+  (s <~> [ "-t", fcColor13 s "\xf0aa <tx>" ++ fcColor13 s "kb" ++ fcBg s " | " ++ fcColor15 s "\xf0ab <rx>" ++ fcColor15 s "kb"
+         , "-L", "20"
+         , "-H", "1024000"
+         , "-m", "5"
+         , "-W", "10"
+         , "-S", "off"
+         ]) 10
 
--- Network load widget
-widgetNet :: BMonadTheme -> Runnable
-widgetNet c = Run $ DynNetwork (c <~> [ "-t", fcColor13 c "\xf0aa " ++ "<tx>" ++ fcColor13 c "kb" ++ fcBg c " | " ++ fcColor15 c "\xf0ab " ++ "<rx>" ++ fcColor15 c "kb"
-                                      , "-L", "20"
-                                      , "-H", "1024000"
-                                      , "-m", "5"
-                                      , "-W", "10"
-                                      , "-S", "off"
-                                      ]) 10
+-- |CPU load widget.
+widgetCpu :: Scheme -> M.Runnable
+widgetCpu s = M.Run $ M.MultiCpu
+  (s <~> [ "-t", "\xf108 <total0>%/<total1>%"
+         , "-L", "30"
+         , "-H", "70"
+         ]) 10
 
--- CPU load widget
-widgetCpu :: BMonadTheme -> Runnable
-widgetCpu c = Run $ MultiCpu (c <~> [ "-t", "\xf108 <total0>%/<total1>%"
-                                    , "-L", "30"
-                                    , "-H", "70"
-                                    ]) 10
+-- |Memory load widget.
+widgetMem :: Scheme -> M.Runnable
+widgetMem s = M.Run $ M.Memory
+  (s <~> [ "-t", fcColor13 s "\xf233 <used>" ++ fcColor13 s "mb (<usedratio>" ++ fcColor13 s "%)"
+         , "-L", "20"
+         , "-H", "80"
+         ]) 10
 
--- Memory load widget
-widgetMem :: BMonadTheme -> Runnable
-widgetMem c = Run $ Memory (c <~> [ "-t", fcColor13 c "\xf233 " ++ " <used>" ++ fcColor13 c "mb (" ++ "<usedratio>" ++ fcColor13 c "%)"
-                                  , "-L", "20"
-                                  , "-H", "80"
-                                  ]) 10
-
--- HD load widget
-widgetDisk :: BMonadTheme -> Runnable
-widgetDisk c = Run $ DiskU [("/", fcColor04 c "\xf0c7 hdd: " ++ "<free> " ++ fcColor04 c "free")]
-                        (c <~> ["-L", "20", "-H", "70", "-m", "1", "-p", "3"])
-                        20
-
--- Weather monitoring widget
-widgetWeather :: BMonadTheme -> Runnable
-widgetWeather = widgetWeather' "<skyCondition> <tempC>° <rh>% <windKmh>h" "KFXE"
-
--- Raw weather monitor factory
-widgetWeather' :: String -> String -> BMonadTheme -> Runnable
-widgetWeather' tmp st c = Run $ WeatherX st [ ("", fcColor08 c $ fni "\xf185")
-                                         , ("clear", fn 4 "🌣")
-                                         , ("sunny", fcColor02 c $ fn 4 "🌣")
-                                         , ("fair", fn 4 "🌣")
-                                         , ("mostly clear", fn 4 "🌤")
-                                         , ("mostly sunny", fn 4 "🌤")
-                                         , ("partly sunny", fn 3 "⛅")
-                                         , ("obscured", fn 4 "🌁") -- 🌫
-                                         , ("cloudy", fn 3 "☁")
-                                         , ("overcast", fn 3 "☁")
-                                         , ("partly cloudy", fn 3 "⛅")
-                                         , ("mostly cloudy", fn 3 "☁")
-                                         , ("considerable cloudiness", fn 4 "⛈")
-                                         ]
-                                         (mkArgs c ["-t", tmp, "-L", "10", "-H", "25"] ["-w", ""])
-                                         18000
-
--- System updates widget
-widgetUpdates :: BMonadTheme -> IO Runnable
-widgetUpdates c = do
-  script <- getScript "check-all-updates.sh"
-  return $ mkScriptWidget script [color06 $ themeColors c] "updates" 3000
-
-mkScriptWidget :: FilePath -> [String] -> String -> Int -> Runnable
-mkScriptWidget file args alias interval = Run $ Com file args alias interval
-
-getScript :: String -> IO FilePath
-getScript name = fmap (</> "scripts" </> name) myXMonadDir
+-- |HD load widget.
+widgetDisk :: Scheme -> M.Runnable
+widgetDisk s = M.Run $ M.DiskU
+  [("/", fcColor04 s "\xf0c7 hdd: <free> " ++ fcColor04 s "free")]
+  (s <~> ["-L", "20", "-H", "70", "-m", "1", "-p", "3"])
+  20

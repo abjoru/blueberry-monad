@@ -1,13 +1,12 @@
 module Main (main) where
 
 import           BMonad
-import           BMonad.Bar.Config
-
-import           Xmobar
 
 import           Data.List          (intersect)
 
 import           System.Environment
+
+import           Xmobar
 
 -- Get monitor specification from args
 monitorArgs :: [String] -> Maybe Monitor
@@ -19,10 +18,7 @@ monitorArgs xs = parse $ ["primary", "secondary", "other"] `intersect` xs
 
 main :: IO ()
 main = do
+  bcfg <- bmonadConfig
   args <- getArgs
-  p    <- myTheme
-  mon  <- selectMonitor p $ monitorArgs args
-  cfg  <- configFromArgs mon
-  _    <- putStrLn $ show cfg
-
-  xmobar cfg
+  xcfg <- configFromArgs $ selectMonitor bcfg $ monitorArgs args
+  xmobar xcfg

@@ -22,9 +22,19 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-export-lists
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
 library:
-  source-dirs: 
-    - lib
+  source-dirs: lib
   dependencies:
     - directory
     - filepath
@@ -33,38 +43,33 @@ library:
     - xmonad
     - xmonad-contrib
     - containers
-    - unix
-    - ini
-    - regex-posix
     - text
-    - time
     - aeson
     - http-conduit
     - unordered-containers
     - yaml
     - bytestring
     - vector
+    - hslogger
+    - unliftio
+    - mtl
+    - colour
 
 executables:
   blueberry-monad:
     main:                Main.hs
-    source-dirs:         wm
+    source-dirs:         app
     ghc-options:
-      - -Wall
-      - -fwarn-tabs
       - -threaded
-      - -O2
+      - -rtsopts
       - -with-rtsopts=-N4
     dependencies:
       - blueberry-monad
       - xmonad
       - xmonad-contrib
-      - directory
-      - filepath
-      - X11
 
   blueberry-mobar:
-    main:                Bmobar.hs
+    main:                BMobar.hs
     source-dirs:         bar
     ghc-options:
       - -threaded
