@@ -1,12 +1,12 @@
-module ApplicationsSpec where
+module ApplicationsSpec (main, spec) where
 
-import           BMonad.Applications
+import           BMonad.Config.Parsers
+import           BMonad.Config.Types
+import           BMonad.Utils          (capitalized)
 
-import           Control.Monad
-import           Data.ByteString       hiding (head, length)
+import           Data.ByteString       hiding (find, head, length, map)
 import qualified Data.ByteString.Char8 as C
-import           Data.Either           (isRight)
-import           Data.Map              ((!))
+import           Data.List             (find)
 import           Test.Hspec
 
 main :: IO ()
@@ -30,39 +30,24 @@ yaml = C.pack $ unlines [ "games:",
                           "   terminal: 'links'"
                         ]
 
-apps :: Either String [BCategory]
-apps = parseApplications yaml
+grp :: String -> IO [App]
+grp n = do
+  maybeC <- find (\a -> categoryName a == capitalized n) <$> loadApplications' yaml
+  return $ case maybeC of
+             (Just (Category _ xs)) -> xs
+             _                      -> []
 
 spec :: Spec
 spec = do
   describe "Applications" $ do
     it "parse application yaml" $ do
-      apps `shouldSatisfy` isRight
-      case apps of
-        (Right a) -> (length a) `shouldBe` 2
-        (Left er) -> expectationFailure "Failed to parse input!"
+      a <- loadApplications' yaml
+      length a `shouldBe` 2
 
-    it "create application list" $ do
-      case apps of
-        (Right a) -> (length $ applicationList a) `shouldBe` 3
-        (Left er) -> expectationFailure "Failed to create application list!"
-
-    it "find applications by category" $ do
-      case apps of
-        (Right a) -> (length $ findByCategory "internet" a) `shouldBe` 2
-        (Left _)  -> expectationFailure "Failed to find by category!"
-
-    it "generate launcher command" $ do
-      case apps of
-        (Right a) -> (appLauncher ((applicationMap a) ! "Steam")) `shouldBe` "steam"
-        (Left _)  -> expectationFailure "Failed to generate launcher!"
-
-    it "generate launcher terminal command" $ do
-      case apps of
-        (Right a) -> (appLauncher ((applicationMap a) ! "Links")) `shouldBe` "alacritty -e links"
-        (Left _)  -> expectationFailure "Failed to generate launcher!"
-
-    it "generates grid select config" $ do
-      case apps of
-        (Right a) -> (gridSelect $ head a) `shouldBe` [("Steam", "steam")]
-        (Left _)  -> expectationFailure "Failed to generate grid select config!"
+    it "contains all apps" $ do
+      a1 <- grp "games"
+      a2 <- grp "internet"
+      a1 `shouldBe` [App "Steam" "Game manager and store" (Just "steam") Nothing]
+      a2 `shouldBe` [ App "QuteBrowser" "Lightweight vim-like web browser" (Just "qutebrowser") Nothing
+                    , App "Links" "Commandline browser" Nothing (Just "links")
+                    ]

@@ -25,7 +25,7 @@ module BMonad.Config (
   spawnSelectedIO
 ) where
 
-import           BMonad.Config.Parsers     (loadConfig, loadApplications)
+import           BMonad.Config.Parsers     (loadApplications, loadConfig)
 import           BMonad.Config.Types
 import           BMonad.Log                (warnX)
 import           BMonad.Utils
@@ -34,10 +34,11 @@ import           Data.List                 (find)
 import qualified Data.Map                  as M
 import           Data.Maybe                (catMaybes)
 
-import           System.Directory
-import           System.FilePath
+import           System.Directory          (XdgDirectory (XdgConfig),
+                                            doesDirectoryExist, getXdgDirectory)
+import           System.FilePath           (takeBaseName, takeExtension, (</>))
 
-import           Control.Monad
+import           Control.Monad             (filterM)
 
 import           UnliftIO.Exception        (catchAny)
 
@@ -63,7 +64,7 @@ bmonadConfig = do
 
 bmonadStartupHook :: Config -> X ()
 bmonadStartupHook cfg = do
-  spawnOnce $ cfgMonadDir cfg </> "scripts" </> "autostart.sh"
+  spawnOnce $ cfgMonadDir cfg </> "autostart.sh"
   setWMName "XBlueberry"
 
 bmonadApps :: Config -> IO (M.Map String [(String, String)])

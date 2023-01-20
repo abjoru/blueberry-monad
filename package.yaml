@@ -88,6 +88,13 @@ tests:
       - hspec
       - bytestring
       - containers
+      - hslogger
+      - yaml
+      - xmobar
+      - directory
+      - filepath
+      - xmonad
+      - unix
     ghc-options:
       - -threaded
       - -rtsopts

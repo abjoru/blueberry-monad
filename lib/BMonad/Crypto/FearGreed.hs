@@ -11,13 +11,13 @@ apiUrl :: String
 apiUrl = "https://api.alternative.me/fng/"
 
 -- |Data item for fear and greed index.
--- @param1 numeric value
+-- @param1 numeric value as string
 -- @param2 value classification string
-data FearGreed = FearGreed Integer String
+data FearGreed = FearGreed Integer String deriving (Show, Eq)
 
 instance FromJSON FearGreed where
   parseJSON = withObject "FearGreed" $ \v -> FearGreed
-    <$> v .: "value"
+    <$> fmap read (v .: "value")
     <*> v .: "value_classification"
 
 -- |Data API response type

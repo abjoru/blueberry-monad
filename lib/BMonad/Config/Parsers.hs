@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE TupleSections     #-}
 module BMonad.Config.Parsers (
   loadConfig,
   loadConfig',
@@ -9,24 +9,24 @@ module BMonad.Config.Parsers (
   loadApplications'
 ) where
 
-import BMonad.Config.Types
-import BMonad.Utils
+import           BMonad.Config.Types
+import           BMonad.Utils        (capitalized, resolve)
 
-import Control.Arrow (left)
---import Control.Monad (mapM)
+import           Control.Arrow       (left)
 
-import qualified Data.Aeson.KeyMap as KM
-import qualified Data.ByteString as B
+import qualified Data.Aeson.KeyMap   as KM
+import qualified Data.ByteString     as B
 import qualified Data.HashMap.Strict as HM
-import Data.Maybe (mapMaybe)
-import qualified Data.Text as T
-import qualified Data.Vector as V
-import Data.Yaml
+import           Data.Maybe          (mapMaybe)
+import qualified Data.Text           as T
+import qualified Data.Vector         as V
+import           Data.Yaml
 
-import System.Directory (XdgDirectory(XdgConfig), getHomeDirectory, getXdgDirectory)
-import System.FilePath ((</>))
+import           System.Directory    (XdgDirectory (XdgConfig),
+                                      getHomeDirectory, getXdgDirectory)
+import           System.FilePath     ((</>))
 
-import XMonad (mod1Mask, mod4Mask)
+import           XMonad              (mod1Mask, mod4Mask)
 
 -- |Load BMonad config files.
 -- @param1 path to bmonad.yaml
@@ -34,7 +34,7 @@ import XMonad (mod1Mask, mod4Mask)
 loadConfig :: FilePath -> FilePath -> IO Config
 loadConfig cfg themes = do
   rcfg   <- decodeFileThrow cfg :: IO ReadConfig
-  colors <- decodeFileThrow themes
+  colors <- loadColorSchemes themes
   parseConfig (mkTheme (rcTheme rcfg) colors) rcfg
   where mkTheme (ReadTheme n f a b) cs = Theme (findSchemeWithDefault n cs) f a b
 
@@ -42,12 +42,11 @@ loadConfig cfg themes = do
 -- @param1 configuration byte string (i.e. bmonad.yaml)
 -- @param2 color schemes byte string (i.e. themes.yaml)
 loadConfig' :: B.ByteString -> B.ByteString -> IO Config
-loadConfig' cfg theme =
-  case comb of
-    Right (rc, rt) -> parseConfig (mkTheme (rcTheme rc) rt) rc
-    Left err       -> fail $ prettyPrintParseException err
-  where comb = decodeEither' cfg >>= \a -> decodeEither' theme >>= \b -> return (a, b)
-        mkTheme (ReadTheme n f a b) cs = Theme (findSchemeWithDefault n cs) f a b
+loadConfig' c t = do
+  cfg <- either (fail . show) pure $ decodeEither' c
+  thm <- either (fail . show) pure $ loadColorSchemes' t
+  parseConfig (mkTheme (rcTheme cfg) thm) cfg
+  where mkTheme (ReadTheme n f a b) cs = Theme (findSchemeWithDefault n cs) f a b
 
 loadColorSchemes :: FilePath -> IO [(String, Scheme)]
 loadColorSchemes file = do
@@ -66,8 +65,8 @@ loadApplications cfg = do
              Right v -> v
              _       -> []
 
-loadApplications' :: B.ByteString -> Either String [Category]
-loadApplications' = parseApplications
+loadApplications' :: B.ByteString -> IO [Category]
+loadApplications' s = either fail pure $ parseApplications s
 
 {-------------------------------------------
   Parsers

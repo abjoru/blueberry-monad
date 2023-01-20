@@ -124,7 +124,12 @@ data Category = Category
   Reader types
 -------------------------------------------}
 
-data ReadTheme = ReadTheme String String Int Word32
+data ReadTheme = ReadTheme
+  { rtName        :: String
+  , rtFont        :: String
+  , rtAlpha       :: Int
+  , rtBorderWidth :: Word32
+  } deriving (Show, Eq)
 
 data ReadConfig = ReadConfig
   { rcLogLevel      :: Priority
@@ -137,7 +142,7 @@ data ReadConfig = ReadConfig
   , rcWorkspaces    :: [String]
   , rcGridSelect    :: GridSettings
   , rcMobarSettings :: MobarSettings
-  }
+  } deriving (Show, Eq)
 
 {-------------------------------------------
   Instances

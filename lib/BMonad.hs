@@ -20,26 +20,31 @@ import           BMonad.Log
 import           Data.Monoid                         (Endo)
 
 import           XMonad
-import           XMonad.Actions.MouseResize
+import           XMonad.Actions.MouseResize          (mouseResize)
 import           XMonad.Hooks.ManageDocks            (avoidStruts)
-import           XMonad.Hooks.ManageHelpers
+import           XMonad.Hooks.ManageHelpers          (doCenterFloat,
+                                                      doFullFloat, isDialog,
+                                                      isFullscreen)
 import           XMonad.Layout.GridVariants          (Grid (Grid))
-import           XMonad.Layout.LayoutModifier
+import           XMonad.Layout.LayoutModifier        (ModifiedLayout)
 import           XMonad.Layout.LimitWindows          (limitWindows)
 import           XMonad.Layout.MultiToggle           (EOT (EOT), mkToggle,
                                                       single, (??))
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (MIRROR, NBFULL, NOBORDERS))
-import           XMonad.Layout.NoBorders
-import           XMonad.Layout.Renamed
-import           XMonad.Layout.ResizableTile
-import           XMonad.Layout.Simplest
-import           XMonad.Layout.SimplestFloat
-import           XMonad.Layout.Spacing
-import           XMonad.Layout.SubLayouts
-import           XMonad.Layout.Tabbed
+import           XMonad.Layout.NoBorders             (noBorders, smartBorders,
+                                                      withBorder)
+import           XMonad.Layout.Renamed               (Rename (Replace), renamed)
+import           XMonad.Layout.ResizableTile         (ResizableTall (ResizableTall))
+import           XMonad.Layout.Simplest              (Simplest (Simplest))
+import           XMonad.Layout.SimplestFloat         (simplestFloat)
+import           XMonad.Layout.Spacing               (Border (Border), Spacing,
+                                                      spacingRaw)
+import           XMonad.Layout.SubLayouts            (subLayout)
+import           XMonad.Layout.Tabbed                (addTabs, shrinkText,
+                                                      tabbed)
 import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
-import           XMonad.Layout.WindowNavigation
+import           XMonad.Layout.WindowNavigation      (windowNavigation)
 
 bmonadLayout :: Config -> _
 bmonadLayout cfg = avoidStruts
