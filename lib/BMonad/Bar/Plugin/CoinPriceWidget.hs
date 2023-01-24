@@ -8,8 +8,16 @@ import           Text.Printf   (printf)
 
 import           Xmobar        (Exec (alias, rate, run))
 
+-- |Coin settings.
+-- @param1 coin id
+-- @param2 line color
+-- @param3 coin icon nerd font code
 data CoinSettings = CoinSettings String String String deriving (Read, Show)
 
+-- |Widget settings.
+-- @param1 coin settings
+-- @param2 separator color
+-- @param3 refresh rate
 data WidgetConfig = WidgetConfig [CoinSettings] String Int deriving (Read, Show)
 
 instance Exec WidgetConfig where

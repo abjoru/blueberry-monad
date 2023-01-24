@@ -5,6 +5,7 @@ module BMonad.Bar.Utils (
   fn,
   fni,
 
+  fcSep,
   fcColor01,
   fcColor02,
   fcColor03,
@@ -43,11 +44,14 @@ fn :: (Show a) => a -> String -> String
 fn n thing = "<fn=" ++ show n ++ ">" ++ thing ++ "</fn>"
 
 fni :: String -> String
-fni = fn 6
+fni = fn 2
 
 {-----------------------------------------------------
   Color Helpers
 -----------------------------------------------------}
+
+fcSep :: Scheme -> String
+fcSep s = fcColor09 s " | "
 
 fcColor01 :: Scheme -> String -> String
 fcColor01 s = fc $ color01 s
