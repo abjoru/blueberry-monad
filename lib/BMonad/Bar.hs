@@ -5,7 +5,7 @@ import           BMonad.Bar.Widgets      (widgetCoins, widgetDate, widgetDisk,
                                           widgetFGI, widgetMem, widgetNet,
                                           widgetTrayerPadding, widgetXMonad)
 import           BMonad.Config           (Config (cfgMobarSettings, cfgMonadDir, cfgTheme),
-                                          MobarSettings (msAdditionalFonts, msAllDesktops, msBorder, msHideOnStartup, msLowerOnStartup, msOverrideRedirect, msPersistent),
+                                          MobarSettings (msAllDesktops, msBorder, msHideOnStartup, msLowerOnStartup, msOverrideRedirect, msPersistent),
                                           Scheme (color02, color04, color05, color09, color16),
                                           Theme (themeColorScheme), mobarAlpha,
                                           mobarBgColor, mobarBorderColor,
@@ -51,7 +51,6 @@ baseConfig cfg         = M.defaultConfig
   , M.position         = M.TopSize M.C 100 defaultHeight
   , M.textOffset       = defaultHeight - 8
   , M.textOffsets      = [defaultHeight - 9]
-  , M.additionalFonts  = msAdditionalFonts $ cfgMobarSettings cfg
   }
 
 mkConfig :: Config -> [M.Runnable] -> String -> M.Config

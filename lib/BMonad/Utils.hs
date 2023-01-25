@@ -4,6 +4,7 @@ module BMonad.Utils (
   listAbsDir,
   checkExecutable,
   capitalized,
+  lowerCase,
   hexToRgb,
   countScreens,
   countWindows
@@ -47,6 +48,10 @@ checkExecutable (Just f) = do
 capitalized :: String -> String
 capitalized []    = []
 capitalized (h:t) = Char.toUpper h : map Char.toLower t
+
+-- |All characters to lower case
+lowerCase :: String -> String
+lowerCase = map Char.toLower
 
 -- |Convert hex color code to RGB
 hexToRgb :: String -> (Word8, Word8, Word8)

@@ -72,10 +72,11 @@ bmonadApps cfg = do
   apps <- catchAny (loadApplications cfg) handler
   return $ M.fromList $ map tuples apps
   where handler er = warnX "LoadApps" (show er) >> pure []
-        tuples cat = (categoryName cat, gridSelect cfg cat)
+        tuples cat = (lowerCase $ categoryName cat, gridSelect cfg cat)
 
+-- Case insensitive match
 bmonadAppGroup :: Config -> String -> IO [(String, String)]
-bmonadAppGroup cfg c = M.findWithDefault [] c <$> bmonadApps cfg
+bmonadAppGroup cfg c = M.findWithDefault [] (lowerCase c) <$> bmonadApps cfg
 
 bmonadGames :: Config -> IO [(String, String)]
 bmonadGames cfg = do

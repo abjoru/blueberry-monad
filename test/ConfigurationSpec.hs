@@ -142,13 +142,6 @@ spec = do
       msHideOnStartup (rcMobarSettings c) `shouldBe` False
       msAllDesktops (rcMobarSettings c) `shouldBe` False
       msPersistent (rcMobarSettings c) `shouldBe` True
-      msAdditionalFonts (rcMobarSettings c) `shouldBe` [ "xft:Symbola-9"
-                                                         , "xft:Symbola-10"
-                                                         , "xft:Symbola-11"
-                                                         , "xft:Symbola-12"
-                                                         , "xft:Hack-7"
-                                                         , "xft:FontAwesome-9"
-                                                         ]
 
       gsCellHeight (rcGridSelect c) `shouldBe` 40
       gsCellWidth (rcGridSelect c) `shouldBe` 250
@@ -265,13 +258,6 @@ spec = do
       msHideOnStartup (cfgMobarSettings c) `shouldBe` False
       msAllDesktops (cfgMobarSettings c) `shouldBe` False
       msPersistent (cfgMobarSettings c) `shouldBe` True
-      msAdditionalFonts (cfgMobarSettings c) `shouldBe` [ "xft:Symbola-9"
-                                                         , "xft:Symbola-10"
-                                                         , "xft:Symbola-11"
-                                                         , "xft:Symbola-12"
-                                                         , "xft:Hack-7"
-                                                         , "xft:FontAwesome-9"
-                                                         ]
 
       gsCellHeight (cfgGridSelect c) `shouldBe` 40
       gsCellWidth (cfgGridSelect c) `shouldBe` 250

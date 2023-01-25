@@ -2,8 +2,6 @@ module BMonad.Bar.Utils (
   (<~>),
   mkArgs,
   fc,
-  fn,
-  fni,
 
   fcSep,
   fcColor01,
@@ -39,12 +37,6 @@ mkArgs s args extras = concat [s <~> args, ["--"], extras]
 
 fc :: String -> String -> String
 fc color thing = "<fc=" ++ color ++ ">" ++ thing ++ "</fc>"
-
-fn :: (Show a) => a -> String -> String
-fn n thing = "<fn=" ++ show n ++ ">" ++ thing ++ "</fn>"
-
-fni :: String -> String
-fni = fn 2
 
 {-----------------------------------------------------
   Color Helpers

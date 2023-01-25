@@ -89,7 +89,6 @@ data MobarSettings = MobarSettings
   , msHideOnStartup    :: Bool
   , msAllDesktops      :: Bool
   , msPersistent       :: Bool
-  , msAdditionalFonts  :: [Font]
   } deriving (Show, Eq)
 
 data Config = Config
@@ -222,7 +221,6 @@ instance FromJSON MobarSettings where
     <*> v .:? "hide-on-startup" .!= False
     <*> v .:? "all-desktops" .!= False
     <*> v .:? "persistent" .!= True
-    <*> v .:? "additional-fonts" .!= []
 
 {-------------------------------------------
   Accessors
@@ -230,27 +228,27 @@ instance FromJSON MobarSettings where
 
 mobarFont :: Config -> Font
 mobarFont cfg = findFont $ cfgMobarSettings cfg
-  where findFont (MobarSettings (Just f) _ _ _ _ _ _ _ _ _ _ _) = f
+  where findFont (MobarSettings (Just f) _ _ _ _ _ _ _ _ _ _) = f
         findFont _ = themeFont $ cfgTheme cfg
 
 mobarBorderColor :: Config -> Color
 mobarBorderColor cfg = findC $ cfgMobarSettings cfg
-  where findC (MobarSettings _ (Just c) _ _ _ _ _ _ _ _ _ _) = c
+  where findC (MobarSettings _ (Just c) _ _ _ _ _ _ _ _ _) = c
         findC _ = color08 . themeColorScheme $ cfgTheme cfg
 
 mobarFgColor :: Config -> Color
 mobarFgColor cfg = findC $ cfgMobarSettings cfg
-  where findC (MobarSettings _ _ (Just c) _ _ _ _ _ _ _ _ _) = c
+  where findC (MobarSettings _ _ (Just c) _ _ _ _ _ _ _ _) = c
         findC _ = colorFore . themeColorScheme $ cfgTheme cfg
 
 mobarBgColor :: Config -> Color
 mobarBgColor cfg = findC $ cfgMobarSettings cfg
-  where findC (MobarSettings _ _ _ (Just c) _ _ _ _ _ _ _ _) = c
+  where findC (MobarSettings _ _ _ (Just c) _ _ _ _ _ _ _) = c
         findC _ = colorBack . themeColorScheme $ cfgTheme cfg
 
 mobarAlpha :: Config -> Int
 mobarAlpha cfg = findA $ cfgMobarSettings cfg
-  where findA (MobarSettings _ _ _ _ _ (Just a) _ _ _ _ _ _) = a
+  where findA (MobarSettings _ _ _ _ _ (Just a) _ _ _ _ _) = a
         findA _ = themeBarAlpha $ cfgTheme cfg
 
 {-------------------------------------------
@@ -354,13 +352,6 @@ defaultMobarSettings = MobarSettings
   , msHideOnStartup    = False
   , msAllDesktops      = False
   , msPersistent       = True
-  , msAdditionalFonts  = [ "xft:Symbola-9"
-                         , "xft:Symbola-10"
-                         , "xft:Symbola-11"
-                         , "xft:Symbola-12"
-                         , "xft:Hack-7"
-                         , "xft:FontAwesome-9"
-                         ]
   }
 
 {-------------------------------------------

@@ -16,7 +16,6 @@ import           BMonad.Bar.Plugin.CoinPriceWidget (CoinSettings (CoinSettings),
 import           BMonad.Bar.Plugin.FGIWidget       (FGISettings (FGISettings))
 import           BMonad.Bar.Utils
 import           BMonad.Config                     (Scheme (..))
-import           BMonad.Image.NerdFont
 
 import qualified Xmobar                            as M
 
@@ -39,20 +38,22 @@ widgetDate s = M.Run $ M.Date (icoCalendar' (color15 s) "%b %d %Y (%H:%M)") "dat
 -- |Coin prices widget.
 widgetCoins :: Scheme -> M.Runnable
 widgetCoins s = M.Run $ WidgetConfig
-  [ CoinSettings "bitcoin" (color05 s) nfMdiBitcoin
-  , CoinSettings "ethereum" (color03 s) nfMdiCurrencyEth
+  [ CoinSettings "bitcoin" (color05 s) "\xfd11"
+  , CoinSettings "ethereum" (color03 s) "\xfcb9"
   ] (color09 s) 300 -- 300/10 = 30 seconds
 
 -- |Network load widget.
 widgetNet :: Scheme -> M.Runnable
 widgetNet s = M.Run $ M.DynNetwork
-  (s <~> [ "-t", icoArrowUp' (color13 s) "<tx>kb" ++ fcSep s ++ icoArrowDown' (color15 s) "<rx>kb"
+  (s <~> [ "-t", uload ++ fcSep s ++ dload
          , "-L", "20"
          , "-H", "1024000"
          , "-m", "5"
          , "-W", "10"
          , "-S", "off"
          ]) 10
+  where uload = icoArrowUp' (color13 s) "<tx>kb"
+        dload = icoArrowDown' (color15 s) "<rx>kb"
 
 -- |CPU load widget.
 widgetCpu :: Scheme -> M.Runnable
