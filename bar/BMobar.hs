@@ -19,6 +19,7 @@ monitorArgs xs = parse $ ["primary", "secondary", "other"] `intersect` xs
 main :: IO ()
 main = do
   bcfg <- bmonadConfig
+  _    <- setupLogger' (cfgLogLevel bcfg) (cfgMonadDir bcfg) "bmobar.log"
   args <- getArgs
   xcfg <- configFromArgs $ selectMonitor bcfg $ monitorArgs args
   xmobar xcfg

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2f69cd756f98a983f83858d8f230fff0e9fab856d0a48b16c8e2f25e6475dced
+-- hash: e737070f6d8b66b2e681bd2dd8cbbbe0ff8d5e2dd06258af08a4687583b137f0
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -32,6 +32,7 @@ library
       BMonad.Bar.Icons
       BMonad.Bar.Plugin.CoinPriceWidget
       BMonad.Bar.Plugin.FGIWidget
+      BMonad.Bar.Plugin.UpstreamStatusWidget
       BMonad.Bar.Utils
       BMonad.Bar.Widgets
       BMonad.Config
@@ -60,6 +61,7 @@ library
     , hslogger
     , http-conduit
     , mtl
+    , process
     , text
     , unliftio
     , unordered-containers

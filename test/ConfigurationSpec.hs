@@ -6,7 +6,6 @@ import           BMonad.Config.Types
 
 import qualified Data.ByteString       as B
 import           Data.ByteString.Char8 (pack)
---import           Data.Maybe            (isJust)
 import           Data.Yaml             (decodeEither')
 
 import           System.Directory      (XdgDirectory (XdgConfig),
@@ -131,7 +130,6 @@ spec = do
       rcSound c `shouldBe` "ffplay -nodisp -autoexit"
       rcWorkspaces c `shouldBe` ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel"]
 
-      msFont (rcMobarSettings c) `shouldBe` Nothing
       msBorderColor (rcMobarSettings c) `shouldBe` Nothing
       msFgColor (rcMobarSettings c) `shouldBe` Nothing
       msBgColor (rcMobarSettings c) `shouldBe` Nothing
@@ -247,7 +245,6 @@ spec = do
       (color15 . themeColorScheme $ cfgTheme c) `shouldBe` "#8ec07c"
       (color16 . themeColorScheme $ cfgTheme c) `shouldBe` "#ebdbb2"
 
-      msFont (cfgMobarSettings c) `shouldBe` Nothing
       msBorderColor (cfgMobarSettings c) `shouldBe` Nothing
       msFgColor (cfgMobarSettings c) `shouldBe` Nothing
       msBgColor (cfgMobarSettings c) `shouldBe` Nothing

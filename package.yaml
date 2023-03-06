@@ -54,6 +54,7 @@ library:
     - unliftio
     - mtl
     - colour
+    - process
 
 executables:
   blueberry-monad:

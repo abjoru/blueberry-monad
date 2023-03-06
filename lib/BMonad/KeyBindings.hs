@@ -139,7 +139,7 @@ keysMultimedia c =
     , ("<XF86AudioPrev>", addName "mocp prev" $ spawn "mocp --previous")
     , ("<XF86AudioMute>", addName "Toggle mute" $ spawn "amixer set Master toggle")
     , ("<XF86AudioLowerVolume>", addName "Lower vol" $ spawn "amixer set Master 5%- unmute")
-    , ("<XF86AudioRaiseVolume>", addName "Raise vol" $ spawn "amixer set Master %5+ unmute")
+    , ("<XF86AudioRaiseVolume>", addName "Raise vol" $ spawn "amixer set Master 5%+ unmute")
     ]
 
 {-----------------------------------------------

@@ -14,7 +14,6 @@ module BMonad.Config.Types (
   ReadTheme(..),
   ReadConfig(..),
 
-  mobarFont,
   mobarBorderColor,
   mobarFgColor,
   mobarBgColor,
@@ -78,7 +77,7 @@ data GridSettings = GridSettings
   } deriving (Show, Eq)
 
 data MobarSettings = MobarSettings
-  { msFont             :: Maybe Font
+  { msFont             :: Font
   , msBorderColor      :: Maybe Color
   , msFgColor          :: Maybe Color
   , msBgColor          :: Maybe Color
@@ -210,7 +209,7 @@ instance FromJSON GridSettings where
 
 instance FromJSON MobarSettings where
   parseJSON = withObject "Mobar" $ \v -> MobarSettings
-    <$> v .:? "font"
+    <$> v .:? "font" .!= defaultMobarFont
     <*> v .:? "border-color"
     <*> v .:? "fg-color"
     <*> v .:? "bg-color"
@@ -225,11 +224,6 @@ instance FromJSON MobarSettings where
 {-------------------------------------------
   Accessors
 -------------------------------------------}
-
-mobarFont :: Config -> Font
-mobarFont cfg = findFont $ cfgMobarSettings cfg
-  where findFont (MobarSettings (Just f) _ _ _ _ _ _ _ _ _ _) = f
-        findFont _ = themeFont $ cfgTheme cfg
 
 mobarBorderColor :: Config -> Color
 mobarBorderColor cfg = findC $ cfgMobarSettings cfg
@@ -260,6 +254,9 @@ defaultThemeName = "gruvboxDark"
 
 defaultFont :: Font
 defaultFont = "xft:Mononoki Nerd Font:pixelsize=11:antialias=true:hinting=true"
+
+defaultMobarFont :: Font
+defaultMobarFont = "Mononoki Nerd Font 7"
 
 defaultAlpha :: Int
 defaultAlpha = 255
@@ -341,7 +338,7 @@ defaultGridSettings = GridSettings 40 250 6 0.5 0.5
 
 defaultMobarSettings :: MobarSettings
 defaultMobarSettings = MobarSettings
-  { msFont             = Nothing
+  { msFont             = defaultMobarFont
   , msBorderColor      = Nothing
   , msFgColor          = Nothing
   , msBgColor          = Nothing
@@ -350,7 +347,7 @@ defaultMobarSettings = MobarSettings
   , msOverrideRedirect = True
   , msLowerOnStartup   = True
   , msHideOnStartup    = False
-  , msAllDesktops      = False
+  , msAllDesktops      = True
   , msPersistent       = True
   }
 

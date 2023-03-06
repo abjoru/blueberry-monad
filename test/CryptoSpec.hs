@@ -23,4 +23,5 @@ spec = do
 
     it "fetches multiple coin prices" $ do
       ps <- getCoinPrices ["bitcoin", "ethereum"]
+      putStrLn $ show ps
       length ps `shouldBe` 2

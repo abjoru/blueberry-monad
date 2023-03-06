@@ -2,14 +2,14 @@ module BMonad.Bar (Monitor(..), selectMonitor, bmonadBars, bmobarPP) where
 
 import           BMonad.Bar.Utils        (fc)
 import           BMonad.Bar.Widgets      (widgetCoins, widgetDate, widgetDisk,
-                                          widgetFGI, widgetMem, widgetNet,
+                                          widgetFGI, widgetMem, widgetNet, widgetUpstream,
                                           widgetTrayerPadding, widgetXMonad)
 import           BMonad.Config           (Config (cfgMobarSettings, cfgMonadDir, cfgTheme),
-                                          MobarSettings (msAllDesktops, msBorder, msHideOnStartup, msLowerOnStartup, msOverrideRedirect, msPersistent),
+                                          MobarSettings (msAllDesktops, msBorder, msFont, msHideOnStartup, msLowerOnStartup, msOverrideRedirect, msPersistent),
                                           Scheme (color02, color04, color05, color09, color16),
                                           Theme (themeColorScheme), mobarAlpha,
                                           mobarBgColor, mobarBorderColor,
-                                          mobarFgColor, mobarFont)
+                                          mobarFgColor)
 import           BMonad.Utils            (countScreens)
 
 import           System.Directory        (getHomeDirectory)
@@ -34,7 +34,7 @@ defaultHeight = 24
 
 baseConfig :: Config -> M.Config
 baseConfig cfg         = M.defaultConfig
-  { M.font             = mobarFont cfg
+  { M.font             = msFont $ cfgMobarSettings cfg
   , M.borderColor      = mobarBorderColor cfg
   , M.fgColor          = mobarFgColor cfg
   , M.bgColor          = mobarBgColor cfg
@@ -49,8 +49,12 @@ baseConfig cfg         = M.defaultConfig
   , M.alignSep         = "}{"
   , M.iconRoot         = cfgMonadDir cfg </> "xpm"
   , M.position         = M.TopSize M.C 100 defaultHeight
-  , M.textOffset       = defaultHeight - 8
-  , M.textOffsets      = [defaultHeight - 9]
+  --, M.textOffset       = defaultHeight - 8
+  --, M.textOffsets      = [defaultHeight - 9]
+  , M.additionalFonts  = [ "Cryptocurrency 14" -- fn=1
+                         , "Font Awesome 6 Free, DroidSansMono Nerd Font Mono 10, 10" -- fn=2
+                         , "Font Awesome 6 Brands 10" -- fn=3
+                         ]
   }
 
 mkConfig :: Config -> [M.Runnable] -> String -> M.Config
@@ -111,6 +115,7 @@ singleMonitor cfg =
       (<|>) a b = a ++ fc (color09 scheme) " | " ++ b
       cmds      = [ widgetTrayerPadding
                   , widgetXMonad
+                  , widgetUpstream scheme
                   , widgetCoins scheme
                   , widgetFGI scheme
                   , widgetDate scheme
@@ -119,12 +124,13 @@ singleMonitor cfg =
                   , widgetDisk scheme
                   ]
       tmpl      = icon
-                  <|> "%UnsafeStdinReader% }{ %coinprice%"
+                  <|> "%UnsafeStdinReader% }{ %coinprices%"
                   <|> "%fgi%"
                   <|> "%memory%"
                   <|> "%disku%"
                   <|> "%dynnetwork%"
                   <|> "%date%"
+                  <|> "%upstream%"
                   <|> "%_XMONAD_TRAYPAD%"
    in mkConfig cfg cmds tmpl
 
@@ -155,7 +161,7 @@ secondaryMonitor cfg =
                   , widgetDisk scheme
                   ]
       tmpl      = icon
-                  <|> "%UnsafeStdinReader% }{ %coinprice%"
+                  <|> "%UnsafeStdinReader% }{ %coinprices%"
                   <|> "%fgi%"
                   <|> "%memory%"
                   <|> "%disku%"

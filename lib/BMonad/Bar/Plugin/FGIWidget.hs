@@ -24,5 +24,5 @@ indexColor (FGISettings high med low) num = case num of
 
 runWidget :: FGISettings -> IO String
 runWidget s = format <$> getFearGreedIndex
-  where format (Just (FearGreed i v)) = "<fc=" ++ indexColor s i ++ ">\xf15a (" ++ show i ++ ") " ++ v ++ "</fc>"
-        format Nothing                = "<fc=gray>\xf15a Fear/Greed Unknown!</fc>"
+  where format (Just (FearGreed i v)) = "<fc=" ++ indexColor s i ++ ">(" ++ show i ++ ") " ++ v ++ "</fc>"
+        format Nothing                = "<fc=gray>Fear/Greed Unknown!</fc>"

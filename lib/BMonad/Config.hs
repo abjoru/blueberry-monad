@@ -15,7 +15,6 @@ module BMonad.Config (
   bmonadTabTheme,
   bmonadStartupHook,
 
-  mobarFont,
   mobarAlpha,
   mobarFgColor,
   mobarBgColor,

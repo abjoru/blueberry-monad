@@ -1,8 +1,8 @@
 module BMonad.Bar.Plugin.CoinPriceWidget where
 
-import           BMonad.Crypto (Coin (Coin, coinId), getCoinPrices)
+import           BMonad.Crypto (Coin (Coin), getCoinPrices)
 
-import           Data.List     (find, intercalate)
+import           Data.List     (intercalate)
 
 import           Text.Printf   (printf)
 
@@ -25,11 +25,8 @@ instance Exec WidgetConfig where
   rate (WidgetConfig _ _ r) = r
   run (WidgetConfig cs s _) = do
     coins <- getCoinPrices $ map (\(CoinSettings i _ _) -> i) cs
-    return $ intercalate ("<fc=" ++ s ++ "> | </fc>") $ mkWidget cs coins
+    return $ intercalate ("<fc=" ++ s ++ "> |</fc>") $ zipWith (curry formatCoin) cs coins
 
-mkWidget :: [CoinSettings] -> [Coin] -> [String]
-mkWidget cs xs = map (\(CoinSettings i c fc) -> formatWidget c fc $ find (\e -> coinId e == i) xs) cs
-
-formatWidget :: String -> String -> Maybe Coin -> String
-formatWidget color icon (Just (Coin _ _ _ p)) = "<fc=" ++ color ++ ">" ++ icon ++ " $" ++ printf "%.2f" p ++ "</fc>"
-formatWidget color icon Nothing               = "<fc=" ++ color ++ ">" ++ icon ++ " N/A</fc>"
+formatCoin :: (CoinSettings, Coin) -> String
+formatCoin (CoinSettings _ c i, Coin _ _ _ p) = 
+  "<fc=" ++ c ++ "><fn=1>" ++ i ++ "</fn>$" ++ printf "%.2f" p ++ "</fc>"
