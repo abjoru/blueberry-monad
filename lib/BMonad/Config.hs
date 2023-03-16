@@ -4,6 +4,7 @@ module BMonad.Config (
   Scheme(..),
   Theme(..),
   Config(..),
+  MobarWidget(..),
   MobarSettings(..),
   GridSettings(..),
 
@@ -19,6 +20,10 @@ module BMonad.Config (
   mobarFgColor,
   mobarBgColor,
   mobarBorderColor,
+  mobarSingleMonitor,
+  mobarPrimaryMonitor,
+  mobarSecondaryMonitor,
+  mobarOtherMonitors,
 
   spawnSelected,
   spawnSelectedIO

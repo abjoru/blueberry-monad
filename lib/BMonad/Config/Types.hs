@@ -7,6 +7,7 @@ module BMonad.Config.Types (
   Theme(..),
   Config(..),
   GridSettings(..),
+  MobarWidget(..),
   MobarSettings(..),
   App(..),
   Category(..),
@@ -18,6 +19,10 @@ module BMonad.Config.Types (
   mobarFgColor,
   mobarBgColor,
   mobarAlpha,
+  mobarSingleMonitor,
+  mobarPrimaryMonitor,
+  mobarSecondaryMonitor,
+  mobarOtherMonitors,
 
   defaultTheme,
   defaultConfig,
@@ -76,6 +81,18 @@ data GridSettings = GridSettings
   , gsOriginFractY :: Double
   } deriving (Show, Eq)
 
+data MobarWidget
+  = CoinPriceWidget
+  | FearGreedWidget
+  | MemoryWidget
+  | DiskUWidget
+  | NetworkWidget
+  | DateWidget
+  | UpstreamWidget
+  | TrayWidget
+  | UndefinedWidget
+  deriving (Show, Eq)
+
 data MobarSettings = MobarSettings
   { msFont             :: Font
   , msBorderColor      :: Maybe Color
@@ -88,6 +105,10 @@ data MobarSettings = MobarSettings
   , msHideOnStartup    :: Bool
   , msAllDesktops      :: Bool
   , msPersistent       :: Bool
+  , msSingleMonitor    :: [MobarWidget]
+  , msPrimaryMonitor   :: [MobarWidget]
+  , msSecondaryMonitor :: [MobarWidget]
+  , msOtherMonitors    :: [MobarWidget]
   } deriving (Show, Eq)
 
 data Config = Config
@@ -158,6 +179,17 @@ instance FromJSON Border where
   parseJSON (String "FullB")   = return FullB
   parseJSON _                  = return NoBorder
 
+instance FromJSON MobarWidget where
+  parseJSON (String "CoinPrice") = return CoinPriceWidget
+  parseJSON (String "FearGreed") = return FearGreedWidget
+  parseJSON (String "Memory")    = return MemoryWidget
+  parseJSON (String "DiskU")     = return DiskUWidget
+  parseJSON (String "Network")   = return NetworkWidget
+  parseJSON (String "Date")      = return DateWidget
+  parseJSON (String "Upstream")  = return UpstreamWidget
+  parseJSON (String "Tray")      = return TrayWidget
+  parseJSON _                    = return UndefinedWidget
+
 instance FromJSON ReadTheme where
   parseJSON = withObject "Theme" $ \v -> ReadTheme
     <$> v .:? "name" .!= defaultThemeName
@@ -220,6 +252,10 @@ instance FromJSON MobarSettings where
     <*> v .:? "hide-on-startup" .!= False
     <*> v .:? "all-desktops" .!= False
     <*> v .:? "persistent" .!= True
+    <*> v .:? "single-monitor" .!= [MemoryWidget, DiskUWidget, NetworkWidget, DateWidget, TrayWidget]
+    <*> v .:? "primary-monitor" .!= [NetworkWidget, DateWidget, TrayWidget]
+    <*> v .:? "secondary-monitor" .!= [MemoryWidget, DiskUWidget, DateWidget]
+    <*> v .:? "other-monitors" .!= [DateWidget]
 
 {-------------------------------------------
   Accessors
@@ -227,23 +263,35 @@ instance FromJSON MobarSettings where
 
 mobarBorderColor :: Config -> Color
 mobarBorderColor cfg = findC $ cfgMobarSettings cfg
-  where findC (MobarSettings _ (Just c) _ _ _ _ _ _ _ _ _) = c
+  where findC (MobarSettings _ (Just c) _ _ _ _ _ _ _ _ _ _ _ _ _) = c
         findC _ = color08 . themeColorScheme $ cfgTheme cfg
 
 mobarFgColor :: Config -> Color
 mobarFgColor cfg = findC $ cfgMobarSettings cfg
-  where findC (MobarSettings _ _ (Just c) _ _ _ _ _ _ _ _) = c
+  where findC (MobarSettings _ _ (Just c) _ _ _ _ _ _ _ _ _ _ _ _) = c
         findC _ = colorFore . themeColorScheme $ cfgTheme cfg
 
 mobarBgColor :: Config -> Color
 mobarBgColor cfg = findC $ cfgMobarSettings cfg
-  where findC (MobarSettings _ _ _ (Just c) _ _ _ _ _ _ _) = c
+  where findC (MobarSettings _ _ _ (Just c) _ _ _ _ _ _ _ _ _ _ _) = c
         findC _ = colorBack . themeColorScheme $ cfgTheme cfg
 
 mobarAlpha :: Config -> Int
 mobarAlpha cfg = findA $ cfgMobarSettings cfg
-  where findA (MobarSettings _ _ _ _ _ (Just a) _ _ _ _ _) = a
+  where findA (MobarSettings _ _ _ _ _ (Just a) _ _ _ _ _ _ _ _ _) = a
         findA _ = themeBarAlpha $ cfgTheme cfg
+
+mobarSingleMonitor :: Config -> [MobarWidget]
+mobarSingleMonitor = msSingleMonitor . cfgMobarSettings
+
+mobarPrimaryMonitor :: Config -> [MobarWidget]
+mobarPrimaryMonitor = msPrimaryMonitor . cfgMobarSettings
+
+mobarSecondaryMonitor :: Config -> [MobarWidget]
+mobarSecondaryMonitor = msSecondaryMonitor . cfgMobarSettings
+
+mobarOtherMonitors :: Config -> [MobarWidget]
+mobarOtherMonitors = msOtherMonitors . cfgMobarSettings
 
 {-------------------------------------------
   Defaults
@@ -349,6 +397,10 @@ defaultMobarSettings = MobarSettings
   , msHideOnStartup    = False
   , msAllDesktops      = True
   , msPersistent       = True
+  , msSingleMonitor    = [MemoryWidget, DiskUWidget, NetworkWidget, DateWidget, TrayWidget]
+  , msPrimaryMonitor   = [NetworkWidget, DateWidget, TrayWidget]
+  , msSecondaryMonitor = [MemoryWidget, DiskUWidget, DateWidget]
+  , msOtherMonitors    = [DateWidget]
   }
 
 {-------------------------------------------

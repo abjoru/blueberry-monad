@@ -4,13 +4,11 @@ import           BMonad.Bar.Utils        (fc)
 import           BMonad.Bar.Widgets      (widgetCoins, widgetDate, widgetDisk,
                                           widgetFGI, widgetMem, widgetNet, widgetUpstream,
                                           widgetTrayerPadding, widgetXMonad)
-import           BMonad.Config           (Config (cfgMobarSettings, cfgMonadDir, cfgTheme),
-                                          MobarSettings (msAllDesktops, msBorder, msFont, msHideOnStartup, msLowerOnStartup, msOverrideRedirect, msPersistent),
-                                          Scheme (color02, color04, color05, color09, color16),
-                                          Theme (themeColorScheme), mobarAlpha,
-                                          mobarBgColor, mobarBorderColor,
-                                          mobarFgColor)
+import           BMonad.Config           
 import           BMonad.Utils            (countScreens)
+
+import Data.Maybe (mapMaybe)
+import Data.List (intercalate)
 
 import           System.Directory        (getHomeDirectory)
 import           System.FilePath         ((</>))
@@ -109,69 +107,46 @@ selectMonitor cfg (Just Secondary) = secondaryMonitor cfg
 selectMonitor cfg (Just Other)     = otherMonitor cfg
 selectMonitor cfg Nothing          = singleMonitor cfg
 
+mkWidget :: Scheme -> MobarWidget -> Maybe M.Runnable
+mkWidget s CoinPriceWidget = Just $ widgetCoins s
+mkWidget s FearGreedWidget = Just $ widgetFGI s
+mkWidget s MemoryWidget    = Just $ widgetMem s
+mkWidget s DiskUWidget     = Just $ widgetDisk s
+mkWidget s NetworkWidget   = Just $ widgetNet s
+mkWidget s DateWidget      = Just $ widgetDate s
+mkWidget s UpstreamWidget  = Just $ widgetUpstream s
+mkWidget _ TrayWidget      = Just widgetTrayerPadding
+mkWidget _ _               = Nothing
+
+mkTemplate :: MobarWidget -> Maybe String
+mkTemplate CoinPriceWidget = Just "%coinprices%"
+mkTemplate FearGreedWidget = Just "%fgi%"
+mkTemplate MemoryWidget    = Just "%memory%"
+mkTemplate DiskUWidget     = Just "%disku%"
+mkTemplate NetworkWidget   = Just "%dynnetwork%"
+mkTemplate DateWidget      = Just "%date%"
+mkTemplate UpstreamWidget  = Just "%upstream%"
+mkTemplate TrayWidget      = Just "%_XMONAD_TRAYPAD%"
+mkTemplate _               = Nothing
+
+mkMonitorBar :: Config -> (Config -> [MobarWidget]) -> M.Config
+mkMonitorBar cfg func =
+  let scheme  = themeColorScheme $ cfgTheme cfg
+      widgets = func cfg
+      cmds    = widgetXMonad : mapMaybe (mkWidget scheme) widgets
+      sep     = fc (color09 scheme) " | "
+      barStrs = mapMaybe mkTemplate widgets
+      templ   = intercalate sep barStrs
+   in mkConfig cfg cmds (icon ++ sep ++ "%UnsafeStdinReader% }{ " ++ templ)
+
 singleMonitor :: Config -> M.Config
-singleMonitor cfg =
-  let scheme    = themeColorScheme $ cfgTheme cfg
-      (<|>) a b = a ++ fc (color09 scheme) " | " ++ b
-      cmds      = [ widgetTrayerPadding
-                  , widgetXMonad
-                  , widgetUpstream scheme
-                  , widgetCoins scheme
-                  , widgetFGI scheme
-                  , widgetDate scheme
-                  , widgetMem scheme
-                  , widgetNet scheme
-                  , widgetDisk scheme
-                  ]
-      tmpl      = icon
-                  <|> "%UnsafeStdinReader% }{ %coinprices%"
-                  <|> "%fgi%"
-                  <|> "%memory%"
-                  <|> "%disku%"
-                  <|> "%dynnetwork%"
-                  <|> "%date%"
-                  <|> "%upstream%"
-                  <|> "%_XMONAD_TRAYPAD%"
-   in mkConfig cfg cmds tmpl
+singleMonitor cfg = mkMonitorBar cfg mobarSingleMonitor
 
 primaryMonitor :: Config -> M.Config
-primaryMonitor cfg =
-  let scheme    = themeColorScheme $ cfgTheme cfg
-      (<|>) a b = a ++ fc (color09 scheme) " | " ++ b
-      cmds      = [ widgetTrayerPadding
-                  , widgetXMonad
-                  , widgetDate scheme
-                  , widgetNet scheme
-                  ]
-      tmpl      = icon
-                  <|> "%UnsafeStdinReader% }{ %dynnetwork%"
-                  <|> "%date%"
-                  <|> "%_XMONAD_TRAYPAD%"
-   in mkConfig cfg cmds tmpl
+primaryMonitor cfg = mkMonitorBar cfg mobarPrimaryMonitor
 
 secondaryMonitor :: Config -> M.Config
-secondaryMonitor cfg =
-  let scheme    = themeColorScheme $ cfgTheme cfg
-      (<|>) a b = a ++ fc (color09 scheme) " | " ++ b
-      cmds      = [ widgetXMonad
-                  , widgetCoins scheme
-                  , widgetFGI scheme
-                  , widgetDate scheme
-                  , widgetMem scheme
-                  , widgetDisk scheme
-                  ]
-      tmpl      = icon
-                  <|> "%UnsafeStdinReader% }{ %coinprices%"
-                  <|> "%fgi%"
-                  <|> "%memory%"
-                  <|> "%disku%"
-                  <|> "%date%"
-   in mkConfig cfg cmds tmpl
+secondaryMonitor cfg = mkMonitorBar cfg mobarSecondaryMonitor
 
 otherMonitor :: Config -> M.Config
-otherMonitor cfg =
-  let scheme    = themeColorScheme $ cfgTheme cfg
-      (<|>) a b = a ++ fc (color09 scheme) " | " ++ b
-      cmds      = [ widgetXMonad, widgetDate scheme ]
-      tmpl      = icon <|> "%UnsafeStdinReader% }{ %date%"
-   in mkConfig cfg cmds tmpl
+otherMonitor cfg = mkMonitorBar cfg mobarOtherMonitors
