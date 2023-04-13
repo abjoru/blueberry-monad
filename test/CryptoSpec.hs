@@ -1,9 +1,9 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module CryptoSpec (main, spec) where
 
 import           BMonad.Crypto
-
 import           Data.Maybe    (isJust)
-
 import           Test.Hspec
 
 main :: IO ()
@@ -23,5 +23,5 @@ spec = do
 
     it "fetches multiple coin prices" $ do
       ps <- getCoinPrices ["bitcoin", "ethereum"]
-      putStrLn $ show ps
+      print ps
       length ps `shouldBe` 2

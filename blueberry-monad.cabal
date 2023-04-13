@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e737070f6d8b66b2e681bd2dd8cbbbe0ff8d5e2dd06258af08a4687583b137f0
+-- hash: d653d94bce6f1b7ee4783b367df504265cf81b76aed90f10374939f8e4f73f8a
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -57,9 +57,11 @@ library
     , colour
     , containers
     , directory
+    , exceptions
     , filepath
     , hslogger
     , http-conduit
+    , http-types
     , mtl
     , process
     , text
@@ -112,7 +114,8 @@ test-suite test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , blueberry-monad
     , bytestring
     , containers
