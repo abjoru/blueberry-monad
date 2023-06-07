@@ -1,28 +1,35 @@
 module BMonad.KeyBindings (bmonadKeys, showKeys) where
 
-import           BMonad.Config                (Config (cfgTerminal, cfgWorkspaces),
-                                               bmonadAppGroup, bmonadGames,
-                                               spawnSelectedIO)
+import           BMonad.Config                       (Config (cfgTerminal, cfgWorkspaces),
+                                                      bmonadAppGroup,
+                                                      bmonadGames,
+                                                      spawnSelectedIO)
 
-import           Data.Char                    (toUpper)
+import           Data.Char                           (toUpper)
 
-import           System.Exit                  (exitSuccess)
-import           System.IO                    (hClose, hPutStr)
+import           System.Exit                         (exitSuccess)
+import           System.IO                           (hClose, hPutStr)
 
-import           XMonad                       (KeyMask, KeySym, XConfig, io,
-                                               sendMessage, spawn, windows)
-import           XMonad.Actions.CopyWindow    (kill1)
-import           XMonad.Actions.CycleWS       (Direction1D (Next, Prev),
-                                               WSType (WSIs), moveTo,
-                                               nextScreen, prevScreen, shiftTo)
-import           XMonad.Actions.Promote       (promote)
-import           XMonad.Actions.WithAll       (killAll)
-import           XMonad.Layout.WindowArranger (WindowArrangerMsg (MoveDown, MoveLeft, MoveRight, MoveUp))
-import qualified XMonad.StackSet              as W
-import           XMonad.Util.EZConfig         (mkNamedKeymap)
-import           XMonad.Util.NamedActions     (NamedAction (..), addName,
-                                               showKmSimple, (^++^))
-import           XMonad.Util.Run              (spawnPipe)
+import           XMonad                              (ChangeLayout (NextLayout),
+                                                      KeyMask, KeySym, XConfig,
+                                                      io, sendMessage, spawn,
+                                                      windows)
+import           XMonad.Actions.CopyWindow           (kill1)
+import           XMonad.Actions.CycleWS              (Direction1D (Next, Prev),
+                                                      WSType (WSIs), moveTo,
+                                                      nextScreen, prevScreen,
+                                                      shiftTo)
+import           XMonad.Actions.Promote              (promote)
+import           XMonad.Actions.WithAll              (killAll)
+import           XMonad.Hooks.ManageDocks            (ToggleStruts (ToggleStruts))
+import qualified XMonad.Layout.MultiToggle           as MT
+import           XMonad.Layout.MultiToggle.Instances (StdTransformers (NBFULL))
+import           XMonad.Layout.WindowArranger        (WindowArrangerMsg (MoveDown, MoveLeft, MoveRight, MoveUp))
+import qualified XMonad.StackSet                     as W
+import           XMonad.Util.EZConfig                (mkNamedKeymap)
+import           XMonad.Util.NamedActions            (NamedAction (..), addName,
+                                                      showKmSimple, (^++^))
+import           XMonad.Util.Run                     (spawnPipe)
 
 bmonadKeys :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
 bmonadKeys b c = keysEssentials b c
@@ -30,6 +37,7 @@ bmonadKeys b c = keysEssentials b c
   ^++^ keysDMenu c
   ^++^ keysWorkspaces b c
   ^++^ keysWindows c
+  ^++^ keysLayouts c
   ^++^ keysMonitors c
   ^++^ keysMultimedia c
 
@@ -122,6 +130,13 @@ keysWindows c =
     , ("M-S-j", addName "Swap focused window with next window" $ windows W.swapDown)
     , ("M-S-k", addName "Swap focused window with prev window" $ windows W.swapUp)
     , ("M-<Backspace>", addName "Move focused window to master" promote)
+    ]
+
+keysLayouts :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
+keysLayouts c =
+  subKeys c "Layouts"
+    [ ("M-<Tab>", addName "Switch to next layout" $ sendMessage NextLayout)
+    , ("M-<Space>", addName "Toggle noborders/full" $ sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)
     ]
 
 keysMonitors :: XConfig l -> [((KeyMask, KeySym), NamedAction)]

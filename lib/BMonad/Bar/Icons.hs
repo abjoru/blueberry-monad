@@ -58,7 +58,7 @@ icoCpu' :: Color -> String -> String
 icoCpu' c = cfi' c 2 "\xf0ee0"
 
 icoGit :: Color -> String
-icoGit c = cfi c 2 "\xf418" --"\xf1d2"
+icoGit c = cfi c 4 "\xf418" --"\xf1d2"
 
 icoGit' :: Color -> String -> String
-icoGit' c = cfi' c 2 "\xf418" --"\xf1d2"
+icoGit' c = cfi' c 4 "\xf418" --"\xf1d2"

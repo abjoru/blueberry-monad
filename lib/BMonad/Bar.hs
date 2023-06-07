@@ -47,11 +47,10 @@ baseConfig cfg         = M.defaultConfig
   , M.alignSep         = "}{"
   , M.iconRoot         = cfgMonadDir cfg </> "xpm"
   , M.position         = M.TopSize M.C 100 defaultHeight
-  --, M.textOffset       = defaultHeight - 8
-  --, M.textOffsets      = [defaultHeight - 9]
   , M.additionalFonts  = [ "Cryptocurrency 14" -- fn=1
                          , "Font Awesome 6 Free, DroidSansMono Nerd Font Mono 10, 10" -- fn=2
                          , "Font Awesome 6 Brands 10" -- fn=3
+                         , "Hasklug Nerd Font Mono 10" -- fn=4
                          ]
   }
 
@@ -63,7 +62,7 @@ spawnBars b 0 = (: []) <$> spawnPipe (b ++ " single")
 spawnBars b 1 = (: []) <$> spawnPipe (b ++ " single")
 spawnBars b 2 = mapM (mkBar b) [(0, "primary"), (1, "secondary")]
 spawnBars b 3 = mapM (mkBar b) [(0, "primary"), (1, "secondary"), (2, "other")]
-spawnBars b 4 = mapM (mkBar b) [(0, "primary"), (1, "secondary"), (2, "other"), (3, "secondary")]
+spawnBars b 4 = mapM (mkBar b) [(0, "primary"), (1, "other"), (2, "other"), (3, "secondary")]
 spawnBars b n = mapM (mkBar b) $ zip (take n [0..]) (["primary", "secondary"] ++ replicate (n - 2) "other")
 
 mkBar :: FilePath -> (Int, String) -> IO Handle
