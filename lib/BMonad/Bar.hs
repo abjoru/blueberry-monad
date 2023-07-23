@@ -2,13 +2,14 @@ module BMonad.Bar (Monitor(..), selectMonitor, bmonadBars, bmobarPP) where
 
 import           BMonad.Bar.Utils        (fc)
 import           BMonad.Bar.Widgets      (widgetCoins, widgetDate, widgetDisk,
-                                          widgetFGI, widgetMem, widgetNet, widgetUpstream,
-                                          widgetTrayerPadding, widgetXMonad)
-import           BMonad.Config           
+                                          widgetFGI, widgetMem, widgetNet,
+                                          widgetTrayerPadding, widgetUpstream,
+                                          widgetXMonad)
+import           BMonad.Config
 import           BMonad.Utils            (countScreens)
 
-import Data.Maybe (mapMaybe)
-import Data.List (intercalate)
+import           Data.List               (intercalate)
+import           Data.Maybe              (mapMaybe)
 
 import           System.Directory        (getHomeDirectory)
 import           System.FilePath         ((</>))
