@@ -49,7 +49,7 @@ baseConfig cfg         = M.defaultConfig
   , M.iconRoot         = cfgMonadDir cfg </> "xpm"
   , M.position         = M.TopSize M.C 100 defaultHeight
   , M.additionalFonts  = [ "Cryptocurrency 14" -- fn=1
-                         , "Font Awesome 6 Free, DroidSansMono Nerd Font Mono 10, 10" -- fn=2
+                         , "Font Awesome 6 Free, DroidSansM Nerd Font Mono 10, 10" -- fn=2
                          , "Font Awesome 6 Brands 10" -- fn=3
                          , "Hasklug Nerd Font Mono 10" -- fn=4
                          ]

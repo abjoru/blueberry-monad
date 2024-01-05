@@ -143,4 +143,4 @@ gridSelect :: Config -> Category -> [(String, String)]
 gridSelect c (Category _ apps) = map (\a -> (appName a, mkLauncher c a)) apps
   where mkLauncher _ (App _ _ (Just cmd) _) = cmd
         mkLauncher r (App _ _ _ (Just cmd)) = cfgTerminal r ++ " -e " ++ cmd
-        mkLauncher _ (App n _ _ _)          = "notify-send \"" ++ n ++ ": Not installed!\""
+        mkLauncher _ (App n _ _ _)          = "notify-send \"XMonad\" \"" ++ n ++ ": Not installed!\""
