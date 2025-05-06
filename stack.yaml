@@ -17,8 +17,8 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/18.yaml
+resolver: lts-20.26
+  #url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/18.yaml
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -41,12 +41,13 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
-  - xmonad-0.17.1
+  - xmonad-0.17.2
   - xmonad-contrib-0.17.1
   - xmonad-extras-0.17.0
-  - xmobar-0.46
+  - xmobar-0.49
   - netlink-1.1.1.0
-  - X11-1.10.2
+  - X11-1.10.3
+  - hashtables-1.4.2
 
 # Override default flag values for local packages and extra-deps
 flags:
