@@ -12,6 +12,11 @@ import           XMonad.Hooks.EwmhDesktops (ewmh)
 import           XMonad.Hooks.ManageDocks  (docks, manageDocks)
 import           XMonad.Util.Hacks         (trayerPaddingXmobarEventHook)
 import           XMonad.Util.NamedActions  (addDescrKeys')
+import XMonad.Layout.LayoutScreens
+import XMonad.Layout.Tall
+import Control.Monad (when)
+import Data.IORef
+import System.IO.Unsafe (unsafePerformIO)
 
 main :: IO ()
 main = do
@@ -25,6 +30,12 @@ main = do
              $ docks
              $ def { manageHook = bmonadManageHook cfg <+> manageDocks
                    , handleEventHook = trayerPaddingXmobarEventHook
+                   -- TODO active below when input argument is given such
+                   -- that we can control when to split the screen. We
+                   -- don't want to split on the laptop. Just the ultrawide!
+                   --, handleEventHook =   bmonadLayoutScreensHook 
+                                     -- <+> trayerPaddingXmobarEventHook 
+                                     -- <+> handleEventHook def
                    , modMask = cfgModMask cfg
                    , terminal = cfgTerminal cfg
                    , startupHook = bmonadStartupHook cfg
@@ -37,3 +48,18 @@ main = do
                    }
 
   launch bmonad xdirs
+
+-- This is safe in XMonad's pure-ish world because 
+-- it's run once at startup
+{-# NOINLINE hasRunLayout #-}
+hasRunLayout :: IORef Bool
+hasRunLayout = unsafePerformIO (newIORef False)
+
+bmonadLayoutScreensHook :: Event -> X All
+bmonadLayoutScreensHook (MapRequestEvent {}) = do
+  alreadyRun <- io $ readIORef hasRunLayout
+  when (not alreadyRun) $ do
+    io $ writeIORef hasRunLayout True
+    layoutScreens 3 (Tall 1 (3/100) (1/3))
+  return (All True)
+bmonadLayoutScreensHook _ = return (All True)

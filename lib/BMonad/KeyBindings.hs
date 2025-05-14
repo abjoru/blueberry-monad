@@ -25,6 +25,8 @@ import           XMonad.Hooks.ManageDocks            (ToggleStruts (ToggleStruts
 import qualified XMonad.Layout.MultiToggle           as MT
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (NBFULL))
 import           XMonad.Layout.WindowArranger        (WindowArrangerMsg (MoveDown, MoveLeft, MoveRight, MoveUp))
+import XMonad.Layout.LayoutScreens
+import XMonad.Layout.Tall
 import qualified XMonad.StackSet                     as W
 import           XMonad.Util.EZConfig                (mkNamedKeymap)
 import           XMonad.Util.NamedActions            (NamedAction (..), addName,
@@ -144,6 +146,8 @@ keysMonitors c =
   subKeys c "Monitors"
     [ ("M-.", addName "Switch focus to next monitor" nextScreen)
     , ("M-,", addName "Switch focus to prev monitor" prevScreen)
+    , ("M-F1", layoutScreens 3 (Tall 1 (3/100) (1/3)))
+    , ("M-F2", rescreen)
     ]
 
 keysMultimedia :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
