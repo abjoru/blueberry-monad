@@ -11,9 +11,10 @@ import           System.Exit                         (exitSuccess)
 import           System.IO                           (hClose, hPutStr)
 
 import           XMonad                              (ChangeLayout (NextLayout),
-                                                      KeyMask, KeySym, XConfig,
-                                                      io, sendMessage, spawn,
-                                                      windows)
+                                                      KeyMask, KeySym,
+                                                      Tall (Tall), XConfig, io,
+                                                      rescreen, sendMessage,
+                                                      spawn, windows)
 import           XMonad.Actions.CopyWindow           (kill1)
 import           XMonad.Actions.CycleWS              (Direction1D (Next, Prev),
                                                       WSType (WSIs), moveTo,
@@ -22,11 +23,10 @@ import           XMonad.Actions.CycleWS              (Direction1D (Next, Prev),
 import           XMonad.Actions.Promote              (promote)
 import           XMonad.Actions.WithAll              (killAll)
 import           XMonad.Hooks.ManageDocks            (ToggleStruts (ToggleStruts))
+import           XMonad.Layout.LayoutScreens         (layoutScreens)
 import qualified XMonad.Layout.MultiToggle           as MT
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (NBFULL))
 import           XMonad.Layout.WindowArranger        (WindowArrangerMsg (MoveDown, MoveLeft, MoveRight, MoveUp))
-import XMonad.Layout.LayoutScreens
-import XMonad.Layout.Tall
 import qualified XMonad.StackSet                     as W
 import           XMonad.Util.EZConfig                (mkNamedKeymap)
 import           XMonad.Util.NamedActions            (NamedAction (..), addName,
@@ -146,8 +146,9 @@ keysMonitors c =
   subKeys c "Monitors"
     [ ("M-.", addName "Switch focus to next monitor" nextScreen)
     , ("M-,", addName "Switch focus to prev monitor" prevScreen)
-    , ("M-F1", layoutScreens 3 (Tall 1 (3/100) (1/3)))
-    , ("M-F2", rescreen)
+    , ("M-F1", addName "Reset screens" rescreen)
+    , ("M-F2", addName "Split into 2 screens" $ layoutScreens 2 (Tall 1 (3/100) (1/2)))
+    , ("M-F3", addName "Split into 3 screens" $ layoutScreens 3 (Tall 1 (3/100) (1/3)))
     ]
 
 keysMultimedia :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
