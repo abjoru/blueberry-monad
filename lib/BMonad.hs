@@ -53,8 +53,8 @@ bmonadLayout cfg = avoidStruts
                  $ windowArrange
                  $ T.toggleLayouts floats
                  $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) defaultLayout
-  where defaultLayout = withBorder (themeBorderWidth $ cfgTheme cfg) (cols cfg)
-                        ||| tall cfg
+  where defaultLayout = withBorder (themeBorderWidth $ cfgTheme cfg) (tall cfg)
+                        ||| cols cfg
                         ||| floats
                         ||| noBorders (tabs cfg)
                         ||| grid cfg
