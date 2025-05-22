@@ -46,6 +46,7 @@ import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
 import           XMonad.Layout.WindowNavigation      (windowNavigation)
 import XMonad.Layout.ThreeColumns (ThreeCol(ThreeColMid))
+import BMonad.Config.Types
 
 bmonadLayout :: Config -> _
 bmonadLayout cfg = avoidStruts
@@ -121,7 +122,7 @@ cols cfg = renamed [Replace "cols"]
          $ windowNavigation
          $ addTabs shrinkText (bmonadTabTheme cfg)
          $ subLayout [] (smartBorders Simplest)
-         $ bspacing 8
+         $ bspacing (monadWindowSpacing cfg)
          $ ThreeColMid 1 (3/100) (1/3)
 
 tall :: Config -> _
@@ -131,7 +132,7 @@ tall cfg = renamed [Replace "tall"]
          $ windowNavigation
          $ addTabs shrinkText (bmonadTabTheme cfg)
          $ subLayout [] (smartBorders Simplest)
-         $ bspacing 8
+         $ bspacing (monadWindowSpacing cfg)
          $ ResizableTall 1 (3/100) (1/2) []
 
 floats :: _
@@ -144,10 +145,11 @@ grid cfg = renamed [Replace "grid"]
          $ windowNavigation
          $ addTabs shrinkText (bmonadTabTheme cfg)
          $ subLayout [] (smartBorders Simplest)
-         $ bspacing 8
+         $ bspacing (monadWindowSpacing cfg)
          $ mkToggle (single MIRROR)
          $ Grid (16/10)
 
 tabs :: Config -> _
 tabs cfg = renamed [Replace "tabs"]
+         $ bspacing (monadWindowSpacing cfg)
          $ tabbed shrinkText (bmonadTabTheme cfg)

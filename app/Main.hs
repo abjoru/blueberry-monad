@@ -22,7 +22,29 @@ main = readOptions >>= (\v -> buildWM v (getStatusBar $ optStatusBar v))
 
 -- FIXME implement polybar setup
 withPolybar :: BOptions -> IO ()
-withPolybar = withMobar
+withPolybar opts = do
+  cfg   <- bmonadConfig
+  xdirs <- getDirectories
+  _     <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
+
+  let mcount = optVScreens opts
+  let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
+             $ ewmh
+             $ docks
+             $ def { manageHook         = bmonadManageHook cfg <+> manageDocks
+                   , handleEventHook    = bmonadLayoutScreensHook mcount
+                                      <+> handleEventHook def
+                   , modMask            = cfgModMask cfg
+                   , terminal           = cfgTerminal cfg
+                   , startupHook        = bmonadStartupHook cfg
+                   , layoutHook         = bmonadLayout cfg
+                   , workspaces         = cfgWorkspaces cfg
+                   , borderWidth        = themeBorderWidth $ cfgTheme cfg
+                   , normalBorderColor  = color09 . themeColorScheme $ cfgTheme cfg
+                   , focusedBorderColor = color04 . themeColorScheme $ cfgTheme cfg
+                   }
+
+  launch bmonad xdirs
 
 withMobar :: BOptions -> IO ()
 withMobar opts = do
@@ -35,19 +57,19 @@ withMobar opts = do
   let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
              $ ewmh
              $ docks
-             $ def { manageHook = bmonadManageHook cfg <+> manageDocks
-                   , handleEventHook = bmonadLayoutScreensHook mcount
-                                     <+> trayerPaddingXmobarEventHook
-                                     <+> handleEventHook def
-                   , modMask = cfgModMask cfg
-                   , terminal = cfgTerminal cfg
-                   , startupHook = bmonadStartupHook cfg
-                   , layoutHook = bmonadLayout cfg
-                   , workspaces = cfgWorkspaces cfg
-                   , borderWidth = themeBorderWidth $ cfgTheme cfg
-                   , normalBorderColor = color09 . themeColorScheme $ cfgTheme cfg
+             $ def { manageHook         = bmonadManageHook cfg <+> manageDocks
+                   , handleEventHook    = bmonadLayoutScreensHook mcount
+                                      <+> trayerPaddingXmobarEventHook
+                                      <+> handleEventHook def
+                   , modMask            = cfgModMask cfg
+                   , terminal           = cfgTerminal cfg
+                   , startupHook        = bmonadStartupHook cfg
+                   , layoutHook         = bmonadLayout cfg
+                   , workspaces         = cfgWorkspaces cfg
+                   , borderWidth        = themeBorderWidth $ cfgTheme cfg
+                   , normalBorderColor  = color09 . themeColorScheme $ cfgTheme cfg
                    , focusedBorderColor = color04 . themeColorScheme $ cfgTheme cfg
-                   , logHook = dynamicLogWithPP (bmobarConfig cfg bar)
+                   , logHook            = dynamicLogWithPP (bmobarConfig cfg bar)
                    }
 
   launch bmonad xdirs
