@@ -5,7 +5,6 @@ import           BMonad
 import           Control.Monad               (unless)
 import           Data.IORef
 import           Data.Monoid                 (All (..))
-import           System.Environment          (getArgs)
 import           System.IO.Unsafe            (unsafePerformIO)
 import           XMonad
 import           XMonad.Hooks.DynamicLog     (dynamicLogWithPP)
@@ -14,15 +13,25 @@ import           XMonad.Hooks.ManageDocks    (docks, manageDocks)
 import           XMonad.Layout.LayoutScreens
 import           XMonad.Util.Hacks           (trayerPaddingXmobarEventHook)
 import           XMonad.Util.NamedActions    (addDescrKeys')
+import BOptions 
 
 main :: IO ()
-main = do
-  mcount <- getMonitorCount <$> getArgs
-  cfg    <- bmonadConfig
-  bar    <- bmonadBar
-  xdirs  <- getDirectories
-  _      <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
+main = readOptions >>= (\v -> buildWM v (getStatusBar $ optStatusBar v))
+  where buildWM o XMobar  = withMobar o
+        buildWM o Polybar = withPolybar o
 
+-- FIXME implement polybar setup
+withPolybar :: BOptions -> IO ()
+withPolybar = withMobar
+
+withMobar :: BOptions -> IO ()
+withMobar opts = do
+  cfg   <- bmonadConfig
+  bar   <- bmonadBar
+  xdirs <- getDirectories
+  _     <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
+
+  let mcount = optVScreens opts
   let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
              $ ewmh
              $ docks
@@ -42,14 +51,6 @@ main = do
                    }
 
   launch bmonad xdirs
-
--- Get number of virtual screens based on optional argument.
-getMonitorCount :: [String] -> Maybe Int
-getMonitorCount args = case args of
-  (n:_) -> case reads n of
-             [(num, "")] -> Just num
-             _           -> Nothing
-  _     -> Nothing
 
 -- This is safe in XMonad's pure-ish world because
 -- it's run once at startup

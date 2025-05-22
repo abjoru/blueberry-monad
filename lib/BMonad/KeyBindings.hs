@@ -32,6 +32,7 @@ import           XMonad.Util.EZConfig                (mkNamedKeymap)
 import           XMonad.Util.NamedActions            (NamedAction (..), addName,
                                                       showKmSimple, (^++^))
 import           XMonad.Util.Run                     (spawnPipe)
+import Data.Fixed (HasResolution(resolution))
 
 bmonadKeys :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
 bmonadKeys b c = keysEssentials b c
@@ -146,9 +147,11 @@ keysMonitors c =
   subKeys c "Monitors"
     [ ("M-.", addName "Switch focus to next monitor" nextScreen)
     , ("M-,", addName "Switch focus to prev monitor" prevScreen)
-    , ("M-F1", addName "Reset screens" rescreen)
-    , ("M-F2", addName "Split into 2 screens" $ layoutScreens 2 (Tall 1 (3/100) (1/2)))
-    , ("M-F3", addName "Split into 3 screens" $ layoutScreens 3 (Tall 1 (3/100) (1/3)))
+    , ("M-f", addName "Set resolution to full" $ spawn "xrandr --output DP-6 --mode 5120x1440")
+    , ("M-S-f", addName "Set resolution to half" $ spawn "xrandr --output DP-6 --mode 2560x1440")
+    , ("M-S-F1", addName "Reset screens" rescreen)
+    , ("M-S-F2", addName "Split into 2 screens" $ layoutScreens 2 (Tall 1 (3/100) (1/2)))
+    , ("M-S-F3", addName "Split into 3 screens" $ layoutScreens 3 (Tall 1 (3/100) (1/3)))
     ]
 
 keysMultimedia :: XConfig l -> [((KeyMask, KeySym), NamedAction)]

@@ -45,6 +45,7 @@ import           XMonad.Layout.Tabbed                (addTabs, shrinkText,
 import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
 import           XMonad.Layout.WindowNavigation      (windowNavigation)
+import XMonad.Layout.ThreeColumns (ThreeCol(ThreeColMid))
 
 bmonadLayout :: Config -> _
 bmonadLayout cfg = avoidStruts
@@ -52,7 +53,8 @@ bmonadLayout cfg = avoidStruts
                  $ windowArrange
                  $ T.toggleLayouts floats
                  $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) defaultLayout
-  where defaultLayout = withBorder (themeBorderWidth $ cfgTheme cfg) (tall cfg)
+  where defaultLayout = withBorder (themeBorderWidth $ cfgTheme cfg) (cols cfg)
+                        ||| tall cfg
                         ||| floats
                         ||| noBorders (tabs cfg)
                         ||| grid cfg
@@ -111,6 +113,16 @@ bmonadManageHook cfg = composeAll . concat $
 
 bspacing :: Integer -> l a -> ModifiedLayout Spacing l a
 bspacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
+
+cols :: Config -> _
+cols cfg = renamed [Replace "cols"]
+         $ limitWindows 5
+         $ smartBorders
+         $ windowNavigation
+         $ addTabs shrinkText (bmonadTabTheme cfg)
+         $ subLayout [] (smartBorders Simplest)
+         $ bspacing 8
+         $ ThreeColMid 1 (3/100) (1/3)
 
 tall :: Config -> _
 tall cfg = renamed [Replace "tall"]

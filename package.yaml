@@ -70,6 +70,8 @@ executables:
       - blueberry-monad
       - xmonad
       - xmonad-contrib
+      - optparse-applicative
+      - string-interpolate
 
   blueberry-mobar:
     main:                BMobar.hs
