@@ -10,10 +10,7 @@ module BOptions (
 import Options.Applicative
 import Data.String.Interpolate (__i)
 
-data BOptions = BOptions
-  { optVScreens :: Maybe Int
-  , optStatusBar :: Maybe BarType
-  }
+newtype BOptions = BOptions { optStatusBar :: Maybe BarType }
 
 data BarType = XMobar | Polybar
   deriving (Show, Read, Eq, Ord, Enum, Bounded)
@@ -23,12 +20,7 @@ getStatusBar (Just v) = v
 getStatusBar Nothing  = XMobar
 
 parseOptions :: Parser BOptions
-parseOptions = BOptions <$> parseVScreens <*> parseStatusBar
-
-parseVScreens :: Parser (Maybe Int)
-parseVScreens = optional (option auto ( long "virtualscreens"
-                                      <> short 'v'
-                                      <> help "Optional number of virtual screens"))
+parseOptions = BOptions <$> parseStatusBar
 
 parseStatusBar :: Parser (Maybe BarType)
 parseStatusBar = optional (option auto (  long "statusbar"

@@ -1,39 +1,32 @@
 module Main (main) where
 
 import           BMonad
+import           BOptions 
 
-import           Control.Monad               (unless)
-import           Data.IORef
-import           Data.Monoid                 (All (..))
-import           System.IO.Unsafe            (unsafePerformIO)
 import           XMonad
 import           XMonad.Hooks.DynamicLog     (dynamicLogWithPP)
 import           XMonad.Hooks.EwmhDesktops   (ewmh)
 import           XMonad.Hooks.ManageDocks    (docks, manageDocks)
-import           XMonad.Layout.LayoutScreens
 import           XMonad.Util.Hacks           (trayerPaddingXmobarEventHook)
 import           XMonad.Util.NamedActions    (addDescrKeys')
-import BOptions 
 
 main :: IO ()
-main = readOptions >>= (\v -> buildWM v (getStatusBar $ optStatusBar v))
-  where buildWM o XMobar  = withMobar o
-        buildWM o Polybar = withPolybar o
+main = readOptions >>= (\v -> buildWM (getStatusBar $ optStatusBar v))
+  where buildWM XMobar  = withMobar
+        buildWM Polybar = withPolybar
 
 -- FIXME implement polybar setup
-withPolybar :: BOptions -> IO ()
-withPolybar opts = do
+withPolybar :: IO ()
+withPolybar = do
   cfg   <- bmonadConfig
   xdirs <- getDirectories
   _     <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
 
-  let mcount = optVScreens opts
   let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
              $ ewmh
              $ docks
              $ def { manageHook         = bmonadManageHook cfg <+> manageDocks
-                   , handleEventHook    = bmonadLayoutScreensHook mcount
-                                      <+> handleEventHook def
+                   , handleEventHook    = handleEventHook def
                    , modMask            = cfgModMask cfg
                    , terminal           = cfgTerminal cfg
                    , startupHook        = bmonadStartupHook cfg
@@ -46,20 +39,18 @@ withPolybar opts = do
 
   launch bmonad xdirs
 
-withMobar :: BOptions -> IO ()
-withMobar opts = do
+withMobar :: IO ()
+withMobar = do
   cfg   <- bmonadConfig
   bar   <- bmonadBar
   xdirs <- getDirectories
   _     <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
 
-  let mcount = optVScreens opts
   let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
              $ ewmh
              $ docks
              $ def { manageHook         = bmonadManageHook cfg <+> manageDocks
-                   , handleEventHook    = bmonadLayoutScreensHook mcount
-                                      <+> trayerPaddingXmobarEventHook
+                   , handleEventHook    = trayerPaddingXmobarEventHook
                                       <+> handleEventHook def
                    , modMask            = cfgModMask cfg
                    , terminal           = cfgTerminal cfg
@@ -73,20 +64,3 @@ withMobar opts = do
                    }
 
   launch bmonad xdirs
-
--- This is safe in XMonad's pure-ish world because
--- it's run once at startup
-{-# NOINLINE hasRunLayout #-}
-hasRunLayout :: IORef Bool
-hasRunLayout = unsafePerformIO (newIORef False)
-
-bmonadLayoutScreensHook :: Maybe Int -> Event -> X All
-bmonadLayoutScreensHook mcount (MapRequestEvent {}) = do
-  alreadyRun <- io $ readIORef hasRunLayout
-  unless alreadyRun $ do
-    io $ writeIORef hasRunLayout True
-    case mcount of
-      Just n | n > 1 -> layoutScreens n (Tall 1 (3/100) (1/fromIntegral n))
-      _              -> return ()
-  return (All True)
-bmonadLayoutScreensHook _ _ = return (All True)
