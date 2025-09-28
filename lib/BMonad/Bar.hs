@@ -10,9 +10,9 @@ module BMonad.Bar (
 
 import           BMonad.Bar.Utils        (fc)
 import           BMonad.Bar.Widgets      (widgetCoins, widgetDate, widgetDisk,
-                                          widgetFGI, widgetMem, widgetNet,
-                                          widgetTrayerPadding, widgetUpstream,
-                                          widgetXMonad)
+                                          widgetFGI, widgetKeyboard, widgetMem,
+                                          widgetNet, widgetTrayerPadding,
+                                          widgetUpstream, widgetXMonad)
 import           BMonad.Config
 import           BMonad.Utils            (countScreens)
 
@@ -156,6 +156,7 @@ mkWidget s NetworkWidget   = Just $ widgetNet s
 mkWidget s DateWidget      = Just $ widgetDate s
 mkWidget s UpstreamWidget  = Just $ widgetUpstream s
 mkWidget _ TrayWidget      = Just widgetTrayerPadding
+mkWidget s KeyboardWidget  = Just $ widgetKeyboard s
 mkWidget _ _               = Nothing
 
 mkTemplate :: MobarWidget -> Maybe String
@@ -167,6 +168,7 @@ mkTemplate NetworkWidget   = Just "%dynnetwork%"
 mkTemplate DateWidget      = Just "%date%"
 mkTemplate UpstreamWidget  = Just "%upstream%"
 mkTemplate TrayWidget      = Just "%_XMONAD_TRAYPAD%"
+mkTemplate KeyboardWidget  = Just "%kbd%"
 mkTemplate _               = Nothing
 
 mkMonitorBar :: Config -> (Config -> [MobarWidget]) -> M.Config

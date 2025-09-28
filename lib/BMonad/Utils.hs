@@ -58,6 +58,8 @@ hexToRgb :: String -> (Word8, Word8, Word8)
 hexToRgb hex = extr $ toSRGB24 $ sRGB24read hex
   where extr (RGB r g b) = (r, g, b)
 
+-- |Count the number of connected monitors/screens.
+-- Not used anymore as I've moved to an ultra wide monitor
 countScreens :: IO Int
 countScreens = do
   screens <- do
@@ -67,5 +69,6 @@ countScreens = do
     return rects
   pure $ length screens
 
+-- |Count windows
 countWindows :: X (Maybe String)
 countWindows = gets $ Just . show . length . W.integrate' . W.stack . W.workspace . W.current. windowset

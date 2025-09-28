@@ -19,6 +19,7 @@ import           BMonad.Log
 
 import           Data.Monoid                         (Endo)
 
+import           BMonad.Config.Types
 import           XMonad
 import           XMonad.Actions.MouseResize          (mouseResize)
 import           XMonad.Hooks.ManageDocks            (avoidStruts)
@@ -42,11 +43,10 @@ import           XMonad.Layout.Spacing               (Border (Border), Spacing,
 import           XMonad.Layout.SubLayouts            (subLayout)
 import           XMonad.Layout.Tabbed                (addTabs, shrinkText,
                                                       tabbed)
+import           XMonad.Layout.ThreeColumns          (ThreeCol (ThreeColMid))
 import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
 import           XMonad.Layout.WindowNavigation      (windowNavigation)
-import XMonad.Layout.ThreeColumns (ThreeCol(ThreeColMid))
-import BMonad.Config.Types
 
 bmonadLayout :: Config -> _
 bmonadLayout cfg = avoidStruts
@@ -55,10 +55,10 @@ bmonadLayout cfg = avoidStruts
                  $ T.toggleLayouts floats
                  $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) defaultLayout
   where defaultLayout = withBorder (themeBorderWidth $ cfgTheme cfg) (tall cfg)
-                        ||| cols cfg
-                        ||| floats
+                        ||| withBorder (themeBorderWidth $ cfgTheme cfg) (cols cfg)
+                        ||| withBorder (themeBorderWidth $ cfgTheme cfg) floats
                         ||| noBorders (tabs cfg)
-                        ||| grid cfg
+                        ||| withBorder (themeBorderWidth $ cfgTheme cfg) (grid cfg)
 
 bmonadManageHook :: Config -> Query (Endo WindowSet)
 bmonadManageHook cfg = composeAll . concat $

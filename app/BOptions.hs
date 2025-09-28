@@ -1,5 +1,5 @@
 {-# LANGUAGE ApplicativeDo #-}
-{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE QuasiQuotes   #-}
 module BOptions (
   BOptions(..),
   BarType(..),
@@ -7,17 +7,19 @@ module BOptions (
   getStatusBar
 ) where
 
-import Options.Applicative
-import Data.String.Interpolate (__i)
+import           Data.String.Interpolate (__i)
+import           Options.Applicative
 
 newtype BOptions = BOptions { optStatusBar :: Maybe BarType }
 
 data BarType = XMobar | Polybar
   deriving (Show, Read, Eq, Ord, Enum, Bounded)
 
-getStatusBar :: Maybe BarType -> BarType
-getStatusBar (Just v) = v
-getStatusBar Nothing  = XMobar
+-- |Get configured status bar or default to XMobar
+getStatusBar :: BOptions -> BarType
+getStatusBar = getBar . optStatusBar
+  where getBar (Just v) = v
+        getBar Nothing  = XMobar
 
 parseOptions :: Parser BOptions
 parseOptions = BOptions <$> parseStatusBar
@@ -30,7 +32,7 @@ parseStatusBar = optional (option auto (  long "statusbar"
 readOptions :: IO BOptions
 readOptions = execParser $ info (parseOptions <**> helper)
   (fullDesc <> progDesc [__i|bmonad :: The tiling window manager.
-                             
+
                              This is a custom built XMonad window manager with a personal
-                             touch. 
+                             touch.
                         |])

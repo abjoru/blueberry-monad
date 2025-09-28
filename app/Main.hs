@@ -1,17 +1,17 @@
 module Main (main) where
 
 import           BMonad
-import           BOptions 
+import           BOptions
 
 import           XMonad
-import           XMonad.Hooks.DynamicLog     (dynamicLogWithPP)
-import           XMonad.Hooks.EwmhDesktops   (ewmh)
-import           XMonad.Hooks.ManageDocks    (docks, manageDocks)
-import           XMonad.Util.Hacks           (trayerPaddingXmobarEventHook)
-import           XMonad.Util.NamedActions    (addDescrKeys')
+import           XMonad.Hooks.DynamicLog   (dynamicLogWithPP)
+import           XMonad.Hooks.EwmhDesktops (ewmh)
+import           XMonad.Hooks.ManageDocks  (docks, manageDocks)
+import           XMonad.Util.Hacks         (trayerPaddingXmobarEventHook)
+import           XMonad.Util.NamedActions  (addDescrKeys')
 
 main :: IO ()
-main = readOptions >>= (\v -> buildWM (getStatusBar $ optStatusBar v))
+main = readOptions >>= buildWM . getStatusBar
   where buildWM XMobar  = withMobar
         buildWM Polybar = withPolybar
 

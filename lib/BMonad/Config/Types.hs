@@ -92,6 +92,7 @@ data MobarWidget
   | DateWidget
   | UpstreamWidget
   | TrayWidget
+  | KeyboardWidget
   | UndefinedWidget
   deriving (Show, Eq)
 
@@ -130,6 +131,7 @@ data Config = Config
   , cfgMobarSettings :: MobarSettings
   } deriving (Show, Eq)
 
+-- FIXME consider having dependencies here!
 data App = App
   { appName     :: String
   , appDesc     :: String
@@ -192,6 +194,7 @@ instance FromJSON MobarWidget where
   parseJSON (String "Date")      = return DateWidget
   parseJSON (String "Upstream")  = return UpstreamWidget
   parseJSON (String "Tray")      = return TrayWidget
+  parseJSON (String "Keyboard")  = return KeyboardWidget
   parseJSON _                    = return UndefinedWidget
 
 instance FromJSON ReadTheme where

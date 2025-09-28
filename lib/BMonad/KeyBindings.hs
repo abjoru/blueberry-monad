@@ -14,7 +14,7 @@ import           XMonad                              (ChangeLayout (NextLayout),
                                                       KeyMask, KeySym,
                                                       Tall (Tall), XConfig, io,
                                                       rescreen, sendMessage,
-                                                      spawn, windows)
+                                                      spawn, windows, withFocused)
 import           XMonad.Actions.CopyWindow           (kill1)
 import           XMonad.Actions.CycleWS              (Direction1D (Next, Prev),
                                                       WSType (WSIs), moveTo,
@@ -32,12 +32,11 @@ import           XMonad.Util.EZConfig                (mkNamedKeymap)
 import           XMonad.Util.NamedActions            (NamedAction (..), addName,
                                                       showKmSimple, (^++^))
 import           XMonad.Util.Run                     (spawnPipe)
-import Data.Fixed (HasResolution(resolution))
 
 bmonadKeys :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
 bmonadKeys b c = keysEssentials b c
   ^++^ keysGridSelect b c
-  ^++^ keysDMenu c
+  -- ^++^ keysDMenu c
   ^++^ keysWorkspaces b c
   ^++^ keysWindows c
   ^++^ keysLayouts c
@@ -70,7 +69,10 @@ keysEssentials b c =
     , ("M-S-c", addName "Kill focused window" kill1)
     , ("M-S-a", addName "Kill all windows" killAll)
     , ("M-<Return>", addName "Launch terminal" $ spawn (cfgTerminal b))
-    , ("M-S-<Return>", addName "Run prompt" $ spawn "~/.local/bin/dm-run")
+    , ("M-S-<Return>", addName "Run prompt" $ spawn "rofi -show drun")
+    --, ("M-S-<Return>", addName "Run prompt" $ spawn "~/.local/bin/dm-run")
+    , ("M-S-p", addName "Lookup passwords" $ spawn "~/.config/xmonad/scripts/rofi_askpass")
+    --, ("M-S-p", addName "Lookup username and passwords" $ spawn "???")
     ]
 
 keysGridSelect :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
@@ -84,17 +86,17 @@ keysGridSelect b c =
     , ("C-g s", addName "Select system apps" $ spawnSelectedIO b $ bmonadAppGroup b "system")
     ]
 
-keysDMenu :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
-keysDMenu c =
-  subKeys c "DMenu scripts"
-    [ ("M-p p", addName "Passmenu" $ spawn "passmenu -p \"Pass: \"")
-    , ("M-p e", addName "Edit config file" $ spawn "dm-confedit")
-    , ("M-p k", addName "Kill processes" $ spawn "dm-kill")
-    , ("M-p m", addName "View manpages" $ spawn "dm-man")
-    , ("M-p r", addName "Online radio" $ spawn "dm-radio")
-    , ("M-p s", addName "Web search" $ spawn "dm-websearch")
-    , ("M-p x", addName "Open project" $ spawn "bb-projects")
-    ]
+--keysDMenu :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
+--keysDMenu c =
+  --subKeys c "DMenu scripts"
+    --[ ("M-p p", addName "Passmenu" $ spawn "passmenu -p \"Pass: \"")
+    --, ("M-p e", addName "Edit config file" $ spawn "dm-confedit")
+    --, ("M-p k", addName "Kill processes" $ spawn "dm-kill")
+    --, ("M-p m", addName "View manpages" $ spawn "dm-man")
+    --, ("M-p r", addName "Online radio" $ spawn "dm-radio")
+    --, ("M-p s", addName "Web search" $ spawn "dm-websearch")
+    --, ("M-p x", addName "Open project" $ spawn "bb-projects")
+    --]
 
 keysWorkspaces :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
 keysWorkspaces b c =
@@ -133,6 +135,7 @@ keysWindows c =
     , ("M-S-j", addName "Swap focused window with next window" $ windows W.swapDown)
     , ("M-S-k", addName "Swap focused window with prev window" $ windows W.swapUp)
     , ("M-<Backspace>", addName "Move focused window to master" promote)
+    , ("M-t", addName "Retile focused window" $ withFocused $ windows . W.sink)
     ]
 
 keysLayouts :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
@@ -149,6 +152,7 @@ keysMonitors c =
     , ("M-,", addName "Switch focus to prev monitor" prevScreen)
     , ("M-f", addName "Set resolution to full" $ spawn "xrandr --output DP-6 --mode 5120x1440")
     , ("M-S-f", addName "Set resolution to half" $ spawn "xrandr --output DP-6 --mode 2560x1440")
+    -- FIXME the following doesn't seem to work!
     , ("M-S-F1", addName "Reset screens" rescreen)
     , ("M-S-F2", addName "Split into 2 screens" $ layoutScreens 2 (Tall 1 (3/100) (1/2)))
     , ("M-S-F3", addName "Split into 3 screens" $ layoutScreens 3 (Tall 1 (3/100) (1/3)))
