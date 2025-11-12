@@ -88,6 +88,7 @@ parseConfig theme cfg = do
                   , cfgEditor = rcEditor cfg
                   , cfgSoundPlayer = rcSound cfg
                   , cfgWorkspaces = rcWorkspaces cfg
+                  , cfgWindowSpacing = rcWindowSpacing cfg
                   , cfgLogLevel = rcLogLevel cfg
                   , cfgGridSelect = rcGridSelect cfg
                   , cfgMobarSettings = rcMobarSettings cfg

@@ -23,6 +23,7 @@ module BMonad.Config.Types (
   mobarPrimaryMonitor,
   mobarSecondaryMonitor,
   mobarOtherMonitors,
+  monadWindowSpacing,
 
   defaultTheme,
   defaultConfig,
@@ -40,6 +41,7 @@ import           System.Log          (Priority (..))
 
 import           Xmobar              (Border (BottomB, FullB, NoBorder, TopB))
 import           XMonad              (Dimension, KeyMask, mod1Mask, mod4Mask)
+import Data.Maybe (fromMaybe)
 
 type Font = String
 
@@ -90,6 +92,7 @@ data MobarWidget
   | DateWidget
   | UpstreamWidget
   | TrayWidget
+  | KeyboardWidget
   | UndefinedWidget
   deriving (Show, Eq)
 
@@ -122,11 +125,13 @@ data Config = Config
   , cfgEditor        :: String
   , cfgSoundPlayer   :: String
   , cfgWorkspaces    :: [String]
+  , cfgWindowSpacing :: Maybe Integer
   , cfgLogLevel      :: Priority
   , cfgGridSelect    :: GridSettings
   , cfgMobarSettings :: MobarSettings
   } deriving (Show, Eq)
 
+-- FIXME consider having dependencies here!
 data App = App
   { appName     :: String
   , appDesc     :: String
@@ -159,6 +164,7 @@ data ReadConfig = ReadConfig
   , rcEditor        :: String
   , rcSound         :: String
   , rcWorkspaces    :: [String]
+  , rcWindowSpacing :: Maybe Integer
   , rcGridSelect    :: GridSettings
   , rcMobarSettings :: MobarSettings
   } deriving (Show, Eq)
@@ -188,6 +194,7 @@ instance FromJSON MobarWidget where
   parseJSON (String "Date")      = return DateWidget
   parseJSON (String "Upstream")  = return UpstreamWidget
   parseJSON (String "Tray")      = return TrayWidget
+  parseJSON (String "Keyboard")  = return KeyboardWidget
   parseJSON _                    = return UndefinedWidget
 
 instance FromJSON ReadTheme where
@@ -207,6 +214,7 @@ instance FromJSON ReadConfig where
     <*> v .:? "editor" .!= defaultEditor
     <*> v .:? "sound-player" .!= defaultSoundPlayer
     <*> v .:? "workspaces" .!= defaultWorkspaces
+    <*> v .:? "window-spacing" .!= Just defaultWindowSpacing
     <*> v .:? "grid-select" .!= defaultGridSettings
     <*> v .:? "mobar" .!= defaultMobarSettings
 
@@ -293,6 +301,9 @@ mobarSecondaryMonitor = msSecondaryMonitor . cfgMobarSettings
 mobarOtherMonitors :: Config -> [MobarWidget]
 mobarOtherMonitors = msOtherMonitors . cfgMobarSettings
 
+monadWindowSpacing :: Config -> Integer
+monadWindowSpacing cfg = fromMaybe defaultWindowSpacing $ cfgWindowSpacing cfg
+
 {-------------------------------------------
   Defaults
 -------------------------------------------}
@@ -336,6 +347,9 @@ defaultSoundPlayer = "ffplay -nodisp --autoexit"
 defaultWorkspaces :: [String]
 defaultWorkspaces = [" alpha ", " bravo ", " charlie ", " delta "]
 
+defaultWindowSpacing :: Integer
+defaultWindowSpacing = 4
+
 defaultScheme :: Scheme
 defaultScheme =
     Scheme
@@ -376,6 +390,7 @@ defaultConfig = do
                   , cfgEditor        = defaultEditor
                   , cfgSoundPlayer   = defaultSoundPlayer
                   , cfgWorkspaces    = defaultWorkspaces
+                  , cfgWindowSpacing = Just defaultWindowSpacing
                   , cfgLogLevel      = defaultLogLevel
                   , cfgGridSelect    = defaultGridSettings
                   , cfgMobarSettings = defaultMobarSettings

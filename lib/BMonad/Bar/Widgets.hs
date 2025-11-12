@@ -9,6 +9,7 @@ module BMonad.Bar.Widgets (
   widgetCpu,
   widgetMem,
   widgetDisk,
+  widgetKeyboard
 ) where
 
 import           BMonad.Bar.Icons
@@ -97,3 +98,7 @@ widgetDisk s = M.Run $
   M.DiskU [("/", icoFloppy' (color04 s) " <free> free")]
     (s <~> ["-L", "20", "-H", "70", "-m", "1", "-p", "3"])
     20
+
+-- | Keyboard (alias kbd)
+widgetKeyboard :: Scheme -> M.Runnable
+widgetKeyboard _ = M.Run $ M.Kbd [("us", "US"), ("no", "NO")]

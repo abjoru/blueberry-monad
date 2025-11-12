@@ -7,8 +7,6 @@ module BMonad.Log (
   errorX
 ) where
 
-import Data.Char (toUpper)
-
 import System.FilePath ((</>))
 import System.IO (stderr)
 import System.Log.Formatter (simpleLogFormatter)

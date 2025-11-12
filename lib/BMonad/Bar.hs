@@ -1,10 +1,18 @@
-module BMonad.Bar (Monitor(..), selectMonitor, bmonadBars, bmobarPP) where
+{-# LANGUAGE LambdaCase #-}
+module BMonad.Bar (
+  Monitor(..),
+  selectMonitor,
+  bmobarConfig,
+  bmonadBar,
+  bmonadBars,
+  bmobarPP
+) where
 
 import           BMonad.Bar.Utils        (fc)
 import           BMonad.Bar.Widgets      (widgetCoins, widgetDate, widgetDisk,
-                                          widgetFGI, widgetMem, widgetNet,
-                                          widgetTrayerPadding, widgetUpstream,
-                                          widgetXMonad)
+                                          widgetFGI, widgetKeyboard, widgetMem,
+                                          widgetNet, widgetTrayerPadding,
+                                          widgetUpstream, widgetXMonad)
 import           BMonad.Config
 import           BMonad.Utils            (countScreens)
 
@@ -69,11 +77,18 @@ spawnBars b n = mapM (mkBar b) $ zip (take n [0..]) (["primary", "secondary"] ++
 mkBar :: FilePath -> (Int, String) -> IO Handle
 mkBar b (i, m) = spawnPipe $ b ++ " -x " ++ show i ++ " " ++ m
 
+-- Deprecated! Using virtual screens instead with single xmobar.
 bmonadBars :: IO [Handle]
 bmonadBars = do
   home <- getHomeDirectory
   countScreens >>= spawnBars (home </> ".local" </> "bin" </> "blueberry-mobar")
 
+bmonadBar :: IO Handle
+bmonadBar = do
+  home <- getHomeDirectory
+  spawnPipe (home </> ".local" </> "bin" </> "blueberry-mobar single")
+
+-- Deprecated! Using virtual screens instead with single xmobar.
 bmobarPP :: Config -> X (Maybe String) -> [Handle] -> PP
 bmobarPP cfg wcount bars =
   let cCur   = color04 . themeColorScheme $ cfgTheme cfg
@@ -93,9 +108,34 @@ bmobarPP cfg wcount bars =
       , ppSep = "<fc=" ++ cSep ++ "> <fn=1>|</fn> </fc>"
       , ppUrgent = xmobarColor cUrg "" . wrap "!" "!"
       , ppExtras = [wcount]
-      , ppOrder = \(ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
+      , ppOrder = \case
+          (ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
+          _ -> []
       }
   where outputBars hs s = mapM_ (`hPutStrLn` s) hs
+
+bmobarConfig :: Config -> Handle -> PP
+bmobarConfig cfg bar =
+  let cCur   = color04 . themeColorScheme $ cfgTheme cfg
+      cVis   = color04 . themeColorScheme $ cfgTheme cfg
+      cHid   = color05 . themeColorScheme $ cfgTheme cfg
+      cHidN  = color05 . themeColorScheme $ cfgTheme cfg
+      cSep   = color09 . themeColorScheme $ cfgTheme cfg
+      cTitle = color16 . themeColorScheme $ cfgTheme cfg
+      cUrg   = color02 . themeColorScheme $ cfgTheme cfg
+   in xmobarPP
+      { ppOutput = hPutStrLn bar
+      , ppCurrent = xmobarColor cCur "" . wrap ("<box type=Bottom width=2 mb=2 color=" ++ cCur ++ ">") "</box>"
+      , ppVisible = xmobarColor cVis ""
+      , ppHidden = xmobarColor cHid "" . wrap ("<box type=Top width=2 mb=2 color=" ++ cHid ++ ">") "</box>"
+      , ppHiddenNoWindows = xmobarColor cHidN ""
+      , ppTitle = xmobarColor cTitle "" . shorten 60
+      , ppSep = "<fc=" ++ cSep ++ "> <fn=1>|</fn> </fc>"
+      , ppUrgent = xmobarColor cUrg "" . wrap "!" "!"
+      , ppOrder = \case
+          (ws:l:t:ex) -> [ws, l] ++ ex ++ [t]
+          _ -> []
+      }
 
 {-----------------------------------------------------
   Monitor Settings
@@ -116,6 +156,7 @@ mkWidget s NetworkWidget   = Just $ widgetNet s
 mkWidget s DateWidget      = Just $ widgetDate s
 mkWidget s UpstreamWidget  = Just $ widgetUpstream s
 mkWidget _ TrayWidget      = Just widgetTrayerPadding
+mkWidget s KeyboardWidget  = Just $ widgetKeyboard s
 mkWidget _ _               = Nothing
 
 mkTemplate :: MobarWidget -> Maybe String
@@ -127,6 +168,7 @@ mkTemplate NetworkWidget   = Just "%dynnetwork%"
 mkTemplate DateWidget      = Just "%date%"
 mkTemplate UpstreamWidget  = Just "%upstream%"
 mkTemplate TrayWidget      = Just "%_XMONAD_TRAYPAD%"
+mkTemplate KeyboardWidget  = Just "%kbd%"
 mkTemplate _               = Nothing
 
 mkMonitorBar :: Config -> (Config -> [MobarWidget]) -> M.Config

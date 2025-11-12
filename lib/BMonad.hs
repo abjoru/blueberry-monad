@@ -19,6 +19,7 @@ import           BMonad.Log
 
 import           Data.Monoid                         (Endo)
 
+import           BMonad.Config.Types
 import           XMonad
 import           XMonad.Actions.MouseResize          (mouseResize)
 import           XMonad.Hooks.ManageDocks            (avoidStruts)
@@ -42,6 +43,7 @@ import           XMonad.Layout.Spacing               (Border (Border), Spacing,
 import           XMonad.Layout.SubLayouts            (subLayout)
 import           XMonad.Layout.Tabbed                (addTabs, shrinkText,
                                                       tabbed)
+import           XMonad.Layout.ThreeColumns          (ThreeCol (ThreeColMid))
 import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
 import           XMonad.Layout.WindowNavigation      (windowNavigation)
@@ -53,9 +55,10 @@ bmonadLayout cfg = avoidStruts
                  $ T.toggleLayouts floats
                  $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) defaultLayout
   where defaultLayout = withBorder (themeBorderWidth $ cfgTheme cfg) (tall cfg)
-                        ||| floats
+                        ||| withBorder (themeBorderWidth $ cfgTheme cfg) (cols cfg)
+                        ||| withBorder (themeBorderWidth $ cfgTheme cfg) floats
                         ||| noBorders (tabs cfg)
-                        ||| grid cfg
+                        ||| withBorder (themeBorderWidth $ cfgTheme cfg) (grid cfg)
 
 bmonadManageHook :: Config -> Query (Endo WindowSet)
 bmonadManageHook cfg = composeAll . concat $
@@ -112,6 +115,16 @@ bmonadManageHook cfg = composeAll . concat $
 bspacing :: Integer -> l a -> ModifiedLayout Spacing l a
 bspacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
+cols :: Config -> _
+cols cfg = renamed [Replace "cols"]
+         $ limitWindows 5
+         $ smartBorders
+         $ windowNavigation
+         $ addTabs shrinkText (bmonadTabTheme cfg)
+         $ subLayout [] (smartBorders Simplest)
+         $ bspacing (monadWindowSpacing cfg)
+         $ ThreeColMid 1 (3/100) (1/3)
+
 tall :: Config -> _
 tall cfg = renamed [Replace "tall"]
          $ limitWindows 5
@@ -119,7 +132,7 @@ tall cfg = renamed [Replace "tall"]
          $ windowNavigation
          $ addTabs shrinkText (bmonadTabTheme cfg)
          $ subLayout [] (smartBorders Simplest)
-         $ bspacing 8
+         $ bspacing (monadWindowSpacing cfg)
          $ ResizableTall 1 (3/100) (1/2) []
 
 floats :: _
@@ -132,10 +145,11 @@ grid cfg = renamed [Replace "grid"]
          $ windowNavigation
          $ addTabs shrinkText (bmonadTabTheme cfg)
          $ subLayout [] (smartBorders Simplest)
-         $ bspacing 8
+         $ bspacing (monadWindowSpacing cfg)
          $ mkToggle (single MIRROR)
          $ Grid (16/10)
 
 tabs :: Config -> _
 tabs cfg = renamed [Replace "tabs"]
+         $ bspacing (monadWindowSpacing cfg)
          $ tabbed shrinkText (bmonadTabTheme cfg)
