@@ -66,9 +66,11 @@ bmonadConfig = do
    in catchAny (loadConfig a b) handler
   where handler er = warnX "LoadConfig" (show er) >> defaultConfig
 
-bmonadStartupHook :: Config -> X ()
-bmonadStartupHook cfg = do
-  spawnOnce $ cfgMonadDir cfg </> "autostart.sh"
+bmonadStartupHook :: Config -> Bool -> X ()
+bmonadStartupHook cfg useXmobar = do
+  let script = cfgMonadDir cfg </> "autostart.sh"
+      cmd    = if useXmobar then script ++ " xmobar" else script
+  spawnOnce cmd
   setWMName "XBlueberry"
 
 bmonadApps :: Config -> IO (M.Map String [(String, String)])

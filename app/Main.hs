@@ -2,25 +2,26 @@ module Main (main) where
 
 import           BMonad
 import           BOptions
+import           Polybar                     (launchPolybar)
 
 import           XMonad
-import           XMonad.Hooks.DynamicLog   (dynamicLogWithPP)
-import           XMonad.Hooks.EwmhDesktops (ewmh)
-import           XMonad.Hooks.ManageDocks  (docks, manageDocks)
-import           XMonad.Util.Hacks         (trayerPaddingXmobarEventHook)
-import           XMonad.Util.NamedActions  (addDescrKeys')
+import           XMonad.Hooks.DynamicLog     (dynamicLogWithPP)
+import           XMonad.Hooks.EwmhDesktops   (ewmh)
+import           XMonad.Hooks.ManageDocks    (docks, manageDocks)
+import           XMonad.Util.Hacks           (trayerPaddingXmobarEventHook)
+import           XMonad.Util.NamedActions    (addDescrKeys')
 
 main :: IO ()
 main = readOptions >>= buildWM . getStatusBar
   where buildWM XMobar  = withMobar
         buildWM Polybar = withPolybar
 
--- FIXME implement polybar setup
 withPolybar :: IO ()
 withPolybar = do
   cfg   <- bmonadConfig
   xdirs <- getDirectories
   _     <- setupLogger (cfgLogLevel cfg) (cfgMonadDir cfg)
+  launchPolybar cfg
 
   let bmonad = addDescrKeys' ((mod4Mask, xK_F1), showKeys) (bmonadKeys cfg)
              $ ewmh
@@ -29,7 +30,7 @@ withPolybar = do
                    , handleEventHook    = handleEventHook def
                    , modMask            = cfgModMask cfg
                    , terminal           = cfgTerminal cfg
-                   , startupHook        = bmonadStartupHook cfg
+                   , startupHook        = bmonadStartupHook cfg False
                    , layoutHook         = bmonadLayout cfg
                    , workspaces         = cfgWorkspaces cfg
                    , borderWidth        = themeBorderWidth $ cfgTheme cfg
@@ -54,7 +55,7 @@ withMobar = do
                                       <+> handleEventHook def
                    , modMask            = cfgModMask cfg
                    , terminal           = cfgTerminal cfg
-                   , startupHook        = bmonadStartupHook cfg
+                   , startupHook        = bmonadStartupHook cfg True
                    , layoutHook         = bmonadLayout cfg
                    , workspaces         = cfgWorkspaces cfg
                    , borderWidth        = themeBorderWidth $ cfgTheme cfg
