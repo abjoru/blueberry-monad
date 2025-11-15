@@ -1,5 +1,7 @@
 # blueberry-monad
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+
 `blueberry-monad` is a customized [XMonad](https://xmonad.org/) configuration
 designed to provide a polished tiling window manager experience complete with a
 multi-monitor status bar, curated keybindings, and quality-of-life helpers such
