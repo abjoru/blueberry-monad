@@ -46,6 +46,7 @@ import           XMonad.Layout.Tabbed                (addTabs, shrinkText,
 import           XMonad.Layout.ThreeColumns          (ThreeCol (ThreeColMid))
 import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
+import           XMonad.Layout.Reflect               (reflectHoriz)
 import           XMonad.Layout.WindowNavigation      (windowNavigation)
 
 bmonadLayout :: Config -> _
@@ -100,6 +101,7 @@ bmonadManageHook cfg = composeAll . concat $
                    , "mpv"
                    , "streamdeck"
                    , "megasync"
+                   , "pavucontrol"
                    ]
         c0shifts = []
         c1shifts = []
@@ -133,6 +135,7 @@ tall cfg = renamed [Replace "tall"]
          $ addTabs shrinkText (bmonadTabTheme cfg)
          $ subLayout [] (smartBorders Simplest)
          $ bspacing (monadWindowSpacing cfg)
+         $ reflectHoriz
          $ ResizableTall 1 (3/100) (1/2) []
 
 floats :: _

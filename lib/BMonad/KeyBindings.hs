@@ -14,7 +14,8 @@ import           XMonad                              (ChangeLayout (NextLayout),
                                                       KeyMask, KeySym,
                                                       Tall (Tall), XConfig, io,
                                                       rescreen, sendMessage,
-                                                      spawn, windows, withFocused)
+                                                      spawn, windows,
+                                                      withFocused)
 import           XMonad.Actions.CopyWindow           (kill1)
 import           XMonad.Actions.CycleWS              (Direction1D (Next, Prev),
                                                       WSType (WSIs), moveTo,
@@ -150,8 +151,8 @@ keysMonitors c =
   subKeys c "Monitors"
     [ ("M-.", addName "Switch focus to next monitor" nextScreen)
     , ("M-,", addName "Switch focus to prev monitor" prevScreen)
-    , ("M-f", addName "Set resolution to full" $ spawn "xrandr --output DP-6 --mode 5120x1440")
-    , ("M-S-f", addName "Set resolution to half" $ spawn "xrandr --output DP-6 --mode 2560x1440")
+    , ("M-f", addName "Set resolution to full" $ spawn "xrandr --output DisplayPort-0 --mode 5120x1440 --rate 120")
+    , ("M-S-f", addName "Set resolution to half" $ spawn "xrandr --output DisplayPort-0 --mode 2560x1440 --rate 120")
     -- FIXME the following doesn't seem to work!
     , ("M-S-F1", addName "Reset screens" rescreen)
     , ("M-S-F2", addName "Split into 2 screens" $ layoutScreens 2 (Tall 1 (3/100) (1/2)))
