@@ -5,7 +5,12 @@ module BMonad.Bar (
   bmobarConfig,
   bmonadBar,
   bmonadBars,
-  bmobarPP
+  bmobarPP,
+  -- Testing exports
+  icon,
+  defaultHeight,
+  mkTemplate,
+  mkWidget
 ) where
 
 import           BMonad.Bar.Utils        (fc)

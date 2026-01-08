@@ -1,4 +1,8 @@
-module BMonad.Bar.Plugin.CoinPriceWidget where
+module BMonad.Bar.Plugin.CoinPriceWidget (
+  CoinSettings(..),
+  WidgetConfig(..),
+  formatCoin
+) where
 
 import           BMonad.Crypto (Coin (Coin), getCoinPrices)
 
@@ -28,5 +32,5 @@ instance Exec WidgetConfig where
     return $ intercalate ("<fc=" ++ s ++ "> |</fc>") $ zipWith (curry formatCoin) cs coins
 
 formatCoin :: (CoinSettings, Coin) -> String
-formatCoin (CoinSettings _ c i, Coin _ _ _ p) = 
+formatCoin (CoinSettings _ c i, Coin _ _ _ p) =
   "<fc=" ++ c ++ "><fn=1>" ++ i ++ "</fn>$" ++ printf "%.2f" p ++ "</fc>"

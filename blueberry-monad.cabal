@@ -3,8 +3,6 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 46165a2dc0e12137289051f31ca8e08344429330d4e7ec62ac69bede959a5b02
 
 name:           blueberry-monad
 version:        0.1.0.1
@@ -110,9 +108,16 @@ test-suite test
   main-is: Spec.hs
   other-modules:
       ApplicationsSpec
+      BarSpec
+      BarUtilsSpec
+      CoinPriceWidgetSpec
       ConfigurationSpec
       CryptoSpec
+      FGIWidgetSpec
+      IconsSpec
+      UpstreamStatusWidgetSpec
       UtilsSpec
+      WidgetsSpec
       Paths_blueberry_monad
   hs-source-dirs:
       test

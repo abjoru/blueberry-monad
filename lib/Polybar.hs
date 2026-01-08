@@ -1,17 +1,17 @@
 module Polybar (launchPolybar) where
 
-import           BMonad.Config                (Config (cfgMonadDir))
-import           BMonad.Log                   (infoX, warnX)
-import           BMonad.Utils                 (checkExecutable)
+import           BMonad.Config      (Config (cfgMonadDir))
+import           BMonad.Log         (infoX, warnX)
+import           BMonad.Utils       (checkExecutable)
 
-import           Control.Concurrent           (threadDelay)
-import           Control.Monad                (void)
+import           Control.Concurrent (threadDelay)
+import           Control.Monad      (void)
 
-import           System.Directory             (doesFileExist)
-import           System.FilePath              ((</>))
-import           System.Process               (callCommand, spawnProcess)
+import           System.Directory   (doesFileExist)
+import           System.FilePath    ((</>))
+import           System.Process     (callCommand, spawnProcess)
 
-import           UnliftIO.Exception           (catchAny)
+import           UnliftIO.Exception (catchAny)
 
 data PolybarLauncher
   = PolybarScript FilePath

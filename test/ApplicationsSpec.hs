@@ -1,18 +1,18 @@
 module ApplicationsSpec (main, spec) where
 
-import Prelude hiding (readFile)
+import           Prelude               hiding (readFile)
 
 import           BMonad.Config.Parsers
 import           BMonad.Config.Types
 import           BMonad.Utils          (capitalized)
 
-import Data.ByteString       hiding (find, head, length, map, null)
+import           Data.ByteString       hiding (find, head, length, map, null)
 import qualified Data.ByteString.Char8 as C
 import           Data.List             (find)
-import qualified Data.Map as M
+import qualified Data.Map              as M
 
-import System.Directory
-import System.FilePath
+import           System.Directory
+import           System.FilePath
 
 import           Test.Hspec
 

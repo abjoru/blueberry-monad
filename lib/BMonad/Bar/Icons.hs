@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 module BMonad.Bar.Icons where
 
-import           BMonad.Config.Types   (Color)
+import           BMonad.Config.Types (Color)
 
 cfi :: Color -> Int -> String -> String
 cfi c f i = "<fc=" ++ c ++ "><fn=" ++ show f ++ ">" ++ i ++ "</fn></fc>"
