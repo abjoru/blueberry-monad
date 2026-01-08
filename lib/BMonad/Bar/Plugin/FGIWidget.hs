@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module BMonad.Bar.Plugin.FGIWidget (FGISettings(..)) where
+module BMonad.Bar.Plugin.FGIWidget (FGISettings(..), indexColor) where
 
 import           BMonad.Crypto (FearGreed (FearGreed), getFearGreedIndex)
 

@@ -39,9 +39,9 @@ import           System.Directory    (XdgDirectory (XdgConfig),
 import           System.FilePath     ((</>))
 import           System.Log          (Priority (..))
 
+import           Data.Maybe          (fromMaybe)
 import           Xmobar              (Border (BottomB, FullB, NoBorder, TopB))
 import           XMonad              (Dimension, KeyMask, mod1Mask, mod4Mask)
-import Data.Maybe (fromMaybe)
 
 type Font = String
 

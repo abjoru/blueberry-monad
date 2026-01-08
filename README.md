@@ -12,31 +12,49 @@ codebase.
 ## Repository layout
 
 ```
-app/                  -- Entry point that wires everything into XMonad
-lib/BMonad/           -- Library code that implements the configuration pieces
-  Bar/                -- Xmobar integration (widgets, icons, helpers)
-  Config/             -- Types, YAML parsers, and defaults for user config
-  Crypto/             -- External data fetchers (CoinGecko, Fear & Greed index)
-  Bar.hs, Config.hs…  -- Public surface that is re-used from the entry point
+app/                  -- Entry point (Main.hs, BOptions.hs for CLI parsing)
+bar/                  -- Xmobar executable entry point (BMobar.hs)
+lib/
+  BMonad/             -- Library code that implements the configuration pieces
+    Bar/              -- Xmobar integration (widgets, icons, helpers)
+    Config/           -- Types, YAML parsers, and defaults for user config
+    Crypto/           -- External data fetchers (CoinGecko, Fear & Greed index)
+    Bar.hs, Config.hs -- Public surface that is re-used from the entry point
+  BMonad.hs           -- Main library re-exports
+  Polybar.hs          -- Polybar status bar alternative
 test/                 -- Hspec test suite covering parsers and helper modules
 ```
 
 The `blueberry-monad.cabal` and `package.yaml` files describe the build, while
 `stack.yaml` allows the project to be built with Stack if preferred.
 
+## CLI usage
+
+```bash
+# Run with Xmobar (default)
+bmonad
+
+# Run with Polybar
+bmonad --statusbar Polybar
+bmonad -s Polybar
+```
+
 ## Runtime flow
 
-1. **Startup** – `app/Main.hs` fetches the user configuration from the XDG
-   config directory, spins up the logger, launches one or more Xmobar status
-   bars, and finally hands control over to XMonad via `launch`.
+1. **Startup** – `app/Main.hs` parses CLI options (`--statusbar`/`-s` to select
+   Xmobar or Polybar), loads user configuration from the XDG config directory,
+   sets up logging, launches the chosen status bar, and hands control to XMonad
+   via `launch`.
 2. **Layout & management** – `BMonad.bmonadLayout` composes a set of tiling
    layouts (tall, float, grid, tabs) with helpers such as window navigation,
    tabbed sublayouts, and smart borders; the companion `bmonadManageHook`
    defines rules for floating and workspace shifting based on window metadata.
-3. **Bars** – `BMonad.Bar` spawns one Xmobar per monitor and exposes a
-   `bmobarPP` pretty-printer so the main process can feed workspace and window
-   information into them. Monitor-specific widget sets (coins, memory, network,
-   etc.) are driven by `cfgMobarSettings` from the loaded configuration.
+3. **Bars** – Two status bar backends are available:
+   - **Xmobar** (default): `BMonad.Bar` spawns one Xmobar per monitor with a
+     `bmobarPP` pretty-printer feeding workspace/window info. Monitor-specific
+     widget sets are driven by `cfgMobarSettings`.
+   - **Polybar**: `lib/Polybar.hs` launches Polybar as an alternative backend,
+     selected via `--statusbar Polybar`.
 4. **Keybindings** – `BMonad.KeyBindings` groups related key combinations into
    sections such as essentials, GridSelect menus, workspace navigation, and
    multimedia controls. Each binding is declared with human-readable

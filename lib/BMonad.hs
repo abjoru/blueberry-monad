@@ -34,6 +34,7 @@ import           XMonad.Layout.MultiToggle           (EOT (EOT), mkToggle,
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (MIRROR, NBFULL, NOBORDERS))
 import           XMonad.Layout.NoBorders             (noBorders, smartBorders,
                                                       withBorder)
+import           XMonad.Layout.Reflect               (reflectHoriz)
 import           XMonad.Layout.Renamed               (Rename (Replace), renamed)
 import           XMonad.Layout.ResizableTile         (ResizableTall (ResizableTall))
 import           XMonad.Layout.Simplest              (Simplest (Simplest))
@@ -46,7 +47,6 @@ import           XMonad.Layout.Tabbed                (addTabs, shrinkText,
 import           XMonad.Layout.ThreeColumns          (ThreeCol (ThreeColMid))
 import qualified XMonad.Layout.ToggleLayouts         as T
 import           XMonad.Layout.WindowArranger        (windowArrange)
-import           XMonad.Layout.Reflect               (reflectHoriz)
 import           XMonad.Layout.WindowNavigation      (windowNavigation)
 
 bmonadLayout :: Config -> _
@@ -66,15 +66,9 @@ bmonadManageHook cfg = composeAll . concat $
   [ [isDialog --> doCenterFloat]
   , [isFullscreen --> doFullFloat]
   , [title =? t --> doFloat | t <- tfloats]
-  , [title =? t --> doShift (head $ cfgWorkspaces cfg) | t <- t0shifts]
-  , [title =? t --> doShift (cfgWorkspaces cfg !! 1) | t <- t1shifts]
-  , [title =? t --> doShift (cfgWorkspaces cfg !! 2) | t <- t2shifts]
-  , [title =? t --> doShift (cfgWorkspaces cfg !! 3) | t <- t3shifts]
+  , [title =? t --> doShift ws | (ws, ts) <- zip (cfgWorkspaces cfg) tshifts, t <- ts]
   , [className =? c --> doCenterFloat | c <- cfloats]
-  , [className =? c --> doShift (head $ cfgWorkspaces cfg) | c <- c0shifts]
-  , [className =? c --> doShift (cfgWorkspaces cfg !! 1) | c <- c1shifts]
-  , [className =? c --> doShift (cfgWorkspaces cfg !! 2) | c <- c2shifts]
-  , [className =? c --> doShift (cfgWorkspaces cfg !! 3) | c <- c3shifts]
+  , [className =? c --> doShift ws | (ws, cs) <- zip (cfgWorkspaces cfg) cshifts, c <- cs]
   , [resource =? r --> doFloat | r <- rfloats]
   , [resource =? i --> doIgnore | i <- ifloats]
   ]
@@ -83,10 +77,7 @@ bmonadManageHook cfg = composeAll . concat $
                    , "Oracle VM VirtualBox Manager"
                    , "MEGAsync"
                    ]
-        t0shifts = []
-        t1shifts = ["firefox"]
-        t2shifts = []
-        t3shifts = []
+        tshifts  = [[], ["firefox"], [], []]  -- ws0, ws1, ws2, ws3
         cfloats  = [ "confirm"
                    , "file_progress"
                    , "download"
@@ -103,10 +94,7 @@ bmonadManageHook cfg = composeAll . concat $
                    , "megasync"
                    , "pavucontrol"
                    ]
-        c0shifts = []
-        c1shifts = []
-        c2shifts = []
-        c3shifts = []
+        cshifts  = [[], [], [], []]  -- ws0, ws1, ws2, ws3
         rfloats  = []
         ifloats  = ["desktop_window"]
 

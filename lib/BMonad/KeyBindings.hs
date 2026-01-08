@@ -50,7 +50,7 @@ showKeys x = addName "Show keybindings" $ io $ do
                            , "--text-info"
                            , "--fontname=\"SauceCodePro Nerd Font Mono 12\""
                            , "--fore=#d79921"
-                           , "back=#282828"
+                           , "--back=#282828"
                            , "--center"
                            , "--geometry=1200x800"
                            , "--title \"BMonad Keybindings\""
@@ -71,9 +71,10 @@ keysEssentials b c =
     , ("M-S-a", addName "Kill all windows" killAll)
     , ("M-<Return>", addName "Launch terminal" $ spawn (cfgTerminal b))
     , ("M-S-<Return>", addName "Run prompt" $ spawn "rofi -show drun")
-    --, ("M-S-<Return>", addName "Run prompt" $ spawn "~/.local/bin/dm-run")
     , ("M-S-p", addName "Lookup passwords" $ spawn "~/.config/xmonad/scripts/rofi_askpass")
-    --, ("M-S-p", addName "Lookup username and passwords" $ spawn "???")
+    , ("M-C-a", addName "Toggle dictation" $ spawn "scribe toggle")
+    , ("<F13>", addName "Toggle dictation (foot pedal)" $ spawn "scribe toggle")
+    , ("S-<F13>", addName "Cancel dictation (foot pedal + shift)" $ spawn "scribe cancel")
     ]
 
 keysGridSelect :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
@@ -87,41 +88,20 @@ keysGridSelect b c =
     , ("C-g s", addName "Select system apps" $ spawnSelectedIO b $ bmonadAppGroup b "system")
     ]
 
---keysDMenu :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
---keysDMenu c =
-  --subKeys c "DMenu scripts"
-    --[ ("M-p p", addName "Passmenu" $ spawn "passmenu -p \"Pass: \"")
-    --, ("M-p e", addName "Edit config file" $ spawn "dm-confedit")
-    --, ("M-p k", addName "Kill processes" $ spawn "dm-kill")
-    --, ("M-p m", addName "View manpages" $ spawn "dm-man")
-    --, ("M-p r", addName "Online radio" $ spawn "dm-radio")
-    --, ("M-p s", addName "Web search" $ spawn "dm-websearch")
-    --, ("M-p x", addName "Open project" $ spawn "bb-projects")
-    --]
-
 keysWorkspaces :: Config -> XConfig l -> [((KeyMask, KeySym), NamedAction)]
 keysWorkspaces b c =
-  subKeys c "Workspaces"
+  subKeys c "Workspaces" $
     [ ("M-S-<Page_Up>", addName "Move window to next WS and follow" $ shiftTo Next nonNSP >> moveTo Next nonNSP)
     , ("M-S-<Page_Down>", addName "Move window to prev WS and follow" $ shiftTo Prev nonNSP >> moveTo Prev nonNSP)
-    , ("M-1", addName "Switch to workspace 1" (windows $ W.greedyView $ head (cfgWorkspaces b)))
-    , ("M-2", addName "Switch to workspace 2" (windows $ W.greedyView $ cfgWorkspaces b !! 1))
-    , ("M-3", addName "Switch to workspace 3" (windows $ W.greedyView $ cfgWorkspaces b !! 2))
-    , ("M-4", addName "Switch to workspace 4" (windows $ W.greedyView $ cfgWorkspaces b !! 3))
-    , ("M-5", addName "Switch to workspace 5" (windows $ W.greedyView $ cfgWorkspaces b !! 4))
-    , ("M-6", addName "Switch to workspace 6" (windows $ W.greedyView $ cfgWorkspaces b !! 5))
-    , ("M-7", addName "Switch to workspace 7" (windows $ W.greedyView $ cfgWorkspaces b !! 6))
-    , ("M-8", addName "Switch to workspace 8" (windows $ W.greedyView $ cfgWorkspaces b !! 7))
-    , ("M-S-1", addName "Send to workspace 1" (windows $ W.shift $ head (cfgWorkspaces b)))
-    , ("M-S-2", addName "Send to workspace 2" (windows $ W.shift $ cfgWorkspaces b !! 1))
-    , ("M-S-3", addName "Send to workspace 3" (windows $ W.shift $ cfgWorkspaces b !! 2))
-    , ("M-S-4", addName "Send to workspace 4" (windows $ W.shift $ cfgWorkspaces b !! 3))
-    , ("M-S-5", addName "Send to workspace 5" (windows $ W.shift $ cfgWorkspaces b !! 4))
-    , ("M-S-6", addName "Send to workspace 6" (windows $ W.shift $ cfgWorkspaces b !! 5))
-    , ("M-S-7", addName "Send to workspace 7" (windows $ W.shift $ cfgWorkspaces b !! 6))
-    , ("M-S-8", addName "Send to workspace 8" (windows $ W.shift $ cfgWorkspaces b !! 7))
     ]
-  where nonNSP = WSIs (return (\ws -> W.tag ws /= "NSP"))
+    ++ zipWith mkView [1..] (cfgWorkspaces b)
+    ++ zipWith mkShift [1..] (cfgWorkspaces b)
+  where
+    nonNSP = WSIs (return (\ws -> W.tag ws /= "NSP"))
+    mkView :: Int -> String -> (String, NamedAction)
+    mkView n ws = ("M-" ++ show n, addName ("Switch to " ++ ws) (windows $ W.greedyView ws))
+    mkShift :: Int -> String -> (String, NamedAction)
+    mkShift n ws = ("M-S-" ++ show n, addName ("Send to " ++ ws) (windows $ W.shift ws))
 
 keysWindows :: XConfig l -> [((KeyMask, KeySym), NamedAction)]
 keysWindows c =

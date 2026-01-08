@@ -7,14 +7,16 @@ module BMonad.Log (
   errorX
 ) where
 
-import System.FilePath ((</>))
-import System.IO (stderr)
-import System.Log.Formatter (simpleLogFormatter)
-import System.Log.Handler (setFormatter)
-import System.Log.Handler.Simple (fileHandler, streamHandler)
-import System.Log.Logger (Priority(..), logM, rootLoggerName, setHandlers, setLevel, updateGlobalLogger)
+import           System.FilePath           ((</>))
+import           System.IO                 (stderr)
+import           System.Log.Formatter      (simpleLogFormatter)
+import           System.Log.Handler        (setFormatter)
+import           System.Log.Handler.Simple (fileHandler, streamHandler)
+import           System.Log.Logger         (Priority (..), logM, rootLoggerName,
+                                            setHandlers, setLevel,
+                                            updateGlobalLogger)
 
-import Control.Monad.State (MonadIO(..))
+import           Control.Monad.State       (MonadIO (..))
 
 -- |Configure logger instance.
 -- Sets priority and logfile path.

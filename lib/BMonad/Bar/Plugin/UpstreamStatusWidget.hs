@@ -1,4 +1,4 @@
-module BMonad.Bar.Plugin.UpstreamStatusWidget (UpstreamSettings(..)) where
+module BMonad.Bar.Plugin.UpstreamStatusWidget (UpstreamSettings(..), formatOutput) where
 
 import           BMonad.Bar.Icons
 import           BMonad.Config.Types (Color)

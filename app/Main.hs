@@ -2,14 +2,14 @@ module Main (main) where
 
 import           BMonad
 import           BOptions
-import           Polybar                     (launchPolybar)
+import           Polybar                   (launchPolybar)
 
 import           XMonad
-import           XMonad.Hooks.DynamicLog     (dynamicLogWithPP)
-import           XMonad.Hooks.EwmhDesktops   (ewmh)
-import           XMonad.Hooks.ManageDocks    (docks, manageDocks)
-import           XMonad.Util.Hacks           (trayerPaddingXmobarEventHook)
-import           XMonad.Util.NamedActions    (addDescrKeys')
+import           XMonad.Hooks.DynamicLog   (dynamicLogWithPP)
+import           XMonad.Hooks.EwmhDesktops (ewmh)
+import           XMonad.Hooks.ManageDocks  (docks, manageDocks)
+import           XMonad.Util.Hacks         (trayerPaddingXmobarEventHook)
+import           XMonad.Util.NamedActions  (addDescrKeys')
 
 main :: IO ()
 main = readOptions >>= buildWM . getStatusBar
@@ -36,6 +36,7 @@ withPolybar = do
                    , borderWidth        = themeBorderWidth $ cfgTheme cfg
                    , normalBorderColor  = color09 . themeColorScheme $ cfgTheme cfg
                    , focusedBorderColor = color04 . themeColorScheme $ cfgTheme cfg
+                   , focusFollowsMouse  = False
                    }
 
   launch bmonad xdirs
@@ -61,6 +62,7 @@ withMobar = do
                    , borderWidth        = themeBorderWidth $ cfgTheme cfg
                    , normalBorderColor  = color09 . themeColorScheme $ cfgTheme cfg
                    , focusedBorderColor = color04 . themeColorScheme $ cfgTheme cfg
+                   , focusFollowsMouse  = False
                    , logHook            = dynamicLogWithPP (bmobarConfig cfg bar)
                    }
 
